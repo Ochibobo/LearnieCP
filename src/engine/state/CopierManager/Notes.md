@@ -1,0 +1,11 @@
+- Notice that the store works with values of Copy<T>
+- However, BackUps only work with values of CopyEntry<T>
+  - These values are restorable
+  - These values are produced upon calling save on Copy<T>
+  - They store the current value `v` of Copy<T> alongside Copy<T>
+- We use object and not primitives so as to store a reference to the object on save instead of a copy of it - if we were to store primitives.
+- The size of the prior grows per back up operation.
+- The size of the store only grows based on the creation of new instances.
+- Introduce IDs to state for duplication detection.
+  - May be applicable at for the Copier's store.
+- 

@@ -1,0 +1,10 @@
+-  A variable:
+   - State:
+     - Recalls the solver that created the variable
+     - Encapsulates the domain 
+     - Tracks the constraints that mention it
+   - API:
+     - Domain queries
+     - Domain updates
+     - Connection to the constraint
+   - 

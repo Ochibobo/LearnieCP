@@ -1,7 +1,11 @@
-name = "MiniCP"
+name = "JuliaCP"
 uuid = "f8d6348d-010c-4f6c-878b-e95918c69cf9"
 authors = ["Warren Ochibobo <ochibobowarren@gmail.com> and contributors"]
 version = "0.1.0"
+
+[deps]
+DataStructures = "864edb3b-99cc-5e75-8d2d-829cb0a9cfe8"
+Parameters = "d96e819e-fc66-5662-9728-84c9c7592b0a"
 
 [compat]
 julia = "1"

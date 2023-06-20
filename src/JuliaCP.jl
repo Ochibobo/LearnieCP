@@ -1,4 +1,4 @@
-module MiniCP
+module JuliaCP
 
 # Write your package code here.
 

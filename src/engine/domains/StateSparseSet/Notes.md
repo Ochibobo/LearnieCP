@@ -1,0 +1,15 @@
+- Consider having elements of the SparseSet implement an indexing method that returns an integer representing their index
+- `Index` array contains the position `p` of the value `v` in the `value` array.
+  - Accessing the actual value is done by:
+    - `values[index[p]]` = `v`
+- A value is in the set if its `index` < `size`
+- Implements:
+  - Contains
+  - Size
+  - Min
+  - Max
+- Only need to save the size of the domain in the `SparseSet`
+  - Restoration only entails moving the `size`
+- Delegate some operations to the `StateSparseSet`
+- Notice that the operations related to `remove` does not explicitly remove the elements from the `values` array. Instead, it updates the size, min & max values only.
+- 
