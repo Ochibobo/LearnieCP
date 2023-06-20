@@ -16,7 +16,7 @@ import Base: isempty, size, minimum, maximum, collect, in, values
         function StateSparseSet{T}(sm::StateManager, n::Integer, offset::Integer)
             ## The domain size is stored as a state variable
             size = makeStateInt(sm, n)
-            ## The minimum is stored as a state variable 
+            ## The minimum is stored as a state variable
             min = makeStateInt(sm, 1)
             ## The maximum is stored as a state variable
             max = makeStateInt(sm, n)

@@ -1,3 +1,4 @@
+module Exceptions
 """
 Exceptions used in the solver
 """
@@ -40,4 +41,4 @@ struct EmptyBackUpException <: AbstractSolverException
     message::String
 end
 
-
+end

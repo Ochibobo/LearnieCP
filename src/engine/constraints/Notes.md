@@ -1,0 +1,12 @@
+### Notes
+- Surprisingly, through very important, it has one of the shortest interface definitions.
+- Most of the focus is on the implementation of `post` and `propagate`.
+- It maintains an internal `active` state variable.
+- Also has boolean to indicate whether it's been `scheduled` or not.
+  - `scheduled` here means that the constraint had been placed in the propagation queue of the solver.
+  - `scheduled` doesn't have to be a state variable because it's only local to one state of propagation; never transferred from node to node.
+  - `active` is however a State variable.
+  - These are considered as performance APIs.
+- Schedule constraints only when they are active and not already on the queue.
+- To `propagate` a constraint, set the scheduled flag to false and only propagate when the constraint is currently acitve.
+- 

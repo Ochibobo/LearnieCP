@@ -1,5 +1,7 @@
 module Variables
 
+import ..Core: AbstractConstraint
+using ..Solver
 using ..Domains
 const dm = Domains
 

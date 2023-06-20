@@ -1,0 +1,19 @@
+## Notes
+- A solver has 2 parts:
+  - An initialization bit:
+    - You post the constraint
+    - Define the minimization fn
+    - Define the maximization fn
+    - Initilize the state manager
+    - A propagation queue for constraints to propagate
+  - A propagation API:
+    - Schedule a constraint
+    - Call the fixPoint algorithm
+- The `fixPoint` algorithm pop's constraints and propagates them.
+- Failure during fixPoint can occur when a constraint or domain of a variable throws an exception
+- The `fixPoint` algorithm oughts to catch the exception and clear the `propagationQueue`.
+  - Don't want them to propagate as one goes to another node in the search tree.
+- When cleaning the queue, reset the status of the `scheduled` flag.
+  - Then throw the exception.
+- Move the solve function to the solver instead of having it with the search.
+- 
