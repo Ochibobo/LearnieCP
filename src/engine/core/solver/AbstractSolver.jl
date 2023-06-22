@@ -1,14 +1,6 @@
 import DataStructures: Queue
 
 """
-    abstract type AbstractSolver end
-
-Interface definition of a solver
-"""
-abstract type AbstractSolver end
-
-
-"""
     stateManager(s::AbstractSolver)::AbstractDomain
 
 Function to get a solver's StateManager
@@ -83,9 +75,9 @@ end
 
 Maximize the value of `v`
 """
-# function maximize(v::AbstractVariable{T})::AbstractObjective where T
-#     throw(error("function maximize($v) is not implemented"))
-# end
+function maximize(v::AbstractVariable{T})::AbstractObjective where T <: Number
+    throw(error("function maximize($v) is not implemented"))
+end
 
 
 """
@@ -93,6 +85,6 @@ Maximize the value of `v`
 
 Minimize the value of `v`
 """
-# function minimize(v::AbstractVariable{T})::AbstractObjective where T
-#     throw(error("function minimize($v) is not implemented"))
-# end
+function minimize(v::AbstractVariable{T})::AbstractObjective where T <: Number
+    throw(error("function minimize($v) is not implemented"))
+end

@@ -1,12 +1,4 @@
 """
-    abstract type AbstractConstraint end
-
-Interface that all constraints should implement
-"""
-abstract type AbstractConstraint end
-
-
-"""
     post(c::Constraint)::Nothing
 
 Function `post` of an `AbstractConstraint`. It links the constraint with its variables & performs the initial propagation.

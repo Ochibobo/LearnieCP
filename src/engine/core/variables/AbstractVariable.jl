@@ -1,14 +1,6 @@
 import Base: size, minimum, maximum, in
 
 """
-    abstract type AbstractVariable{T} end
-
-An interface that represents a set of operations any variable is to implement
-"""
-abstract type AbstractVariable{T} end
-
-
-"""
     minimum(d::AbstractVariable{T})::T where T
 
 Return the `minimum` value of the variable

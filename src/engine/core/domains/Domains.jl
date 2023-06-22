@@ -6,12 +6,11 @@ Contains `interface` definitions and implementations of `common` domains.
 module Domains
 
 using ..SolverState
-import ..Core: AbstractConstraint
+import ..Core: AbstractConstraint, AbstractDomainListener, AbstractDomain
 using ..Solver
 
 ## The domain listeners
 include("AbstractDomainListener.jl")
-export AbstractDomainListener
 export onEmpty
 export onChange
 export onChangeMin
@@ -20,7 +19,6 @@ export onBind
 
 ## The AbstractDomain
 include("AbstractDomain.jl")
-export AbstractDomain
 export minimum
 export maximum
 export size

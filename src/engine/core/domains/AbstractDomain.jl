@@ -5,14 +5,6 @@ Implementation of an AbstractDomain
 """
 
 """
-    abstract type AbstractDomain{T} end
-
-`Interface` definition of a domain. All domains should implement this Interface
-"""
-abstract type AbstractDomain{T} end
-
-
-"""
     minimum(d::AbstractDomain{T})::T where T
 
 Return the `minimum` value of the domain

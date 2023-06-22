@@ -8,6 +8,14 @@ module Core
 using ..SolverState
 using ..Exceptions
 
+include("interfaces/interfaces.jl")
+export AbstractConstraint
+export AbstractDomain
+export AbstractDomainListener
+export AbstractVariable
+export AbstractSolver
+export AbstractObjective
+
 ## Import the Constraints
 include("constraints/AbstractConstraint.jl")
 export AbstractConstraint
@@ -76,7 +84,6 @@ export domain
 include("variables/Variables.jl")
 using .Variables
 export AbstractVariable
-export AbstractVariable
 export minimum
 export maximum
 export size
@@ -102,9 +109,6 @@ export onBindConstraints
 
 ## Import the Objective definition
 include("objective/Objective.jl")
-export AbstractObjective
 export Minimize
-
-
 
 end

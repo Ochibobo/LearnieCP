@@ -1,12 +1,11 @@
 module Variables
 
-import ..Core: AbstractConstraint
+import ..Core: AbstractConstraint, AbstractVariable, AbstractDomain
 using ..Solver
 using ..Domains
 const dm = Domains
 
 include("AbstractVariable.jl")
-export AbstractVariable
 export minimum
 export maximum
 export size

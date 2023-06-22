@@ -1,8 +1,3 @@
-"""
-`AbstractDomainListener` interface
-"""
-abstract type AbstractDomainListener end
-
 
 """
     empty(l::AbstractDomainListener)

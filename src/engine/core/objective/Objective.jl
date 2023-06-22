@@ -1,12 +1,6 @@
 using Parameters
 
 """
-Implementation of the Objective of a solver
-"""
-abstract type AbstractObjective end
-
-
-"""
     mutable struct Minimize <: AbstractObjective
         bound::Integer
         value::IntVar
