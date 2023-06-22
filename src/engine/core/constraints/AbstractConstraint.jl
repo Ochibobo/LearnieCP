@@ -21,7 +21,7 @@ end
 """
     schedule(c::AbstractConstraint, scheduled::Bool)::Nothing
 
-Function to schedule a constraint in the propagation queue. Also prevents repeated scheduling of a constraint that's still scheduled
+Function to schedule a constraint in the propagation queue.
 """
 function schedule(c::AbstractConstraint, scheduled::Bool)::Nothing
     throw(error("function schedule($c, $scheduled) is not implemented"))
@@ -43,7 +43,7 @@ end
 
 Function used to mark a constraint as being active
 """
-function activate(c::AbstractConstraint, active::State{Bool})::Nothing
+function activate(c::AbstractConstraint, active::Bool)::Nothing
     throw(error("function activate($c, $active) is not implemented"))
 end
 

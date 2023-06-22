@@ -16,4 +16,7 @@
 - When cleaning the queue, reset the status of the `scheduled` flag.
   - Then throw the exception.
 - Move the solve function to the solver instead of having it with the search.
+- The `schedule` method of a solver adds a constraint to the solver's propagation queue.
+- The `propagate` method of a solver calls the propagate method of the constraint in question.
+- The `post` method of a solver calls the `post` method the constraint in question.
 - 

@@ -1,8 +1,8 @@
 module Variables
 
-import ..Core: AbstractConstraint, AbstractVariable, AbstractDomain
-using ..Solver
+import ..Core: AbstractConstraint, AbstractVariable, AbstractDomain, AbstractSolver
 using ..Domains
+using ..SolverState
 const dm = Domains
 
 include("AbstractVariable.jl")

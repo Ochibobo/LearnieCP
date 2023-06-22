@@ -1,4 +1,3 @@
-using DataStructures
 using Parameters
 
 """
@@ -13,9 +12,9 @@ Instance of a `DomainListener` that implements an `AbstractDomainListener`
 """
 @with_kw struct DomainListener <: AbstractDomainListener 
     solver::AbstractSolver
-    onDomainChangeConstraints::Stack{AbstractConstraint}    = Stack{AbstractConstraint}()
-    onBoundsChangeConstraints::Stack{AbstractConstraint}    = Stack{AbstractConstraint}()
-    onBindConstraints::Stack{AbstractConstraint}            = Stack{AbstractConstraint}()
+    onDomainChangeConstraints::StateStack{AbstractConstraint}    = StateStack{AbstractConstraint}()
+    onBoundsChangeConstraints::StateStack{AbstractConstraint}    = StateStack{AbstractConstraint}()
+    onBindConstraints::StateStack{AbstractConstraint}            = StateStack{AbstractConstraint}()
 end
 
 
@@ -33,7 +32,7 @@ solver(dl::DomainListener)::AbstractSolver = dl.solver
 
 Function used to schedule all `constraints` present in a Stack of constraints
 """
-function scheduleAll(s::AbstractSolver, cs::Stack{AbstractConstraint})::Nothing
+function scheduleAll(s::AbstractSolver, cs::StateStack{AbstractConstraint})::Nothing
     for c in cs
         schedule(s, c)
     end

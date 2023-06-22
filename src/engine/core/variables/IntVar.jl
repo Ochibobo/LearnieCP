@@ -66,7 +66,7 @@ domainListener(iv::IntVar)::DomainListener = iv.domainListener
 
 Get a list of constraints triggered when the domain of this variable changes
 """
-onDomainChangeConstraints(iv::IntVar)::Stack{AbstractConstraint} = domainListener(iv).onDomainChangeConstraints
+onDomainChangeConstraints(iv::IntVar)::StateStack{AbstractConstraint} = domainListener(iv).onDomainChangeConstraints
 
 
 """
@@ -74,7 +74,7 @@ onDomainChangeConstraints(iv::IntVar)::Stack{AbstractConstraint} = domainListene
 
 Get a list of constraints triggered when the bounds of this variable changes
 """
-onBoundsChangeConstraints(iv::IntVar)::Stack{AbstractConstraint} = domainListener(iv).onBoundsChangeConstraints
+onBoundsChangeConstraints(iv::IntVar)::StateStack{AbstractConstraint} = domainListener(iv).onBoundsChangeConstraints
 
 
 """
@@ -82,7 +82,7 @@ onBoundsChangeConstraints(iv::IntVar)::Stack{AbstractConstraint} = domainListene
 
 Get a list of constraints triggered when this variable is bound
 """
-onBindConstraints(iv::IntVar)::Stack{AbstractConstraint} = domainListener(iv).onBindConstraints
+onBindConstraints(iv::IntVar)::StateStack{AbstractConstraint} = domainListener(iv).onBindConstraints
 
 
 """

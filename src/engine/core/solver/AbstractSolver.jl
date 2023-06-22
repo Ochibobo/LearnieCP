@@ -1,4 +1,3 @@
-import DataStructures: Queue
 
 """
     stateManager(s::AbstractSolver)::AbstractDomain
@@ -11,9 +10,19 @@ end
 
 
 """
+    setStateManager(s::AbstractSolver, sm::StateManager)::Nothing
+
+Function to set a solver's state manager
+"""
+function setStateManager(s::AbstractSolver, sm::StateManager)::Nothing
+    throw(error("function setStateManager($s, $sm) not implemented"))
+end
+
+
+"""
     post(s::AbstractSolver, c::AbstractConstraint)::Nothing
 
-Function used to register a `constraint` to the `Solver`
+Function used to post a `constraint` from the `Solver`
 """
 function post(s::AbstractSolver, c::AbstractConstraint)::Nothing
     throw(error("function post($s, $c) not implemented"))
@@ -71,20 +80,40 @@ end
 
 
 """
-    maximize(v::AbstractVariable{T})::Objective where T
+    setObjective(s::AbstractSolver, o::AbstractObjective)::AbstractObjective
 
-Maximize the value of `v`
+Function to set the solver's objective
 """
-function maximize(v::AbstractVariable{T})::AbstractObjective where T <: Number
-    throw(error("function maximize($v) is not implemented"))
+function setObjective(s::AbstractSolver, o::AbstractObjective)::Nothing
+    throw(error("function setObjective($s, $o) not implemented"))    
 end
 
 
 """
-    minimize(v::AbstractVariable{T})::Objective where T
+    objective(s::AbstractSolver)::AbstractObjective
 
-Minimize the value of `v`
+Function to get the solver's objective
 """
-function minimize(v::AbstractVariable{T})::AbstractObjective where T <: Number
-    throw(error("function minimize($v) is not implemented"))
+function objective(s::AbstractSolver)::AbstractObjective
+    throw(error("function objective($s) not implemented"))    
 end
+
+
+# """
+#     maximize(v::AbstractVariable{T})::Objective where T
+
+# Maximize the value of `v`
+# """
+# function maximize(v::AbstractVariable{T})::AbstractObjective where T <: Number
+#     throw(error("function maximize($v) is not implemented"))
+# end
+
+
+# """
+#     minimize(v::AbstractVariable{T})::Objective where T
+
+# Minimize the value of `v`
+# """
+# function minimize(v::AbstractVariable{T})::AbstractObjective where T <: Number
+#     throw(error("function minimize($v) is not implemented"))
+# end

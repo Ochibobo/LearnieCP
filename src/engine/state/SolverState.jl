@@ -96,4 +96,12 @@ export setValue!
 export value
 export save
 
+## StateStack
+include("StateStack.jl")
+export StateStack
+export push!
+export stack
+export size
+export get
+
 end

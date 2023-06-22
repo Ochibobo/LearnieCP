@@ -6,8 +6,7 @@ Contains `interface` definitions and implementations of `common` domains.
 module Domains
 
 using ..SolverState
-import ..Core: AbstractConstraint, AbstractDomainListener, AbstractDomain
-using ..Solver
+import ..Core: AbstractConstraint, AbstractDomainListener, AbstractDomain, AbstractSolver
 
 ## The domain listeners
 include("AbstractDomainListener.jl")

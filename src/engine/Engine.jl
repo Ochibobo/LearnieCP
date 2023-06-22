@@ -84,4 +84,11 @@ export save
 include("core/Core.jl")
 using .Core
 
+## The Search
+include("search/SearchMethods.jl")
+using .SearchMethods
+
+## The Constraints
+include("constraints/Constraints.jl")
+
 end
