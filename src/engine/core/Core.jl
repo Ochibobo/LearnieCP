@@ -28,7 +28,6 @@ export isActive
 ## The Solver Instance
 include("solver/Solver.jl")
 using .Solver
-export AbstractSolver
 export stateManager
 export post
 export propagate
@@ -36,21 +35,21 @@ export propagationQueue
 export schedule
 export fixPoint
 export onFixPoint
-# export minimize
-# export maximize
-
-
+export minimize
+export maximize
+export objective
+export setObjective
+export setStateManager
+export LearnieCP
 
 ## Import the Domain
 include("domains/Domains.jl")
 using .Domains
-export AbstractDomainListener
 export onEmpty
 export onChange
 export onChangeMin
 export onChangeMax
 export onBind
-export AbstractDomain
 export minimum
 export maximum
 export size
@@ -82,7 +81,6 @@ export domain
 ## Import the Variable Definition
 include("variables/Variables.jl")
 using .Variables
-export AbstractVariable
 export minimum
 export maximum
 export size

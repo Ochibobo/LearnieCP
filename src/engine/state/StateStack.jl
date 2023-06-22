@@ -1,5 +1,5 @@
 using Parameters
-import Base: push!, size
+import Base: push!, size, get
 
 """
 State Manager for the stack of constraints.
@@ -63,6 +63,6 @@ end
 
 Get the element at index `index` from the `StateStack` index
 """
-function get(s::StateStack{T}, index::Integer)::T where T
+function Base.get(s::StateStack{T}, index::Integer)::T where T
     return stack(s)[index]
 end

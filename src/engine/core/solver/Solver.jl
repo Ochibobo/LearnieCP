@@ -14,6 +14,9 @@ export fixPoint
 export onFixPoint
 export minimize
 export maximize
+export objective
+export setObjective
+export setStateManager
 
 include("LearnieCP.jl")
 export LearnieCP
