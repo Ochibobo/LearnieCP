@@ -18,7 +18,6 @@ export AbstractObjective
 
 ## Import the Constraints
 include("constraints/AbstractConstraint.jl")
-export AbstractConstraint
 export post
 export propagate
 export schedule

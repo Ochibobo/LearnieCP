@@ -124,7 +124,7 @@ end
 Function used to mark a constraint as being active
 """
 function activate(c::NotEqual, active::Bool)::Nothing
-    setValue(c.active, active)
+    setValue!(c.active, active)
 end
 
 
