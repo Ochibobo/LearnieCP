@@ -2,7 +2,14 @@ using Parameters
 
 
 """
+    mutable struct Trail{T} <: State{T}
+        v::T                    
+        versionID::Integer      = -1
+        trailer::Trailer{T}
+    end
+
 State<T> element that is a member of the `Trailer` StateManager
+The `Trailer{T}` instance is passed for version comparison in the `trail` function
 """
 @with_kw mutable struct Trail{T} <: State{T}
     v::T                    
@@ -47,6 +54,8 @@ end
 
 
 """
+    trailer(trail::Trail{T})::Trailer{T} where T
+
 Get the `trailer` from an instance of `Trail{T}`
 """
 function trailer(trail::Trail{T})::Trailer{T} where T
