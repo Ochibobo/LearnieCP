@@ -146,9 +146,13 @@ function restoreState(c::Copier{T})::Nothing where T
 
     ## Get the top backUp entry
     backUp = pop!(c.prior)
+    
+    ## Get the length of the backup
+    sz = length(backUp)
 
-    ## Set the storeSize
-    ## setSize!(c.store, backUp.size) - my store is not growing
+    ## Set the storeSize which will remove elements that aren't relevant anymore from the store
+    setSize!(c.store, sz)
+
     ## Restore this backUp by calling restore on every stateEntry
     restore(backUp)
     

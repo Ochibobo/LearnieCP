@@ -101,7 +101,7 @@ function restoreState(t::Trailer{T})::Nothing where T
     restore(current(t))
 
     ## Set the BackUp to the previous backUp
-    t.current = pop!(prior(t))
+    setCurrent!(t, pop!(prior(t)))
 
     ## Increase the version number
     t.versionID += 1

@@ -33,6 +33,8 @@ end
 
 
 """
+    restore!(tse::TrailStateEntry{T})::Nothing where T
+
 `restore!` function of the `TrailStateEntry{T}` instance
 """
 function restore!(tse::TrailStateEntry{T})::Nothing where T
