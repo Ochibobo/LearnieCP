@@ -27,7 +27,7 @@ Implementation of an Integer Variable
         domain = SparseSetDomain{Integer}(stateManager(solver), min , max)
         
         ## Return an IntVar instance
-        new(solver, domain, DomainListener(solver = s))
+        new(solver, domain, DomainListener(solver))
     end
 
     ## A variable having a domain of n elements starting from 0

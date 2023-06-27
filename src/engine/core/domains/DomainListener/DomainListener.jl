@@ -15,6 +15,18 @@ Instance of a `DomainListener` that implements an `AbstractDomainListener`
     onDomainChangeConstraints::StateStack{AbstractConstraint}    = StateStack{AbstractConstraint}()
     onBoundsChangeConstraints::StateStack{AbstractConstraint}    = StateStack{AbstractConstraint}()
     onBindConstraints::StateStack{AbstractConstraint}            = StateStack{AbstractConstraint}()
+
+    function DomainListener(solver::AbstractSolver)
+        ## Retrieve the state manager
+        sm = stateManager(solver)
+
+        ## Return a new DomainListener instance
+        new(solver, 
+            StateStack{AbstractConstraint}(sm),
+            StateStack{AbstractConstraint}(sm),
+            StateStack{AbstractConstraint}(sm)
+        )
+    end
 end
 
 

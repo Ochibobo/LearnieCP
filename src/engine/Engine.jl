@@ -6,6 +6,7 @@ module Engine
 ## Exceptipns
 include("exceptions/Exceptions.jl")
 using .Exceptions
+export Exceptions
 export AbstractSolverException
 export InconsistencyException
 export NotImplementedException
@@ -14,6 +15,7 @@ export EmptyBackUpException
 ## State
 include("state/SolverState.jl")
 using .SolverState
+export SolverState
 export StateManager
 export getLevel
 export saveState
@@ -83,10 +85,12 @@ export save
 ## Core elements of the system
 include("core/Core.jl")
 using .Core
+export Core
 
 ## The Search
 include("search/SearchMethods.jl")
 using .SearchMethods
+export SearchMethods
 
 ## The Constraints
 include("constraints/Constraints.jl")

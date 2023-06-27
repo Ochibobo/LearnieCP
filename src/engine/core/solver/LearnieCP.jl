@@ -5,7 +5,7 @@ Basic Solver implementation
 """
 
 """
-    mutable struct LearnieCP
+    mutable struct LearnieCP <: AbstractSolver
         propagationQueue::Queue{AbstractConstraint}
         sm::StateManager
         objective::Union{AbstractObjective, Nothing}
@@ -28,7 +28,7 @@ Basic Solver implementation
 
 Structure of the `LearnieCP` solver
 """
-mutable struct LearnieCP
+mutable struct LearnieCP <: AbstractSolver
     propagationQueue::Queue{AbstractConstraint}
     sm::StateManager
     objective::Union{AbstractObjective, Nothing}

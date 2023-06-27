@@ -1,6 +1,6 @@
 module Variables
 
-import ..Core: AbstractConstraint, AbstractVariable, AbstractDomain, AbstractSolver
+import ..Core: AbstractConstraint, AbstractVariable, AbstractDomain, AbstractSolver, stateManager
 using ..Domains
 using ..SolverState
 const dm = Domains
@@ -29,5 +29,8 @@ export domainListener
 export onDomainChangeConstraints
 export onBoundsChangeConstraints
 export onBindConstraints
+
+include("IntVarArray.jl")
+export makeIntVarArray
 
 end

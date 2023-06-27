@@ -28,6 +28,7 @@ export isActive
 ## The Solver Instance
 include("solver/Solver.jl")
 using .Solver
+export Solver
 export stateManager
 export post
 export propagate
@@ -45,6 +46,7 @@ export LearnieCP
 ## Import the Domain
 include("domains/Domains.jl")
 using .Domains
+export Domains
 export onEmpty
 export onChange
 export onChangeMin
@@ -81,6 +83,7 @@ export domain
 ## Import the Variable Definition
 include("variables/Variables.jl")
 using .Variables
+export Variables
 export minimum
 export maximum
 export size
@@ -102,6 +105,7 @@ export domainListener
 export onDomainChangeConstraints
 export onBoundsChangeConstraints
 export onBindConstraints
+export makeIntVarArray
 
 
 ## Import the Objective definition
