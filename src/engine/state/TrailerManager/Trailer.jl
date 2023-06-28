@@ -41,6 +41,16 @@ end
 
 
 """
+    getLevel(t::Trailer{T})::Integer where T
+
+Function to get the tree level
+"""
+function getLevel(t::Trailer{T})::Integer where T
+    return length(prior(t)) - 1
+end
+
+
+"""
     versionID(t::Trailer{T})::Integer where T
 
 Get the `versionID` of the `Trailer{T}` instance
@@ -116,7 +126,7 @@ end
 Convenient function to create a new state, invoke a `procedure` then restore the state. The invoked `procedure` may have changed
 the state hence the need for restoration.
 """
-function withNewState(trailer::Trailer{T}, procedure::Function)::Nothing where T
+function withNewState(trailer::Trailer{T}, procedure)::Nothing where T
     level = getLevel(trailer)
     saveState(trailer)
     procedure()
@@ -124,6 +134,7 @@ function withNewState(trailer::Trailer{T}, procedure::Function)::Nothing where T
 
     return nothing
 end
+
 
 """
     makeStateRef(trailer::Trailer{T}, initialValue::T)::State{T} where T

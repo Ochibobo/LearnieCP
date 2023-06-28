@@ -131,7 +131,7 @@ function Base.in(v::T, ss::StateSparseSet{T})::Bool where T
     ## Don't use size(ss) to test the bounds as size(ss) changes
     if v < 0  || v >= ss.n return false end
 
-    return index(ss)[indexOf(v)] < size(ss)
+    return index(ss)[indexOf(v)] <= size(ss)
 end
 
 
@@ -228,7 +228,7 @@ function internalContains(ss::StateSparseSet{T}, v::T)::Bool where T
     ## Bounds are checked against n and not size(ss)
     if v < 0  || v >= ss.n return false end
 
-    return index(ss)[indexOf(v)] < size(ss)
+    return index(ss)[indexOf(v)] <= size(ss)
 end
 
 

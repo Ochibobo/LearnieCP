@@ -57,7 +57,7 @@ end
 Function that `saves` the state of the variable in the `StateManager`, then calls the `procedure` (branching algorithm) and later 
 `restores` the state of the variable.
 """
-withNewState(sm::StateManager, procedure::Function)::Nothing = throw(error("not implemented"))
+withNewState(sm::StateManager, procedure)::Nothing = throw(error("not implemented"))
     
 
 

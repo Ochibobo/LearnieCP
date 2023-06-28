@@ -29,23 +29,23 @@ Basic Solver implementation
 Structure of the `LearnieCP` solver
 """
 mutable struct LearnieCP <: AbstractSolver
-    propagationQueue::Queue{AbstractConstraint}
+    propagationQueue::Deque{AbstractConstraint}
     sm::StateManager
     objective::Union{AbstractObjective, Nothing}
 
     ## Initialize the CP Solver
     function LearnieCP(sm::StateManager, objective::AbstractObjective)
-        new(Queue{AbstractConstraint}(), sm, objective)
+        new(Deque{AbstractConstraint}(), sm, objective)
     end
 
     ## Initialize the solver without an objective
     function LearnieCP(sm::StateManager)
-        new(Queue{AbstractConstraint}(), sm, nothing)
+        new(Deque{AbstractConstraint}(), sm, nothing)
     end
 
     ## Initialize without a parameter
     function LearnieCP()
-        new(Queue{AbstractConstraint}(), Trailer{Integer}(), nothing)
+        new(Deque{AbstractConstraint}(), Trailer{Integer}(), nothing)
     end
 end
 
@@ -77,7 +77,7 @@ Function used to post a `constraint` from the `Solver`.
 """
 function post(s::LearnieCP, c::AbstractConstraint)::Nothing
     ## Post the constraint
-    post(c)
+    InnerCore.post(c)
     ## Run the fixPoint
     fixPoint(s)
 end
@@ -91,11 +91,11 @@ Function used to `propagate` constraints in the `solver`
 function propagate(s::LearnieCP, c::AbstractConstraint)::Nothing
     _ = s
     ## Mark the constraint as not being scheduled (out of the queue)
-    schedule(c, false)
+    InnerCore.schedule(c, false)
 
     ## Assert the constraint is active
-    if isActive(c)
-        propagate(c)
+    if InnerCore.isActive(c)
+        InnerCore.propagate(c)
     end
 end
 
@@ -105,7 +105,7 @@ end
 
 Function used to get the propagation queue of the constraints scheduled in the `LearnieCP`
 """
-function propagationQueue(s::LearnieCP)::Queue{AbstractConstraint}
+function propagationQueue(s::LearnieCP)::Deque{AbstractConstraint}
     return s.propagationQueue
 end
 
@@ -117,12 +117,14 @@ Function to add constraint `c` to the propagationQueue of the solver for propaga
 """
 function schedule(s::LearnieCP, c::AbstractConstraint)::Nothing
     ## Assert than the constraint is active & not scheduled first
-    if isActive(c) && !isScheduled(c)
+    if InnerCore.isActive(c) && !InnerCore.isScheduled(c)
         ## Mark the constraint as being scheduled
-        schedule(c, true)
+        InnerCore.schedule(c, true)
         ## Add it to the solver's propagationQueue
         push!(propagationQueue(s), c)
     end
+
+    return nothing
 end
 
 
@@ -144,7 +146,7 @@ function fixPoint(s::LearnieCP)::Nothing
         while(!isempty(propagationQueue(s)))
             cs = popfirst!(propagationQueue(s))
             ## Mark constraint cs as not being scheduled
-            setScheduled(cs, false)
+            InnerCore.schedule(cs, false)
         end
 
         throw(e)

@@ -45,8 +45,8 @@ solver(dl::DomainListener)::AbstractSolver = dl.solver
 Function used to schedule all `constraints` present in a Stack of constraints
 """
 function scheduleAll(s::AbstractSolver, cs::StateStack{AbstractConstraint})::Nothing
-    for c in cs
-        schedule(s, c)
+    for c in stack(cs)
+        Solver.schedule(s, c)
     end
 
     return nothing
@@ -100,5 +100,5 @@ end
 `onBind` implementation of the `DomainListener` instance
 """
 function onBind(l::DomainListener)::Nothing
-    scheduleAll(solver(l), l.onBoundsChangeConstraints)
+    scheduleAll(solver(l), l.onBindConstraints)
 end

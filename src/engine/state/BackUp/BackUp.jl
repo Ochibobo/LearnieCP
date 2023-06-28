@@ -59,9 +59,9 @@ Restore the value of the states in the `BackUp`
 function restore(b::BackUp{T})::Nothing where T
     ## If the store is emtpy, inform the user and exit
     ## Or should I throw an error??
-    if length(store(b)) < 1
-        throw(error("Cannot restore from an emtpy back up."))
-    end
+    # if length(store(b)) < 1
+    #     throw(error("Cannot restore from an emtpy back up."))
+    # end
 
     for se in store(b)
         restore!(se)

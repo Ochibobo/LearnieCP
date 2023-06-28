@@ -1,5 +1,5 @@
 """
-    post(c::Constraint)::Nothing
+    post(c::AbstractConstraint)::Nothing
 
 Function `post` of an `AbstractConstraint`. It links the constraint with its variables & performs the initial propagation.
 """
@@ -24,7 +24,8 @@ end
 Function to schedule a constraint in the propagation queue.
 """
 function schedule(c::AbstractConstraint, scheduled::Bool)::Nothing
-    throw(error("function schedule($c, $scheduled) is not implemented"))
+    c.scheduled = scheduled
+    return nothing
 end
 
 
@@ -34,7 +35,7 @@ end
 Function to check whether the constraint is currently scheduled for propagation
 """
 function isScheduled(c::AbstractConstraint)::Bool
-    throw(error("function isScheduled($c) is not implemented"))    
+    return c.scheduled    
 end
 
 
@@ -44,7 +45,8 @@ end
 Function used to mark a constraint as being active
 """
 function activate(c::AbstractConstraint, active::Bool)::Nothing
-    throw(error("function activate($c, $active) is not implemented"))
+    setValue!(c.active, active)
+    return nothing
 end
 
 
@@ -54,7 +56,7 @@ end
 Function to check if a constraint is currently active or not
 """
 function isActive(c::AbstractConstraint)::Bool
-    throw(error("function isActive($c) is not implemented"))
+    value(c.active)
 end
 
 
@@ -64,5 +66,5 @@ end
 Get a constraint's associated solver
 """
 function solver(c::AbstractConstraint)::AbstractSolver
-    throw(error("function solver($c) is not implemented"))
+    c.solver
 end

@@ -2,7 +2,7 @@
 Contains a set of structures and functions that ought to exist for other things to function properly
 The order of imports is of importance
 """
-module Core
+module InnerCore
 
 ## Import the state
 using ..SolverState
@@ -106,6 +106,7 @@ export onDomainChangeConstraints
 export onBoundsChangeConstraints
 export onBindConstraints
 export makeIntVarArray
+export solver
 
 
 ## Import the Objective definition

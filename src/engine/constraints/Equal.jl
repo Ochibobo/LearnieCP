@@ -22,16 +22,17 @@
     solver::AbstractSolver
     variable::AbstractVariable{T}
     value::T
-    active::State{Bool}
+    active::State
     scheduled::Bool
 
-    function Equal{T}(solver::AbstractSolver, variable::AbstractVariable{T}, value::T) where T
+    function Equal{T}(variable::AbstractVariable{T}, value::T) where T
+        _solver = Variables.solver(variable)
         ## Get the solver's state manager
-        sm = stateManager(solver)
+        sm = stateManager(_solver)
         ## Create an active state instance
         active = makeStateRef(sm, true)
         ## Return a new instance of Equal
-        new(solver, variable, value, active, false)
+        new(_solver, variable, value, active, false)
     end
 end
 

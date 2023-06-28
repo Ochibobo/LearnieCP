@@ -148,7 +148,7 @@ function restoreState(c::Copier{T})::Nothing where T
     backUp = pop!(c.prior)
     
     ## Get the length of the backup
-    sz = length(backUp)
+    sz = length(store(backUp))
 
     ## Set the storeSize which will remove elements that aren't relevant anymore from the store
     setSize!(c.store, sz)

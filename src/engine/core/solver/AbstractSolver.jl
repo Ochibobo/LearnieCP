@@ -44,7 +44,7 @@ end
 
 Function used to get the propagation queue of the constraints posted in the `AbstractSolver`
 """
-function propagationQueue(s::AbstractSolver)::Queue{AbstractConstraint}
+function propagationQueue(s::AbstractSolver)::Deque{AbstractConstraint}
     throw(error("function propagationQueue($s) not implemented"))
 end
 

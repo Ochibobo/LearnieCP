@@ -1,5 +1,5 @@
 """
-Core Engine that exposes functionality
+InnerCore Engine that exposes functionality
 """
 module Engine
 
@@ -83,16 +83,19 @@ export save
 
 
 ## Core elements of the system
-include("core/Core.jl")
-using .Core
-export Core
+include("core/InnerCore.jl")
+using .InnerCore
+export InnerCore
 
 ## The Search
 include("search/SearchMethods.jl")
 using .SearchMethods
 export SearchMethods
 
+
 ## The Constraints
 include("constraints/Constraints.jl")
+using .Constraints
+export Constraints
 
 end

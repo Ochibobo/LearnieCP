@@ -105,7 +105,7 @@ end
 Check if a value `v` of type `T` is n the domain of the `SparseSetDomain{T}` instance
 """
 function Base.in(v::T, sd::SparseSetDomain{T})::Bool where T
-    return in(domain(sd), v)
+    return in(v, domain(sd))
 end
 
 

@@ -55,6 +55,8 @@ function Base.push!(s::StateStack{T}, v::T)::Nothing where T
 
     ## Increase the size variable
     increment(s.size)
+
+    return nothing
 end
 
 

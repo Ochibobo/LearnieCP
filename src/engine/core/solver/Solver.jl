@@ -1,8 +1,10 @@
 module Solver
 
 using ..SolverState
-import ..Core: AbstractConstraint, AbstractSolver, AbstractObjective, AbstractVariable
-import DataStructures: Queue
+import ..InnerCore: AbstractConstraint, AbstractSolver, AbstractObjective, AbstractVariable, post, propagate, schedule, activate
+using ..InnerCore
+
+import DataStructures: Deque, push!, popfirst!
 
 include("AbstractSolver.jl")
 export stateManager

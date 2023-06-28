@@ -1,6 +1,6 @@
 module Variables
 
-import ..Core: AbstractConstraint, AbstractVariable, AbstractDomain, AbstractSolver, stateManager
+import ..InnerCore: AbstractConstraint, AbstractVariable, AbstractDomain, AbstractSolver, stateManager
 using ..Domains
 using ..SolverState
 const dm = Domains
@@ -21,6 +21,7 @@ export whenDomainChange
 export propagateOnBoundChange
 export propagateOnDomainChange
 export propagateOnFix
+export solver
 
 include("IntVar.jl")
 export IntVar
