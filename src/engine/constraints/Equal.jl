@@ -38,16 +38,6 @@ end
 
 
 """
-    solver(c::Equal)::AbstractSolver
-
-Get `Equal` constraint associated solver
-"""
-function solver(c::Equal)::AbstractSolver
-    return c.solver
-end
-
-
-"""
     post(c::Equal{T})::Nothing where T
 
 Register the constraint to the variable
@@ -65,46 +55,3 @@ function propagate(c::Equal{T})::Nothing where T
     _ = c
     nothing
 end
-
-
-"""
-    schedule(c::Equal, scheduled::Bool)::Nothing
-
-Function to schedule `Equal` constraint
-"""
-function schedule(c::Equal, scheduled::Bool)::Nothing
-    c.scheduled = scheduled
-end
-
-
-"""
-    isScheduled(c::Equal)::Bool
-
-Function to check whether `Equal` is currently scheduled for propagation
-"""
-function isScheduled(c::Equal)::Bool
-    return c.scheduled 
-end
-
-
-"""
-    activate(c::Equal, active::Bool)::Nothing
-
-Function used to mark a constraint as being active
-"""
-function activate(c::Equal, active::Bool)::Nothing
-    setValue!(c.active, active)
-end
-
-
-"""
-    isActive(c::Equal)::Bool
-
-Function to check if a constraint is currently active or not
-"""
-function isActive(c::Equal)::Bool
-    value(c.active)
-end
-
-
-

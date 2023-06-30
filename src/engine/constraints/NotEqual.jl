@@ -52,16 +52,6 @@ end
 
 
 """
-    solver(c::NotEqual)::AbstractSolver
-
-Get `NotEqual` constraint associated solver
-"""
-function solver(c::NotEqual)::AbstractSolver
-    return c.solver
-end
-
-
-"""
     post(c::NotEqual)::Nothing
 
 Function to register the `NotEqual` constraint to the variable
@@ -97,46 +87,4 @@ function propagate(c::NotEqual{T})::Nothing where T
     
     return nothing
 end
-
-
-# """
-#     schedule(c::NotEqual, scheduled::Bool)::Nothing
-
-# Function to schedule `NotEqual` constraint
-# """
-# function schedule(c::NotEqual, scheduled::Bool)::Nothing
-#     c.scheduled = scheduled
-#     return 
-# end
-
-
-# """
-#     isScheduled(c::NotEqual)::Bool
-
-# Function to check whether `NotEqual` is currently scheduled for propagation
-# """
-# function isScheduled(c::NotEqual)::Bool
-#     return c.scheduled 
-# end
-
-
-# """
-#     activate(c::NotEqual, active::Bool)::Nothing
-
-# Function used to mark a constraint as being active
-# """
-# function activate(c::NotEqual, active::Bool)::Nothing
-#     setValue!(c.active, active)
-#     return nothing
-# end
-
-
-# """
-#     isActive(c::NotEqual)::Bool
-
-# Function to check if a constraint is currently active or not
-# """
-# function isActive(c::NotEqual)::Bool
-#     value(c.active)
-# end
 
