@@ -8,7 +8,7 @@
 
 Struct that captures the different search statistics during the dfs search
 """
-mutable struct SearchStatistics
+@with_kw mutable struct SearchStatistics
     numberOfSolutions::Integer  = 0
     numberOfFailures::Integer   = 0
     numberOfNodes::Integer      = 0
