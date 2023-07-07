@@ -75,11 +75,11 @@ end
 
 Function used to post a `constraint` from the `Solver`.
 """
-function post(s::LearnieCP, c::AbstractConstraint)::Nothing
+function post(s::LearnieCP, c::AbstractConstraint; enforceFixpoint = true)::Nothing
     ## Post the constraint
     InnerCore.post(c)
     ## Run the fixPoint
-    fixPoint(s)
+    if (enforceFixpoint) fixPoint(s) end
 end
 
 

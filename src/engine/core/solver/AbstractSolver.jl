@@ -24,8 +24,8 @@ end
 
 Function used to post a `constraint` from the `Solver`
 """
-function post(s::AbstractSolver, c::AbstractConstraint)::Nothing
-    throw(error("function post($s, $c) not implemented"))
+function post(s::AbstractSolver, c::AbstractConstraint; enforceFixpoint::Bool)::Nothing
+    throw(error("function post($s, $c; $enforceFixpoint) not implemented"))
 end
 
 
