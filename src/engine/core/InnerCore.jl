@@ -43,6 +43,10 @@ export setObjective
 export setStateManager
 export LearnieCP
 
+## The ConstraintClosure
+include("constraints/ConstraintClosure.jl")
+export ConstraintClosure
+
 ## Import the Domain
 include("domains/Domains.jl")
 using .Domains
