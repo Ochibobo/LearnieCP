@@ -34,7 +34,7 @@ for i in 1:9
         val = init_sol[i, j]
         if val > 0
             ## Mark the variable as being fixed
-            Engine.Solver.post(solver, Engine.Equal{Integer}(board[i, j], val))
+            Engine.Solver.post(solver, Engine.ConstEqual{Integer}(board[i, j], val))
         end
     end
 end
@@ -116,7 +116,7 @@ function branchingSchema()
 
     ## Branching functions
     function left()
-        return Engine.Solver.post(solver, Engine.Equal{Integer}(sudoku_var, s_min))
+        return Engine.Solver.post(solver, Engine.ConstEqual{Integer}(sudoku_var, s_min))
     end
 
     function right()

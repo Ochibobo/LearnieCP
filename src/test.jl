@@ -6,7 +6,7 @@ using .JuliaCP
 solver = Engine.LearnieCP()
 
 ## The size of the board
-n = 5
+n = 4
 
 ## Integer variables representing the queen positions
 q = Engine.makeIntVarArray(solver, n, 0, n - 1)
@@ -48,7 +48,7 @@ function branchingSchema()
 
     ## Where the queen in column q_var is in position min
     function left()
-        Engine.Solver.post(solver, Engine.Equal{Integer}(q_var, v))
+        Engine.Solver.post(solver, Engine.ConstEqual{Integer}(q_var, v))
     end
 
     ## Where queen in column q_var is not in position min

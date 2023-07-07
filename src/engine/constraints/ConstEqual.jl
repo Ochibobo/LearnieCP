@@ -1,12 +1,12 @@
 """
-    mutable struct Equal{T} <: AbstractConstraint
+    mutable struct ConstEqual{T} <: AbstractConstraint
         solver::AbstractSolver
         variable::AbstractVariable{T}
         value::T
         active::State{Bool}
         scheduled::Bool
 
-        function Equal{T}(solver::AbstractSolver, variable::AbstractVariable{T}, value::T) where T
+        function ConstEqual{T}(solver::AbstractSolver, variable::AbstractVariable{T}, value::T) where T
             ## Get the solver's state manager
             sm = stateManager(solver)
             ## Create an active state instance
@@ -18,14 +18,14 @@
 
 `Equal` constraint that makes sure that variable `variable` matches value `v`
 """
-@with_kw mutable struct Equal{T} <: AbstractConstraint
+@with_kw mutable struct ConstEqual{T} <: AbstractConstraint
     solver::AbstractSolver
     variable::AbstractVariable{T}
     value::T
     active::State
     scheduled::Bool
 
-    function Equal{T}(variable::AbstractVariable{T}, value::T) where T
+    function ConstEqual{T}(variable::AbstractVariable{T}, value::T) where T
         _solver = Variables.solver(variable)
         ## Get the solver's state manager
         sm = stateManager(_solver)
@@ -38,20 +38,20 @@ end
 
 
 """
-    post(c::Equal{T})::Nothing where T
+    post(c::ConstEqual{T})::Nothing where T
 
 Register the constraint to the variable
 """
-function post(c::Equal{T})::Nothing where T
+function post(c::ConstEqual{T})::Nothing where T
     fix(c.variable, c.value)
 end
 
 """
-    propagate(c::Equal{T})::Nothing where T
+    propagate(c::ConstEqual{T})::Nothing where T
 
 `Equal` propagation function
 """
-function propagate(c::Equal{T})::Nothing where T
+function propagate(c::ConstEqual{T})::Nothing where T
     _ = c
     nothing
 end

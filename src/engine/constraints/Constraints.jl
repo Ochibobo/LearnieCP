@@ -7,8 +7,8 @@ import ..InnerCore: AbstractConstraint, AbstractSolver, State, AbstractVariable,
             propagateOnDomainChange, solver
 
 
-include("Equal.jl")
-export Equal
+include("ConstEqual.jl")
+export ConstEqual
 export solver
 export post
 export propagate
