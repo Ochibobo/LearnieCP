@@ -82,6 +82,7 @@ export updateBoundsOnRemove
 export removeAll
 export SparseSetDomain
 export domain
+export fillArray
 
 
 ## Import the Variable Definition
@@ -111,6 +112,7 @@ export onBoundsChangeConstraints
 export onBindConstraints
 export makeIntVarArray
 export solver
+export fillArray
 
 
 ## Import the Objective definition
