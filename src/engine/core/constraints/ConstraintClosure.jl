@@ -22,7 +22,7 @@ using Parameters
     scheduled::Bool
     state::State
 
-    function ConstraintClosure(solver::StateManager, fn)
+    function ConstraintClosure(solver::StateManager, fn::Function)
         sm = stateManager(solver)
         state = makeStateRef(sm, true)
 
