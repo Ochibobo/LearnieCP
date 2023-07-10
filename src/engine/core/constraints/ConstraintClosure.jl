@@ -7,7 +7,7 @@ using Parameters
         scheduled::Bool
         state::State
 
-        function ConstraintClosure(sm::StateManager, fn)
+        function ConstraintClosure(sm::AbstractSolver, fn)
             state = makeStateRef(sm, true)
 
             new(sm, fn, false, state)
@@ -22,7 +22,7 @@ using Parameters
     scheduled::Bool
     state::State
 
-    function ConstraintClosure(solver::StateManager, fn::Function)
+    function ConstraintClosure(solver::AbstractSolver, fn::Function)
         sm = stateManager(solver)
         state = makeStateRef(sm, true)
 

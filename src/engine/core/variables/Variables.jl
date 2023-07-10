@@ -1,6 +1,7 @@
 module Variables
 
-import ..InnerCore: AbstractConstraint, AbstractVariable, AbstractDomain, AbstractSolver, stateManager
+import ..InnerCore: AbstractConstraint, AbstractVariable, AbstractDomain, AbstractSolver, stateManager,
+                    ConstraintClosure, post, Solver
 using ..Domains
 using ..SolverState
 const dm = Domains

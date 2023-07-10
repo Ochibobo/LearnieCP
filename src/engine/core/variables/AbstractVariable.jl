@@ -91,32 +91,32 @@ end
 
 
 """
-    whenFix(d::AbstractVariable{T}, prodecure::Function)::Nothing where T
+    whenFix(d::AbstractVariable{T}, procedure::Function)::Nothing where T
 
 `Callback` executed when the domain is fixed
 """
-function whenFix(d::AbstractVariable{T}, prodecure::Function)::Nothing where T
-    throw(error("Variable $(d) does not implement the whenFix($d, $prodecure) function."))
+function whenFix(d::AbstractVariable{T}, procedure::Function)::Nothing where T
+    throw(error("Variable $(d) does not implement the whenFix($d, $procedure) function."))
 end
 
 
 """
-    whenBoundChange(d::AbstractVariable{T}, prodecure::Function)::Nothing where T
+    whenBoundChange(d::AbstractVariable{T}, procedure::Function)::Nothing where T
 
 `Callback` executed when the domain's bounds (min and max) are changed
 """
-function whenBoundChange(d::AbstractVariable{T}, prodecure::Function)::Nothing where T
-    throw(error("Variable $(d) does not implement the whenBoundChange($d, $prodecure) function."))
+function whenBoundChange(d::AbstractVariable{T}, procedure::Function)::Nothing where T
+    throw(error("Variable $(d) does not implement the whenBoundChange($d, $procedure) function."))
 end
 
 
 """
-    whenDomainChange(d::AbstractVariable{T}, prodecure::Function)::Nothing where T
+    whenDomainChange(d::AbstractVariable{T}, procedure::Function)::Nothing where T
 
 `Callback` executed when the domain is changed
 """
-function whenDomainChange(v::AbstractVariable{T}, prodecure::Function)::Nothing where T
-    throw(error("Variable $(v) does not implement the whenDomainChange($v, $prodecure) function."))
+function whenDomainChange(v::AbstractVariable{T}, procedure::Function)::Nothing where T
+    throw(error("Variable $(v) does not implement the whenDomainChange($v, $procedure) function."))
 end
 
 

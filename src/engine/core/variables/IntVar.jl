@@ -226,3 +226,58 @@ function propagateOnFix(iv::IntVar, c::AbstractConstraint)::Nothing
     return nothing
 end
 
+
+"""
+
+
+An instance of `ConstraintClosure` used to create anonymous constraints
+"""
+function constraintClosure(iv::IntVar, fn::Function)::AbstractConstraint
+    _solver = solver(iv)
+    c = ConstraintClosure(_solver, fn)
+    Solver.post(_solver, c, enforceFixpoint = false)
+
+    return c
+end
+
+
+"""
+    whenFix(d::AbstractVariable{T}, procedure::Function)::Nothing where T
+
+`Callback` executed when the domain is fixed
+"""
+function whenFix(iv::IntVar, procedure::Function)::Nothing
+    constraint = constraintClosure(iv, procedure)
+    constraints = onBindConstraints(iv)
+    push!(constraints, constraint)
+
+    return nothing
+end
+
+
+"""
+    whenBoundChange(iv::IntVar, procedure::Function)::Nothing where T
+
+`Callback` executed when the domain's bounds (min and max) are changed
+"""
+function whenBoundChange(iv::IntVar, procedure::Function)::Nothing
+    constraint = constraintClosure(iv, procedure)
+    constraints = onBoundsChangeConstraints(iv)
+    push!(constraints, constraint)
+
+    return nothing
+end
+
+
+"""
+    whenDomainChange(iv::IntVar, procedure::Function)::Nothing where T
+
+`Callback` executed when the domain is changed
+"""
+function whenDomainChange(iv::IntVar, procedure::Function)::Nothing where T
+    constraint = constraintClosure(iv, procedure)
+    constraints = onDomainChangeConstraints(iv)
+    push!(constraints, constraint)
+
+    return nothing
+end
