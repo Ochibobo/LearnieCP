@@ -158,3 +158,13 @@ Function to get a variable's Solver
 function solver(v::AbstractVariable)::AbstractSolver
     throw(error("function solver($v) not implemented"))
 end
+
+
+"""
+    fillArray(v::AbstractVariable{T}, target::Vector{T})::Vector{T} where T
+
+Function to fill the `target` array with values from the variable's domain
+"""
+function fillArray(v::AbstractVariable{T}, target::Vector{T})::Vector{T} where T
+    throw(error("function fillArray($v, $target) not implemented"))
+end

@@ -281,3 +281,15 @@ function whenDomainChange(iv::IntVar, procedure::Function)::Nothing where T
 
     return nothing
 end
+
+
+"""
+    fillArray(iv::IntVar, target::Vector{T})::Vector{T} where T
+
+Function to fill the `target` array with values from the variable's domain
+"""
+function fillArray(iv::IntVar, target::Vector{T})::Vector{T} where T
+    dm.fillArray(domain(iv), target)
+
+    return target
+end
