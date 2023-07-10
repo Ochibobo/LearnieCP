@@ -23,4 +23,7 @@ export NotEqual
 include("ConstNotEqual.jl")
 export ConstNotEqual
 
+include("Equals.jl")
+export Equal
+
 end
