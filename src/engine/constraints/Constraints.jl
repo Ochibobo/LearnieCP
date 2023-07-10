@@ -3,8 +3,8 @@ module Constraints
 using Parameters
 import ..InnerCore: AbstractConstraint, AbstractSolver, State, AbstractVariable,
             post, propagate, stateManager, makeStateRef, Variables, activate, schedule, isScheduled, isActive,
-            setValue!, value, fix, isFixed, propagateOnBoundChange, propagateOnFix,
-            propagateOnDomainChange, solver
+            setValue!, value, fix, isFixed, fillArray, propagateOnBoundChange, propagateOnFix,
+            propagateOnDomainChange, whenBoundChange, whenDomainChange, whenFix, solver
 
 
 include("ConstEqual.jl")
