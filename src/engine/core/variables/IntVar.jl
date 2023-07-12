@@ -274,7 +274,7 @@ end
 
 `Callback` executed when the domain is changed
 """
-function whenDomainChange(iv::IntVar, procedure::Function)::Nothing where T
+function whenDomainChange(iv::IntVar, procedure::Function)::Nothing
     constraint = constraintClosure(iv, procedure)
     constraints = onDomainChangeConstraints(iv)
     push!(constraints, constraint)

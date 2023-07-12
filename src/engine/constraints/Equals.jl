@@ -7,7 +7,7 @@
     scheduled::Bool
     state::State
 
-    function Equal{T}(x::AbstractVariable{T}, y::AbstractVariable{T})
+    function Equal{T}(x::AbstractVariable{T}, y::AbstractVariable{T}) where T
         ## Get the solver instance
         solver = Variables.solver(x)
         ## Create a state manager instance
