@@ -47,9 +47,9 @@ end
 Function to solve the CSP
 """
 function solve(s::DFSearch)::Nothing
-    withNewState(stateManager(s), () -> begin
+    # withNewState(stateManager(s), () -> begin this was a replication of storage, don't know how impactful it was
         dfs(s)
-    end)
+    # end)
 end
 
 
