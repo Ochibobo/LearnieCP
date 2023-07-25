@@ -70,7 +70,7 @@ onDomainChangeConstraints(iv::IntVar)::StateStack{AbstractConstraint} = domainLi
 
 
 """
-    onBoundsChangeConstraints(iv::IntVar)::Stack{AbstractConstraint
+    onBoundsChangeConstraints(iv::IntVar)::Stack{AbstractConstraint}
 
 Get a list of constraints triggered when the bounds of this variable changes
 """
@@ -78,7 +78,7 @@ onBoundsChangeConstraints(iv::IntVar)::StateStack{AbstractConstraint} = domainLi
 
 
 """
-    onBindConstraints(iv::IntVar)::Stack{AbstractConstraint
+    onBindConstraints(iv::IntVar)::Stack{AbstractConstraint}
 
 Get a list of constraints triggered when this variable is bound
 """
@@ -228,7 +228,7 @@ end
 
 
 """
-
+    constraintClosure(iv::IntVar, fn::Function)::AbstractConstraint
 
 An instance of `ConstraintClosure` used to create anonymous constraints
 """
@@ -242,7 +242,7 @@ end
 
 
 """
-    whenFix(d::AbstractVariable{T}, procedure::Function)::Nothing where T
+    whenFix(d::IntVar, procedure::Function)::Nothing where T
 
 `Callback` executed when the domain is fixed
 """
