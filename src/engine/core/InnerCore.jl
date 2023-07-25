@@ -113,6 +113,7 @@ export onBindConstraints
 export makeIntVarArray
 export solver
 export fillArray
+export IntVarOffsetView
 
 
 ## Import the Objective definition

@@ -35,4 +35,8 @@ export onBindConstraints
 include("IntVarArray.jl")
 export makeIntVarArray
 
+include("IntVarOffsetView.jl")
+export IntVarOffsetView
+export offset
+
 end
