@@ -264,7 +264,9 @@ Pass an empty `target` vector
 """
 function fillArray(sd::SparseSetDomain{T}, target::Vector{T})::Nothing where T
     list = collect(domain(sd))
-
+    ## Clear the target vector
+    empty!(target)
+    
     for i in list
         push!(target, i)
     end
