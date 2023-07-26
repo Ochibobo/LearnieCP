@@ -40,4 +40,8 @@ export IntVarOffsetView
 export offset
 export variable
 
+include("IntVarMultView.jl")
+export IntVarMultView
+export coefficient
+
 end

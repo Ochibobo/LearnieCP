@@ -33,7 +33,7 @@ end
 """
     variable(iv::IntVarOffsetView)::IntVar
 
-Function to retrieve the `IntVar` instance of the `IntVarOffsetView` instance
+Function to retrieve the `AbstractVariable{Integer}` instance of the `IntVarOffsetView` instance
 """
 variable(iv::IntVarOffsetView)::AbstractVariable{Integer} = iv.iv
 
@@ -250,14 +250,12 @@ end
 Function to fill the `target` array with values from the variable's domain
 """
 function fillArray(iv::IntVarOffsetView, target::Vector{T})::Vector{T} where T
-    ans = fillArray(variable(iv), target)
-    # @show ans
-    #_target = Vector{T}(undef, size(variable(iv)))
+    fillArray(variable(iv), target)
 
     for i in eachindex(target)
         target[i] += offset(iv)
     end
-    # @show _target
+
     return target
 end
 
