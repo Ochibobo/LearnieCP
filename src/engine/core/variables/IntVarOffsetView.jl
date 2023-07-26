@@ -1,44 +1,28 @@
 using Parameters
 import ..Domains: offset
-"""
-The offset view of an IntVar where:
-y = x + o or y = x - o
-where x is an IntVar and o is an integer.
-"""
 
 """
     @with_kw struct IntVarOffsetView <: AbstractVariable{Integer}
         iv::IntVar
         offset::Integer
-
-        function IntVarOffsetView(iv::IntVar, offset::Integer)
-            if maximum(iv) + offset == typemin(Int) + (offset - 1)
-                throw(OverflowError("Adding $(offset) leads to an overflow error"))
-            end
-
-            if minimum(iv) + offset == typemax(Int) - (offset + 1)
-                throw(OverflowError("Adding $(offset) leads to an overflow error"))
-            end
-    
-            new(iv, offset)
-        end
     end
 
-The `IntVarOffsetView` struct to hold variables that are combined with offsets
+The `IntVarOffsetView` struct to hold variables that are combined with offsets. The offset view of an `IntVar` where
+`y = x + o` or `y = x - o` where `x` is an IntVar and `o` is an integer.
 """
 @with_kw struct IntVarOffsetView <: AbstractVariable{Integer}
-    iv::IntVar
+    iv::AbstractVariable{Integer}
     offset::Integer
 
-    function IntVarOffsetView(iv::IntVar, offset::Integer)
+    function IntVarOffsetView(iv::AbstractVariable{Integer}, offset::Integer)
         ## Assert that adding the offset to the variable's max does not result in an overflow error
-        if maximum(iv) + offset == typemin(Int) + (offset - 1)
-            throw(OverflowError("Adding $(offset) leads to an overflow error"))
+        if maximum(iv) + offset == typemin(Int) + (maximum(iv)  - 1)
+            throw(OverflowError("Adding $(offset) leads to an overflow error. Consider changing your offset value."))
         end
         ## Asset that adding the offset to the variable's minimum value does not result in an overflow
         ## Works then the offset is negative
-        if minimum(iv) + offset == typemax(Int) - (offset + 1)
-            throw(OverflowError("Adding $(offset) leads to an overflow error"))
+        if minimum(iv) + offset == typemax(Int) - (minimum(iv)  + 1)
+            throw(OverflowError("Adding $(offset) leads to an overflow error. Consider changing your offset value."))
         end
 
         new(iv, offset)
@@ -51,7 +35,7 @@ end
 
 Function to retrieve the `IntVar` instance of the `IntVarOffsetView` instance
 """
-variable(iv::IntVarOffsetView)::IntVar = iv.iv
+variable(iv::IntVarOffsetView)::AbstractVariable{Integer} = iv.iv
 
 
 """
@@ -60,6 +44,14 @@ variable(iv::IntVarOffsetView)::IntVar = iv.iv
 Function to return the `offset` of the `IntVarOffsetView` instance
 """
 offset(iv::IntVarOffsetView)::Integer = iv.offset
+
+
+"""
+    domain(iv::IntVarOffsetView)::StateSparseSet{Integer}
+
+Function to return the domain of the `IntVarOffsetView` instance
+"""
+domain(iv::IntVarOffsetView)::SparseSetDomain{Integer} = domain(variable(iv))
 
 
 """
@@ -108,7 +100,7 @@ onBindConstraints(iv::IntVarOffsetView)::StateStack{AbstractConstraint} = domain
 Get the `minimum` value of this variable's domain
 """
 function Base.minimum(iv::IntVarOffsetView)::Integer
-    return dm.minimum(domain(variable(iv))) + offset(iv)
+    return minimum(variable(iv)) + offset(iv)
 end
 
 
@@ -118,7 +110,7 @@ end
 Get the `maximum` value of this variable's domain
 """
 function Base.maximum(iv::IntVarOffsetView)::Integer
-    dm.maximum(domain(variable(iv))) + offset(iv)  
+    maximum(variable(iv)) + offset(iv)  
 end
 
 
@@ -128,7 +120,7 @@ end
 Get the `size` value of this variable's domain
 """
 function Base.size(iv::IntVarOffsetView)::Integer
-    dm.size(domain(variable(iv)))
+    size(variable(iv))
 end
 
 
@@ -138,7 +130,7 @@ end
 Check if this variable's domain is bound
 """
 function isFixed(iv::IntVarOffsetView)::Integer
-    dm.isBound(domain(variable(iv)))
+    isBound(variable(iv))
 end
 
 
@@ -148,7 +140,7 @@ end
 Check if value `v` is in the variable's domain
 """
 function Base.in(v::Integer, iv::IntVarOffsetView)::Bool
-    dm.in(v - offset(iv), domain(variable(iv)))
+    in(v - offset(iv), variable(iv))
 end
 
 
@@ -258,12 +250,37 @@ end
 Function to fill the `target` array with values from the variable's domain
 """
 function fillArray(iv::IntVarOffsetView, target::Vector{T})::Vector{T} where T
-    fillArray(variable(iv), target)
-    _target = Vector{T}(undef, size(variable(iv)))
+    ans = fillArray(variable(iv), target)
+    # @show ans
+    #_target = Vector{T}(undef, size(variable(iv)))
 
     for i in eachindex(target)
-        _target[i] = target[i] + offset(iv)
+        target[i] += offset(iv)
     end
-
-    return _target
+    # @show _target
+    return target
 end
+
+
+"""
+    Base.:+(offset::Integer, iv::AbstractVariable{Integer})
+
+Overriding the `+` symbol to allow for an alternative creation of the `IntVarOffsetView`
+"""
+Base.:+(offset::Integer, iv::AbstractVariable{Integer}) = IntVarOffsetView(iv = iv, offset = offset)
+
+
+"""
+    Base.:+(iv::AbstractVariable{Integer}, offset::Integer)
+
+Overriding the `+` symbol to allow for an alternative creation of the `IntVarOffsetView`
+"""
+Base.:+(iv::AbstractVariable{Integer}, offset::Integer) = IntVarOffsetView(iv = iv, offset = offset)
+
+
+"""
+    Base.:-(iv::AbstractVariable{Integer}, offset::Integer)
+
+Overriding the `-` operator to allow for an alternative creation of the `IntVarOffsetView`. Replaces `offset` with `-offset`
+"""
+Base.:-(iv::AbstractVariable{Integer}, offset::Integer) = IntVarOffsetView(iv = iv, offset = -offset)

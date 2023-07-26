@@ -38,5 +38,6 @@ export makeIntVarArray
 include("IntVarOffsetView.jl")
 export IntVarOffsetView
 export offset
+export variable
 
 end
