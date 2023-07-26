@@ -114,6 +114,7 @@ export makeIntVarArray
 export solver
 export fillArray
 export IntVarOffsetView
+export variable
 
 
 ## Import the Objective definition
