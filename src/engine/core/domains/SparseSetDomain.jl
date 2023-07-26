@@ -178,7 +178,7 @@ Remove all values above `v` from the `SparseSetDomain{T}` instance
 """
 function removeAbove(sd::SparseSetDomain{T}, v::T, l::AbstractDomainListener)::Nothing where T
     ## If the value is above or equal to the maximum value, do nothing and return
-    if maximum(sd) >= v
+    if v >= maximum(sd)
         return nothing
     end
 
@@ -204,7 +204,7 @@ function removeAbove(sd::SparseSetDomain{T}, v::T, l::AbstractDomainListener)::N
         end
     else
         ## If the value v is less than the domain's minimum, remove all elements
-        removeAll(v)
+        removeAll(domain(sd))
         ## Dispatch onEmpty
         onEmpty(l)
     end
@@ -225,7 +225,7 @@ function removeBelow(sd::SparseSetDomain{T}, v::T, l::AbstractDomainListener)::N
     end
 
     ## Check if v is below or equal to the maximum
-    if maximum(sd) <= v
+    if v <= maximum(sd)
         ## Check if the domain is already bounds
         if isBound(sd)
             ## Nothing changes as max = v = min = only available value
@@ -247,7 +247,7 @@ function removeBelow(sd::SparseSetDomain{T}, v::T, l::AbstractDomainListener)::N
         end
     else
         ## If v > max, remove everything
-        removeAll(sd)
+        removeAll(domain(sd))
         ## Dispatch the onEmpty
         onEmpty(l)
     end
