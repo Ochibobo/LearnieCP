@@ -158,7 +158,7 @@ end
 Check if this variable's domain is bound
 """
 function isFixed(iv::IntVarMultView)::Integer
-    isBound(variable(iv))
+    isFixed(variable(iv))
 end
 
 
@@ -243,8 +243,8 @@ end
 
 Function used to propagate constraints when the bounds of the variable changes
 """
-function propagateOnBoundsChange(iv::IntVarMultView, c::AbstractConstraint)::Nothing
-    propagateOnBoundsChange(variable(iv), c)
+function propagateOnBoundChange(iv::IntVarMultView, c::AbstractConstraint)::Nothing
+    propagateOnBoundChange(variable(iv), c)
 end
 
 
