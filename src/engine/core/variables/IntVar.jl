@@ -206,7 +206,7 @@ end
 
 Function used to propagate constraints when the bounds of the variable changes
 """
-function propagateOnBoundsChange(iv::IntVar, c::AbstractConstraint)::Nothing
+function propagateOnBoundChange(iv::IntVar, c::AbstractConstraint)::Nothing
     constraints = onBoundsChangeConstraints(iv)    
     push!(constraints, c)
 
