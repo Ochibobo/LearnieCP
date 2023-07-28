@@ -16,17 +16,17 @@ using Parameters
 
 `ConstraintClosure` used to store anonymous functions to be executed upon propagation
 """
-@with_kw struct ConstraintClosure <: AbstractConstraint
+@with_kw mutable struct ConstraintClosure <: AbstractConstraint
     solver::AbstractSolver
     filteringFunction::Function
     scheduled::Bool
-    state::State
+    active::State
 
     function ConstraintClosure(solver::AbstractSolver, fn::Function)
         sm = stateManager(solver)
-        state = makeStateRef(sm, true)
+        active = makeStateRef(sm, true)
 
-        new(solver, fn, false, state)
+        new(solver, fn, false, active)
     end
 end
 
