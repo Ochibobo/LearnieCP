@@ -304,7 +304,8 @@ Function to `remove` and element from the `values` vector
 """
 function remove(ss::StateSparseSet{T}, v::T)::Nothing where T
     if !(in(v, ss))
-        throw(error("value $v not in the values set of the StateSparseSet")) ## v may have already been removed
+        return nothing
+        #throw(error("value $v not in the values set of the StateSparseSet")) ## v may have already been removed
     end
 
     v -= offset(ss)
@@ -332,7 +333,8 @@ Remove all elements from the `values` vector but `v`
 function removeAllBut(ss::StateSparseSet{T}, v::T)::Nothing where T
     ## Confirm that value v is present
     if !in(v, ss)
-        throw(error("Value $v not present in the values vector of the StateSparseSet"))
+        return
+        #throw(error("Value $v not present in the values vector of the StateSparseSet"))
     end
 
     v -= offset(ss)
