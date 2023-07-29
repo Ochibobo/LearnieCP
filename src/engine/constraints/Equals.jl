@@ -1,4 +1,24 @@
 """
+    @with_kw mutable struct Equal{T} <: AbstractConstraint
+        solver::AbstractSolver
+        x::AbstractVariable{T}
+        y::AbstractVariable{T}
+        scheduled::Bool
+        state::State
+
+        function Equal{T}(x::AbstractVariable{T}, y::AbstractVariable{T}) where T
+            ## Get the solver instance
+            solver = Variables.solver(x)
+            ## Create a state manager instance
+            sm = stateManager(solver)
+            ## Create a state instance
+            state = makeStateRef(sm, true)
+            
+            new(solver, x, y, false, state)
+        end
+    end
+
+`Equal` constraint between variables `x` and `y`
 """
 @with_kw mutable struct Equal{T} <: AbstractConstraint
     solver::AbstractSolver
@@ -27,9 +47,9 @@ Function to post the `Equal` constraint
 """
 function post(c::Equal)::Nothing
     if isFixed(c.x)
-        Variables.fix(c.y, Variables.minimum(c.x))
+        Variables.fix(c.y, minimum(c.x))
     elseif isFixed(c.y)
-        Variables.fix(c.x, Variables.minimum(c.y))
+        Variables.fix(c.x, minimum(c.y))
     else
         ## Ensure the bounds intersect
         boundsIntersect(c.x, c.y)
@@ -60,8 +80,8 @@ Ascertain that the bounds of variables `x` and `y` are the same/intersect
 """
 function boundsIntersect(x::AbstractVariable{T}, y::AbstractVariable{T})::Nothing where T
     ## Get the maximum and minimim of both variables
-    maxMinumimValue = max(Variables.minimum(x), Variables.minimum(y)) ## The greatest minimum
-    minMaximumValue = min(Variables.maximum(x), Variables.maximum(y)) ## The smallest maximum
+    maxMinumimValue = max(minimum(x), minimum(y)) ## The greatest minimum
+    minMaximumValue = min(maximum(x), maximum(y)) ## The smallest maximum
 
     ## Align the bounds
     Variables.removeAbove(x, minMaximumValue)
