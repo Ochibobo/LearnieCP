@@ -183,7 +183,7 @@ function removeAbove(sd::SparseSetDomain{T}, v::T, l::AbstractDomainListener)::N
     end
 
     ## If the value is above the minimum value
-    if minimum(sd) <= v
+    if v >= minimum(sd)
         ## Check if isBound
         if isBound(sd)
             ## Nothing really changes as min = v = max = only available value
