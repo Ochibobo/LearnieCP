@@ -9,4 +9,10 @@
   - These are considered as performance APIs.
 - Schedule constraints only when they are active and not already on the queue.
 - To `propagate` a constraint, set the scheduled flag to false and only propagate when the constraint is currently acitve.
+
+
+### Sum constraint
+- Very interesting when it comes to bound consistency
+- You'd want all variables to sum to 0
+- May require the rearrangement of the way varaibles are keyed in
 - 
