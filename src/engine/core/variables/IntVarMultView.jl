@@ -190,7 +190,7 @@ end
 Function to assign a value to a variable. Notice that this value oughts to be present in the variable's domain
 """
 function fix(iv::IntVarMultView, v::Integer)::Nothing
-    if(v % coefficient(iv))
+    if(v % coefficient(iv) == 0)
         fix(variable(iv), v ÷ coefficient(iv))
     else
         throw(DomainError("$v not divisible by the coeffecient"))
@@ -204,10 +204,18 @@ end
 Function to remove all values above a certain value in the variable's domain
 """
 function removeAbove(iv::IntVarMultView, v::Integer)::Nothing
+    ## Handle negative coefficients
+    if coefficient(iv) < 0
+        removeBelow(variable(iv), Int(ceil(v / coefficient(iv))))
+        return nothing
+    end
+
     ## Handle -ve v
     if v < 0
         removeAbove(variable(iv), v ÷ coefficient(iv))
+        return nothing
     end
+
     ## Remove all values above the ceiling of the division
     removeAbove(variable(iv), Int(floor(v / coefficient(iv))))
 end
@@ -219,6 +227,12 @@ end
 Function to remove all values below a certain value in the variable's domain
 """
 function removeBelow(iv::IntVarMultView, v::Integer)::Nothing
+    ## Handle negative co-efficients
+    if coefficient(iv) < 0
+        removeAbove(variable(iv), Int(floor(v / coefficient(iv))))
+        return nothing
+    end
+
     ## Handle -ve v
     if v < 0
         removeBelow(variable(iv), v ÷ coefficient(iv))
