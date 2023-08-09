@@ -131,7 +131,7 @@ end
 search = Engine.DFSearch(Engine.Solver.stateManager(solver), branchingSchema)
 
 ## Function to dispaly the solution
-Engine.setOnSolution(search, () -> begin
+Engine.addOnSolution(search, () -> begin
     println("Solution found")
     for i in 1:n
         for j in 1:n

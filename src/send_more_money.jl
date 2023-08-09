@@ -104,7 +104,7 @@ end
 search = Engine.DFSearch(Engine.Solver.stateManager(solver), branchingSchema)
 
 ## Print out the solution once found
-Engine.setOnSolution(search, () -> begin
+Engine.addOnSolution(search, () -> begin
     println("Solution found")
 
     S = Engine.minimum(vars[1])

@@ -72,7 +72,7 @@ search = Engine.DFSearch(Engine.Solver.stateManager(solver), branchingSchema)
 
 solutions = []
 ## Print out the solution once found
-Engine.setOnSolution(search, () -> begin
+Engine.addOnSolution(search, () -> begin
     push!(solutions, [Engine.minimum(A), Engine.minimum(B), Engine.minimum(C), Engine.minimum(D)]);
     return nothing
   end

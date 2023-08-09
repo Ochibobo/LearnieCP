@@ -65,7 +65,7 @@ end
 search = Engine.DFSearch(Engine.Solver.stateManager(solver), branchingSchema)
 
 ## Function to be executed on solution
-Engine.setOnSolution(search, () -> begin
+Engine.addOnSolution(search, () -> begin
     println(repeat('*', 15))
     for i in eachindex(q)
         println("i = $i, v = $(Engine.minimum(q[i]))")
