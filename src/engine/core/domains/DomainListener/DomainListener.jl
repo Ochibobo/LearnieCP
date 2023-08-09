@@ -45,7 +45,7 @@ solver(dl::DomainListener)::AbstractSolver = dl.solver
 Function used to schedule all `constraints` present in a Stack of constraints
 """
 function scheduleAll(s::AbstractSolver, cs::StateStack{AbstractConstraint})::Nothing
-    for c in stack(cs)
+    for c in SolverState.stack(cs)
         Solver.schedule(s, c)
     end
 
