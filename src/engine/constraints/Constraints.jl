@@ -1,12 +1,11 @@
 module Constraints
 
 using Parameters
-import ..InnerCore: AbstractConstraint, AbstractSolver, State, AbstractVariable,
+import ..InnerCore: AbstractConstraint, AbstractSolver, State, AbstractVariable, Solver,
             post, propagate, stateManager, makeStateRef, Variables, activate, schedule, isScheduled, isActive,
-            IntVarOffsetView, InVarMultView,
+            IntVarOffsetView, IntVarMultView, makeStateInt, StateInt, decrement,
             setValue!, value, fix, isFixed, fillArray, propagateOnBoundChange, propagateOnFix,
             propagateOnDomainChange, whenBoundChange, whenDomainChange, whenFix, solver
-
 
 include("ConstEqual.jl")
 export ConstEqual
@@ -29,5 +28,10 @@ export Equal
 
 include("Sum.jl")
 export Sum
+export summation
+
+include("Element2D.jl")
+export Element2D
+export element2D
 
 end

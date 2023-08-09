@@ -15,4 +15,19 @@
 - Very interesting when it comes to bound consistency
 - You'd want all variables to sum to 0
 - May require the rearrangement of the way varaibles are keyed in
+
+
+### Element Constraint
+- A family of constraints that is used to index an array with variables.
+- An array of integers in this case.
+- Can be `1D` or `2D`.
+```julia
+Element2D(T::Integer[][], x::IntVar, y::IntVar, z::IntVar)
+```
+- Works on putting no holes in the domain of `z` because `z` participates in the __sum__ constraint that uses bounds consistency.
+- `T` is indexed by `x` and `y`.
+- `T[x][y] = z`.
+- This constraint achieves a hybrid consistency - a mix of `domain` and `bounds` consistency.
+#### Quadratic Assignment Problem
+- The decision variables are of size `n` showing where to place facility `i` in order to minimize the total overall cost.
 - 
