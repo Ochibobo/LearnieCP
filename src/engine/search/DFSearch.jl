@@ -4,10 +4,10 @@ DFS Search of the constraint solver
 @with_kw mutable struct DFSearch
     sm::StateManager
     branchingSchema
-    onSolution
+    onSolutionListeners::Vector{Function}
 
     function DFSearch(sm::StateManager, branchingSchema)
-        new(sm, branchingSchema, begin end)
+        new(sm, branchingSchema, Vector{Function}())
     end
 end
 
@@ -17,8 +17,10 @@ end
 
 Function to set the function that will be called when a solution is found
 """
-function setOnSolution(s::DFSearch, onSolution::Function)
-    s.onSolution = onSolution
+function addOnSolution(s::DFSearch, onSolution::Function)::Nothing
+    push!(s.onSolutionListeners, onSolution)
+
+    return nothing
 end
 
 """
@@ -37,7 +39,11 @@ end
 Function to be called to print the solution to standard output. 
 """
 function notifySolution(s::DFSearch)::Nothing
-    s.onSolution()
+    for f in s.onSolutionListeners
+        f()
+    end
+
+    return nothing
 end
 
 
@@ -72,10 +78,24 @@ function dfs(s::DFSearch)::Nothing
                     ## Recursively call the DFS
                     dfs(s)
                 catch e
-                    println("Failure in search node with error $e")
+                    ## println("Failure in search node with error $e")
                     # throw(e)
                 end
             end)
         end
     end
+end
+
+
+"""
+    optimize(objective::AbstractObjective, s::DFSearch)::Nothing
+
+Function to optimize the results
+"""
+function optimize(objective::AbstractObjective, s::DFSearch)::Nothing
+    addOnSolution(s, () -> tighten(objective))
+    ## Run the dfs/solve
+    dfs(s)
+
+    return nothing
 end

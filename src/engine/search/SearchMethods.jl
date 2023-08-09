@@ -4,7 +4,7 @@ Module that handles the search functions
 module SearchMethods
 
 using Parameters
-using ..Engine: StateManager, withNewState
+using ..Engine: StateManager, withNewState, AbstractObjective, tighten
 
 include("SearchStatistics.jl")
 export SearchStatistics
@@ -19,10 +19,11 @@ export isCompleted
 
 include("DFSearch.jl")
 export DFSearch
-export setOnSolution
+export addOnSolution
 export stateManager
 export notifySolution
 export solve
 export dfs
+export optimize
 
 end
