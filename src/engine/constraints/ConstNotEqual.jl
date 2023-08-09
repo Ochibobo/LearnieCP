@@ -6,7 +6,7 @@ NotEqual constraint for constants
     x::AbstractVariable{T}
     v::T
     active::State
-    isScheduled::Bool
+    scheduled::Bool
 
     function ConstNotEqual{T}(x::AbstractVariable{T}, v::T) where T
         _solver = Variables.solver(x)
