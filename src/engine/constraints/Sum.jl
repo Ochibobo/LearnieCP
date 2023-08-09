@@ -118,9 +118,9 @@
     end
 
     ## Used to create a Sum constraint using a variable number of arguments
-    function Sum{T}(variables::Vararg{AbstractVariable{T}}) where T
-        Sum{T}(collect(variables))
-    end
+    # function Sum{T}(variables::Vararg{AbstractVariable{T}}) where T
+    #     Sum{T}(collect(variables))
+    # end
 end
 
 
@@ -197,4 +197,28 @@ function propagate(c::Sum)::Nothing
     end
 
     return nothing
+end
+
+
+"""
+    sum(x::Vector{AbstractVariable{T}})::AbstractVariable{T} where T <: Integer
+
+Helper function for the `Sum` constraint to return a variable
+"""
+function summation(x::Vector{AbstractVariable{T}})::AbstractVariable{T} where T <: Integer
+    sumMin = 0
+    sumMax = 0
+
+    for v in x
+        sumMin += minimum(v)
+        sumMax += maximum(v)
+    end
+
+    solver = Variables.solver(x[1])
+    ## The variable to hold the sum results
+    s = Variables.IntVar(solver, sumMin, sumMax)
+    ## Perform the sum constraint
+    Solver.post(solver, Sum{T}(x, s))
+
+    return s
 end
