@@ -331,7 +331,7 @@ Base.:-(iv::AbstractVariable{Integer}) = IntVarMultView(iv = iv, coefficient = -
 
 Overriding the `*` symbol to allow for an alternative creation of the `IntVarMultView` based on multiplication
 """
-Base.:*(iv::AbstractVariable{Integer}, coefficient::Integer) = IntVarMultView(iv = iv, coefficient = coefficient)
+Base.:*(iv::AbstractVariable{Integer}, coefficient::Integer) = coefficient == 0 ? IntVar(solver(iv), 0, 0) : IntVarMultView(iv = iv, coefficient = coefficient)
 
 
 """
@@ -339,6 +339,6 @@ Base.:*(iv::AbstractVariable{Integer}, coefficient::Integer) = IntVarMultView(iv
 
 Overriding the `*` symbol to allow for an alternative creation of the `IntVarMultView` based on multiplication
 """
-Base.:*(coefficient::Integer, iv::AbstractVariable{Integer}) = IntVarMultView(iv = iv, coefficient = coefficient)
+Base.:*(coefficient::Integer, iv::AbstractVariable{Integer}) = coefficient == 0 ? IntVar(solver(iv), 0, 0) : IntVarMultView(iv = iv, coefficient = coefficient)
 
 
