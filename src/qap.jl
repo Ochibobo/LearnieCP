@@ -124,7 +124,8 @@ using Plots
 ## Plot the progress of the objective value updates
 x = collect(1:length(objective_update_progress))
 
-plot(x, objective_update_progress, label ="objective_progress",
+plot(x, objective_update_progress, 
+    label ="objective_progress",
     xlabel = "completed solution timestep",
     ylabel = "objective value"
 )
