@@ -122,5 +122,7 @@ export coefficient
 ## Import the Objective definition
 include("objective/Objective.jl")
 export Minimize
+export tighten
+export objectiveValue
 
 end
