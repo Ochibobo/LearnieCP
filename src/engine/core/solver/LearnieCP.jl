@@ -1,10 +1,6 @@
 using Parameters
 
 """
-Basic Solver implementation
-"""
-
-"""
     mutable struct LearnieCP <: AbstractSolver
         propagationQueue::Queue{AbstractConstraint}
         sm::StateManager
@@ -32,20 +28,21 @@ mutable struct LearnieCP <: AbstractSolver
     propagationQueue::Deque{AbstractConstraint}
     sm::StateManager
     objective::Union{AbstractObjective, Nothing}
+    fixPointListeners::Vector{Function}
 
     ## Initialize the CP Solver
     function LearnieCP(sm::StateManager, objective::AbstractObjective)
-        new(Deque{AbstractConstraint}(), sm, objective)
+        new(Deque{AbstractConstraint}(), sm, objective, Vector{Function}())
     end
 
     ## Initialize the solver without an objective
     function LearnieCP(sm::StateManager)
-        new(Deque{AbstractConstraint}(), sm, nothing)
+        new(Deque{AbstractConstraint}(), sm, nothing, Vector{Function}())
     end
 
     ## Initialize without a parameter
     function LearnieCP()
-        new(Deque{AbstractConstraint}(), Trailer{Integer}(), nothing)
+        new(Deque{AbstractConstraint}(), Trailer{Integer}(), nothing, Vector{Function}())
     end
 end
 
@@ -136,6 +133,8 @@ Function used to repeatedly perform the propagation
 """
 function fixPoint(s::LearnieCP)::Nothing
     try
+        ## Execute the functions to be executed onFixPoint
+        notifyOnFixPoint(s)
         ## Propagate the available scheduled constraints
         while(!isempty(propagationQueue(s)))
             cs = popfirst!(propagationQueue(s))
@@ -160,8 +159,23 @@ end
 Procedure called each time the `fixPoint` is executed
 """
 function onFixPoint(s::LearnieCP, procedure::Function)::Nothing
-    _ = s
-    procedure()
+    push!(s.fixPointListeners, procedure)
+
+    return nothing
+end
+
+
+"""
+    notifyOnFixPoint(s::LearnieCP)::Nothing
+
+Function to execute when the solver executes the fixpoint algorithm
+"""
+function notifyOnFixPoint(s::LearnieCP)::Nothing
+    for f in s.fixPointListeners
+        f() ## Execute the appropriate function onFixPoint
+    end
+
+    return nothing
 end
 
 
@@ -171,7 +185,9 @@ end
 Function to set the solver's objective. The solver can only have one objective
 """
 function setObjective(s::LearnieCP, o::AbstractObjective)::Nothing
-    s.objective = o   
+    s.objective = o
+
+    return nothing
 end
 
 

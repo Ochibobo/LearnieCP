@@ -22,5 +22,6 @@ export setStateManager
 
 include("LearnieCP.jl")
 export LearnieCP
+export notifyOnFixPoint
 
 end
