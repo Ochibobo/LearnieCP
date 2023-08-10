@@ -9,6 +9,134 @@ This is a very very high level view of the components that make up the `Engine`.
 
 ![JuliaCP Components Graph](assets/OverviewArchitectire.png)
 
+This work will be accompanies with an online book describing everything in it. 
+
+The current implementation includes:
+
+#### The Core
+- [x] Domains
+  - [x] AbstractDOmain functions
+  - [x] Domain Listener implementation
+  - [x] StateBitSet
+  - [x] StateSparseSet
+  - [x] SparseSetDomain
+
+Here's an overview of the domain representaion:
+
+![Domain Components Representation](assets/DomainRepresentaion.png)
+
+- [x] Variables
+  - [x] AbstractVariable functions
+  - [x] IntVar implementation
+  - [x] IntVarArray implementation
+  - [x] Variable views:
+    - [x] IntVarMultView
+    - [x] IntVarOffsetView
+- [x] Constraint shell definition
+  - [x] AbstractConstraint functions
+  - [x] ConstraintClosure
+- [x] A set of shared interfaces
+  - [x] AbstractConstraint
+  - [x] AbstractDomain{T}
+  - [x] AbstractDomainListener
+  - [x] AbstractVariable{T}
+  - [x] AbstractSolver
+  - [x] AbstractObjective
+- [x] Objectives
+  - [x] Minimize
+- [x] Solver
+  - [x] LearnieCP __the core solver__
+- [x] InnerCore - module that export the core functions & objects
+
+
+#### Exceptions
+- [x] AbstractSolverException
+  - [x] InconsistencyException
+  - [x] NotImplementedException
+  - [x] EmptyBackUpException
+
+- Exceptions are still experimental. The aim is to put them in distinct categories & sub-categories that will be handled in precise ways by the solver while also providing exact messages, where necessary, to the user.
+
+
+#### Search
+- [x] DFSearch
+- [ ] SearchStatistics
+
+#### Constraints
+- [x] ConstNotEqual
+- [x] ConstEqual
+- [x] NotEqual
+- [x] Equal
+- [x] Global Constraints
+  - [x] Sum
+  - [x] Element2D
+
+#### State
+- [x] BackUp representation
+- [x] StateManagers
+  - [x] AbstractStateManager
+    - [x] Copier
+    - [x] Trailer
+- [x] AbstractState
+  - [x] Copy
+  - [x] Trail
+- [x] StateEntry (used as entries into the backup store)
+- [x] StateStack (for constraints in the domain listener)
+- [x] StateInt
+
+A sample representation of the _copier state manager_.
+
+![Copier State Manager](assets/CopierStateManagerRepresentation.png)
+
+
+
+#### Examples
+- [x] backtracking
+  - [x] NQueens
+
+#### Other examples using learnie CP
+- [x] SEND + MORE = MONEY
+  - [x] Oughts to change based on the changes to the _sum_ constraint interface
+- [x] Sudoku
+- [x] Sum Test (testing the sum constraint)
+- [x] NQueens
+- [x] Quadratic Assignment Problem
+
+</br>
+
+Here's a small implementation of the _NQueens_ problem implementation in __LearnieCP__.
+
+![NQueens LearnieCP](assets/nqueens_crop.png)
+
+
+Some of these examples are accompanied by plots, especially the ones that have an objective value to be minimized. All these plots will be included in the book. A sample plot can be seen here:
+
+![QAP Objective Value Progress](assets/ObjectiveValueProgressPlot.png)
+
+---
+### RoadMap
+- [ ] Constraints 
+  - [ ] Global Constraints
+    - [ ] Table Constraint
+    - [ ] AllDifferent Constraint
+    - [ ] Element1D
+    - [ ] Element Constraint on Variable Arrays
+    - [ ] Circuit Constraint
+  - [ ] More localized constraints
+- [ ] Branching Schema
+  - [ ] Deterministically
+  - [ ] Using _ML_
+- [ ] SearchStatistics
+- [ ] Search Heuristics
+  - [ ] Simulated Annaeling
+  - [ ] Random Search
+  - [ ] Tabu Search
+- [ ] Refined Interface
+- [ ] More examples
+  - [ ] TSP
+  - [ ] VRP
+- [ ] A Book on this approach
+- [ ] Comparison with JuMP solvers.
 
 ---
 > Contributions are welcome.
