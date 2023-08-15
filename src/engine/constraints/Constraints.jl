@@ -34,4 +34,8 @@ include("Element2D.jl")
 export Element2D
 export element2D
 
+include("Element1D.jl")
+export Element1D
+export element1D
+
 end
