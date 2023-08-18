@@ -132,11 +132,19 @@ function element1D(array::Vector{T}, y::AbstractVariable{T})::AbstractVariable{T
         end
     end
 
-    zMin = minimum(keys(freqMap))
-    zMax = maximum(keys(freqMap))
+    freq_keys = keys(freqMap)
+    zMin = minimum(freq_keys)
+    zMax = maximum(freq_keys)
 
     ## Create the variable `z`
     z = Variables.IntVar(Variables.solver(y), zMin, zMax)
+
+    ## Remove elements not present in z's domain that have been introduced by the min -> max range
+    ## The domain of z may actually contain holes.
+    ## For example, the domain of z = [10, 20, 15, 30]
+    for entry in zMin:zMax
+        !in(entry, freq_keys) && Variables.remove(z, entry)
+    end
 
     ## Post the constraint
     Solver.post(Element1D{T}(array, y, z))
