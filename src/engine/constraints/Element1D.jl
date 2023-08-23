@@ -101,8 +101,6 @@ function propagate(c::Element1D)::Nothing
         push!(supports, c.array[v])
     end
 
-    @show supports
-
     ## Remove the variables from D(z) whose support is not present
     ## Collect values in D(z)
     zVars = Vector{Integer}()
@@ -138,6 +136,7 @@ function element1D(array::Vector{T}, y::AbstractVariable{T})::AbstractVariable{T
 
     ## Create the variable `z`
     z = Variables.IntVar(Variables.solver(y), zMin, zMax)
+    
 
     ## Remove elements not present in z's domain that have been introduced by the min -> max range
     ## The domain of z may actually contain holes.
