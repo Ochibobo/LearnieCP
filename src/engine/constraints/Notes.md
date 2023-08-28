@@ -30,4 +30,20 @@ Element2D(T::Integer[][], x::IntVar, y::IntVar, z::IntVar)
 - This constraint achieves a hybrid consistency - a mix of `domain` and `bounds` consistency.
 #### Quadratic Assignment Problem
 - The decision variables are of size `n` showing where to place facility `i` in order to minimize the total overall cost.
+
+
+#### Element1DVar
+- Domain Consistency
+- Relaxed Domain Consistency
+  - Assume Range domains for D(z) & All D(T[i])
+
+### Stable Matching
+- A feasibility problem
+- The domain for each student variable is the set of companies and the domain for all companies is a set of students
+- Enforce reciprocity in the student - company association
+  - Index an array of variables with a variable
+- y is the guiding looping factor
+- Uses:
+  - Element Constraint
+  - Logical Combination of constraints with reification
 - 

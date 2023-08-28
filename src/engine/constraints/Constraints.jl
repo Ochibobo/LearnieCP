@@ -3,7 +3,7 @@ module Constraints
 using Parameters
 import ..InnerCore: AbstractConstraint, AbstractSolver, State, AbstractVariable, Solver,
             post, propagate, stateManager, makeStateRef, Variables, activate, schedule, isScheduled, isActive,
-            IntVarOffsetView, IntVarMultView, makeStateInt, StateInt, decrement,
+            IntVarOffsetView, IntVarMultView, makeStateInt, StateInt, decrement, BoolVar,
             setValue!, value, fix, isFixed, fillArray, propagateOnBoundChange, propagateOnFix,
             propagateOnDomainChange, whenBoundChange, whenDomainChange, whenFix, solver
 
@@ -37,5 +37,9 @@ export element2D
 include("Element1D.jl")
 export Element1D
 export element1D
+
+include("Element1DVar.jl")
+export Element1DVar
+export element1DVar
 
 end
