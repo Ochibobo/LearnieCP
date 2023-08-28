@@ -117,6 +117,10 @@ export IntVarOffsetView
 export variable
 export IntVarMultView
 export coefficient
+export BoolVar
+export isTrue
+export isFalse
+export makeIntVarWithSparseDomain
 
 
 ## Import the Objective definition
