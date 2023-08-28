@@ -32,6 +32,11 @@ export onDomainChangeConstraints
 export onBoundsChangeConstraints
 export onBindConstraints
 
+include("BoolVar.jl")
+export BoolVar
+export isTrue
+export IsFalse
+
 include("IntVarArray.jl")
 export makeIntVarArray
 
@@ -43,5 +48,8 @@ export variable
 include("IntVarMultView.jl")
 export IntVarMultView
 export coefficient
+
+include("IntVarSparseDomain.jl")
+export makeIntVarWithSparseDomain
 
 end
