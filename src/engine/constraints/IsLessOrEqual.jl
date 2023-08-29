@@ -31,7 +31,7 @@
     active::State
     isScheduled::Bool
 
-    function IsLessOrEqual{T}(b::BoolVar, iv::AbstractVariable{T}, v::T)
+    function IsLessOrEqual{T}(b::BoolVar, iv::AbstractVariable{T}, v::T) where T
         ## Get the solver instance
         solver = Variables.solver(b)
         ## Retrieve the state manager
@@ -80,4 +80,50 @@ function post(c::IsLessOrEqual)::Nothing
     end
 
     return nothing
+end
+
+
+
+"""
+    IsLessOrEqual(iv::AbstractVariable{T}, c::T)::BoolVar where T
+
+Function to return a `BoolVar` after applying the `IsLessOrEqual` constraint to `iv` & `v`
+"""
+function IsLessOrEqual(iv::AbstractVariable{T}, v::T)::BoolVar where T
+    solver = Variables.solver(iv)
+    b = BoolVar(solver)
+    ## Post the IsLessOrEqual constraint
+    Solver.post(solver, IsLessOrEqual{T}(b, iv, v))
+    ## Return the BoolVar
+    return b
+end
+
+
+"""
+    isLess(iv::AbstractVariable{T}, v::T)::BoolVar where T
+
+Function to return a `BoolVar` that indicates if `iv` < `v`
+"""
+function isLess(iv::AbstractVariable{T}, v::T)::BoolVar where T
+    return IsLessOrEqual(iv, v - 1) ## Assumes type T implements `-`
+end
+
+
+"""
+    isGreaterOrEqual(iv::AbstractVariable{T}, v::T)::BoolVar where T
+
+Function to return a `BoolVar` that indicates if `iv` >= `v`
+"""
+function isGreaterOrEqual(iv::AbstractVariable{T}, v::T)::BoolVar where T
+    return IsLessOrEqual(-iv, -v)
+end
+
+
+"""
+    isGreater(iv::AbstractVariable{T}, v::T)::BoolVar where T
+
+Function to return a `BoolVar` that indicates if `iv` > `v`
+"""
+function isGreater(iv::AbstractVariable{T}, v::T)::BoolVar where T
+    return isGreaterOrEqual(iv, v + 1)
 end
