@@ -8,16 +8,27 @@ import Lazy: @forward
         function BoolVar(variable::IntVar)
             new(variable)
         end
+
+        function BoolVar(solver::AbstractSolver)
+            binaryVar = IntVar(solver, 0, 1)
+            new(binaryVar)
+        end
     end
 
 `BoolVar` is an implementation of a boolean variable
 """
 @with_kw struct BoolVar <: AbstractVariable{Integer}
-   binaryVar::IntVar
+    binaryVar::AbstractVariable{Integer}
 
-   function BoolVar(variable::IntVar)
+    function BoolVar(variable::AbstractVariable{Integer})
         new(variable)
-   end
+    end
+
+    ## Can create a Boolean Variable directly from the solver
+    function BoolVar(solver::AbstractSolver)
+        binaryVar = IntVar(solver, 0, 1)
+        new(binaryVar)
+    end
 end
 
 
@@ -81,6 +92,25 @@ function whenFix(b::BoolVar, procedure::Function)::Nothing
 
     return nothing
 end
+
+## TODO: consider type casting to BoolVar
+"""
+    not(b::BoolVar)::AbstractVariable{Integer}
+
+Function used to implement `not` of a boolean variable.
+"""
+function not(b::BoolVar)::BoolVar
+    ## Cast to BoolVar as BoolVar applying subsequent "nots" should only work on BoolVars and not all AbstractVariable Integers
+    return BoolVar(1 - b)
+end
+
+
+"""
+    Base.:!(b::BoolVar)
+
+Function used to apply a `not` to a `BoolVar`. Converts BoolVar `b` to `!b`
+"""
+Base.:!(b::BoolVar) = not(b)
 
 
 ## Forward functions from IntVar to BoolVar
