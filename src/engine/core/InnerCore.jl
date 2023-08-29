@@ -121,6 +121,7 @@ export BoolVar
 export isTrue
 export isFalse
 export makeIntVarWithSparseDomain
+export not
 
 
 ## Import the Objective definition
