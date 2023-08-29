@@ -104,7 +104,7 @@ end
 
 Function to return a `BoolVar` that indicates if `iv` < `v`
 """
-function isLess(iv::AbstractVariable{T}, v::T)::BoolVar where T
+function IsLess(iv::AbstractVariable{T}, v::T)::BoolVar where T
     return IsLessOrEqual(iv, v - 1) ## Assumes type T implements `-`
 end
 
@@ -114,7 +114,7 @@ end
 
 Function to return a `BoolVar` that indicates if `iv` >= `v`
 """
-function isGreaterOrEqual(iv::AbstractVariable{T}, v::T)::BoolVar where T
+function IsGreaterOrEqual(iv::AbstractVariable{T}, v::T)::BoolVar where T
     return IsLessOrEqual(-iv, -v)
 end
 
@@ -124,6 +124,6 @@ end
 
 Function to return a `BoolVar` that indicates if `iv` > `v`
 """
-function isGreater(iv::AbstractVariable{T}, v::T)::BoolVar where T
+function IsGreater(iv::AbstractVariable{T}, v::T)::BoolVar where T
     return isGreaterOrEqual(iv, v + 1)
 end
