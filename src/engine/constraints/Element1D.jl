@@ -1,5 +1,3 @@
-## Element1D Constraint
-
 """
     @with_kw mutable struct Element1D{T} <: AbstractConstraint
         solver::AbstractSolver
