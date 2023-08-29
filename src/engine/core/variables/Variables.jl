@@ -36,6 +36,7 @@ include("BoolVar.jl")
 export BoolVar
 export isTrue
 export IsFalse
+export not
 
 include("IntVarArray.jl")
 export makeIntVarArray
