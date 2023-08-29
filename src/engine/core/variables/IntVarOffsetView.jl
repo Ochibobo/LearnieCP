@@ -282,3 +282,11 @@ Base.:+(iv::AbstractVariable{Integer}, offset::Integer) = IntVarOffsetView(iv = 
 Overriding the `-` operator to allow for an alternative creation of the `IntVarOffsetView`. Replaces `offset` with `-offset`
 """
 Base.:-(iv::AbstractVariable{Integer}, offset::Integer) = IntVarOffsetView(iv = iv, offset = -offset)
+
+
+"""
+    Base.:-(offset::Integer, iv::AbstractVariable{Integer})
+
+Overriding the `-` operator to allow for an alternative creation of the `IntVarOffsetView`. Replaces `offset` with `-offset`
+"""
+Base.:-(offset::Integer, iv::AbstractVariable{Integer}) = IntVarOffsetView(iv = -iv, offset = offset)
