@@ -81,6 +81,21 @@ end
 
 
 """
+    post(s::LearnieCP, v::AbstractVariable{Integer})::Nothing
+
+Function used to post a `BoolVar`, set it to `true` and run the `fixPoint` algorithm
+"""
+function post(s::LearnieCP, v::AbstractVariable{Integer})::Nothing
+    ## Fix the variable `v` to true
+    InnerCore.fix(v, true)
+    ## Run the fixPoint
+    fixPoint(s)
+
+    return nothing
+end
+
+
+"""
     propagate(s::LearnieCP, c::AbstractConstraint)::Nothing
 
 Function used to `propagate` constraints in the `solver`

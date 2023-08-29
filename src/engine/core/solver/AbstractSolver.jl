@@ -30,6 +30,16 @@ end
 
 
 """
+    post(s::AbstractSolver, v::AbstractVariable{T})::Nothing where {T <: Bool}
+
+Function used to post a `BoolVar` and set it to true then call the `fixPoint` algorithm
+"""
+function post(s::AbstractSolver, v::AbstractVariable{T})::Nothing where {T <: Bool}
+    throw(error("function post($s, $v) not implemented"))
+end
+
+
+"""
     propagate(s::AbstractSolver, c::AbstractConstraint)::Nothing
 
 Function used to `propagate` constraints in the `solver`
