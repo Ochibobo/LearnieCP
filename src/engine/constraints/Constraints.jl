@@ -42,4 +42,10 @@ include("Element1DVar.jl")
 export Element1DVar
 export element1DVar
 
+include("IsLessOrEqual.jl")
+export IsLessOrEqual
+export IsLess
+export IsGreaterOrEqual
+export IsGreater
+
 end
