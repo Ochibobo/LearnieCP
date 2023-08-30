@@ -98,4 +98,9 @@ include("constraints/Constraints.jl")
 using .Constraints
 export Constraints
 
+## The branching scheme
+include("branching_scheme/BranchingScheme.jl")
+using .BranchingScheme
+export BranchingScheme
+
 end
