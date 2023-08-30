@@ -96,7 +96,18 @@ for s in 1:n
 end
 
 
-## TODO: Search Definition & Branching Schema formulation
-## TODO: Solve the search
+## Search Definition & Branching Schema formulation
+branchingScheme = Engine.and(Engine.firstFail(company), Engine.firstFail(student))
+search = Engine.DFSearch(Engine.Solver.stateManager(solver), branchingScheme)
+
 ## TODO: Print the results
+Engine.addOnSolution(searcg, () -> begin
+    println("Solution found")
+
+    ## TODO: Print the results
+end)
+
+## TODO: Solve the search
+Engine.solve(search)
+
 ## TODO: Plot the results - GraphRecipes
