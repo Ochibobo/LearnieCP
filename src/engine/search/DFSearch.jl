@@ -3,7 +3,7 @@ DFS Search of the constraint solver
 """
 @with_kw mutable struct DFSearch
     sm::StateManager
-    branchingSchema
+    branchingSchema::Function
     onSolutionListeners::Vector{Function}
 
     function DFSearch(sm::StateManager, branchingSchema)
@@ -78,8 +78,8 @@ function dfs(s::DFSearch)::Nothing
                     ## Recursively call the DFS
                     dfs(s)
                 catch e
-                    ## println("Failure in search node with error $e")
-                    # throw(e)
+                    ##println("Failure in search node with error $e")
+                    ##throw(e)
                 end
             end)
         end
