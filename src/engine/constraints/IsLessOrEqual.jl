@@ -60,21 +60,23 @@ function post(c::IsLessOrEqual)::Nothing
         Variables.fix(c.b, false)
     else
         ## Propagate anonymous constraints
-        whenFixed(c.b, () -> begin
+        whenFix(c.b, () -> begin
             ## If b is fixed, prune c.iv's domain
             if(Variables.isTrue(c.b))
                 Variables.removeAbove(c.iv, c.v)
-            else Variables.isFalse(c.b)
+            else
                 Variables.removeBelow(c.iv, c.v + 1)
             end
         end)
 
-        whenBoundsChange(c.iv, () -> begin
+        whenBoundChange(c.iv, () -> begin
             ## Mark the BoolVar as true or false depending on the bounds of c.iv
             if maximum(c.iv) <= c.v
                 Variables.fix(c.b, true)
-            else minimum(c.iv) > c.v
+            elseif minimum(c.iv) > c.v
                 Variables.fix(c.b, false)
+            else
+                ## Do nothing
             end
         end)
     end
@@ -100,7 +102,7 @@ end
 
 
 """
-    isLess(iv::AbstractVariable{T}, v::T)::BoolVar where T
+    IsLess(iv::AbstractVariable{T}, v::T)::BoolVar where T
 
 Function to return a `BoolVar` that indicates if `iv` < `v`
 """
@@ -110,7 +112,7 @@ end
 
 
 """
-    isGreaterOrEqual(iv::AbstractVariable{T}, v::T)::BoolVar where T
+    IsGreaterOrEqual(iv::AbstractVariable{T}, v::T)::BoolVar where T
 
 Function to return a `BoolVar` that indicates if `iv` >= `v`
 """
@@ -120,10 +122,10 @@ end
 
 
 """
-    isGreater(iv::AbstractVariable{T}, v::T)::BoolVar where T
+    IsGreater(iv::AbstractVariable{T}, v::T)::BoolVar where T
 
 Function to return a `BoolVar` that indicates if `iv` > `v`
 """
 function IsGreater(iv::AbstractVariable{T}, v::T)::BoolVar where T
-    return isGreaterOrEqual(iv, v + 1)
+    return IsGreaterOrEqual(iv, v + 1)
 end
