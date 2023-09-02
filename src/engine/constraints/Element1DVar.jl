@@ -13,7 +13,7 @@
     active::State
     scheduled::Bool
 
-    function Element1DVar{T}(array::Vector{AbstractVariable{T}}, y::AbstractVariable{Integer}, z::AbstractVariable{T}) where T
+    function Element1DVar{T}(array::Vector{<:AbstractVariable{T}}, y::AbstractVariable{Integer}, z::AbstractVariable{T}) where T
         ## Get the solver instance
         solver = Variables.solver(y)
 
@@ -38,9 +38,51 @@ function post(c::Element1DVar)::Nothing
     Variables.removeBelow(c.y, 1)
     Variables.removeAbove(c.y, length(c.array))
 
+    ## Ensure Domain Consistency on Post
+    ## y is the guiding looping factor
+    # yVals = Vector{Integer}()
+    # Variables.fillArray(c.y, yVals)
+
+    # for i in yVals
+    #     Tᵢ = c.array[i]
+    #     tVals = Vector{Integer}()
+    #     Variables.fillArray(Tᵢ, tVals)
+    #     hasValueInZ = false
+    #     for entry in tVals
+    #         if in(entry, c.z)
+    #             hasValueInZ = true
+    #             break
+    #         end
+    #     end
+
+    #     if !hasValueInZ
+    #         Variables.remove(c.y, i)
+    #     end
+    # end
+
+    # ## Remove values from z that aren't present in array
+    # Variables.fillArray(c.y, yVals)
+
+    # zVals = Vector{Integer}()
+    # Variables.fillArray(c.z, zVals)
+
+    # for v in zVals
+    #     existsInT = false
+    #     for i in yVals
+    #         if in(v, c.array[i])
+    #             existsInT = true
+    #             break
+    #         end
+    #     end
+
+    #     if !existsInT
+    #         Variables.remove(c.z, v)
+    #     end
+    # end
+
     ## Propagate on domain changes
     propagateOnDomainChange(c.y, c)
-    propagateOnDomainChange(c.z, c)
+    propagateOnBoundChange(c.z, c)
 
     for variable in c.array
         propagateOnDomainChange(variable, c)
@@ -74,7 +116,7 @@ function propagate(c::Element1DVar{T})::Nothing where T
         iMin = minimum(v)
         
         ## No overlap here
-        if (zMax > iMax && zMin > iMax) || (iMax > zMax && iMin > zMax)
+        if (zMin > iMax) || (iMin > zMax)
             ## Remove i from y
             Variables.remove(c.y, i)
         end
@@ -96,7 +138,6 @@ function propagate(c::Element1DVar{T})::Nothing where T
         ## Force c.array[i] == c.z
         Variables.removeAbove(c.array[minimum(c.y)], maximum(c.z))
         Variables.removeBelow(c.array[minimum(c.y)], minimum(c.z))
-        println("Removed from index: $(minimum(c.y)) all values above: $(maximum(c.z)) and below: $(minimum(c.z))")
     end
 
     return nothing
