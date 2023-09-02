@@ -27,3 +27,4 @@ Engine.post(solver, Engine.Element1DVar{Integer}(T, y, zz))
 
 
 Engine.minimum(T[4])
+Engine.maximum(T[4])
