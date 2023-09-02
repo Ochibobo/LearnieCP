@@ -3,12 +3,13 @@
 
 Function to select the minimum variable in `v` that satisfies `fnTest` or `nothing` otherwise
 """
-function selectMin(v::Vector{AbstractVariable{T}}, fnTest::Function, fnComparison::Function)::Union{Nothing, AbstractVariable{T}} where T
+function SelectMin(v::Vector{<:AbstractVariable{T}}, fnTest::Function, fnComparison::Function)::Union{Nothing, AbstractVariable{T}} where T
     selectedVar = nothing
 
     for var in v
         if fnTest(var)
             selectedVar = isnothing(selectedVar) || (fnComparison(var, selectedVar)) ? var : selectedVar
+            break
         end
     end
 
@@ -22,9 +23,9 @@ end
 
 Function used to branch based on the first failed node as selected by the `selectMin` function
 """
-function firstFail(vars::Vararg{AbstractVariable{T}})::Vector where T
+function FirstFail(vars::Vararg{<:AbstractVariable{T}})::Function where T
     return () -> begin
-        xVar = selectMin(collect(vars),
+        xVar = SelectMin(collect(vars),
             (var) -> !Variables.isFixed(var),
             (varA, varB) -> size(varA) < size(varB)
         )
@@ -37,8 +38,12 @@ function firstFail(vars::Vararg{AbstractVariable{T}})::Vector where T
         xVarMin = minimum(xVar)
 
         return [
-            () -> Solver.post(Variables.solver(xVar), ConstEqual{T}(xVar, xVarMin)),
-            () -> Solver.post(Variables.solver(xVar), ConstNotEqual{T}(xVar, xVarMin))
+            () -> Solver.post(Variables.solver(xVar), Constraints.ConstEqual{T}(xVar, xVarMin)),
+            () -> Solver.post(Variables.solver(xVar), Constraints.ConstNotEqual{T}(xVar, xVarMin))
         ]
-    end
+    end 
+end
+
+function FirstFail(vars::Vector{<:AbstractVariable{T}})::Function where T
+    return FirstFail(vars...)    
 end
