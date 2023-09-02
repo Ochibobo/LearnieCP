@@ -34,26 +34,42 @@ In other words: `T[y] = z`
     y::AbstractVariable{T}
     z::AbstractVariable{T}
     numberOfEntries::Integer
+    yz::Vector{Pair}
+    topPointer::StateInt
+    bottomPointer::StateInt
 
     ## Active and isScheduled fields for all constraints
     active::State
     scheduled::Bool
     
-    function Element1D{T}(array::Vector{T}, y::AbstractVariable{T}, z::AbstractVariable{T}) where T
+    function Element1D{T}(array::Vector{<:T}, y::AbstractVariable{T}, z::AbstractVariable{T}) where T
         ## The solver instance
         solver = Variables.solver(y)
         ## State Manager
         sm = stateManager(solver)
         ## Number of elements in the array
         numberOfEntries = length(array)
+
+        ## The yz pair
+        yz = Vector{Pair}()
+        ## Fill in the yz vector
+        for (index, element) in enumerate(array)
+            push!(yz, index => element)
+        end
+
+        ## Sort the yz vector
+        sort!(yz, by = k -> k.second)
+
+        ## Initialize the top & bottom pointers
+        topPointer = makeStateInt(sm, 1)
+        bottomPointer = makeStateInt(sm, numberOfEntries)
         
         ## The active state
         active = makeStateRef(sm, true)
 
-        new{T}(solver, array, y, z, numberOfEntries, active, false)
+        new{T}(solver, array, y, z, numberOfEntries, yz, topPointer, bottomPointer, active, false)
     end
 end
-
 
 """
     post(c::Element1D)::Nothing
@@ -67,7 +83,7 @@ function post(c::Element1D)::Nothing
 
     ## Propagate the constraint on changes in the domain of y & z
     propagateOnDomainChange(c.y, c)
-    propagateOnDomainChange(c.z, c)
+    propagateOnBoundChange(c.z, c)
 
     ## Propagate
     propagate(c)
@@ -76,12 +92,48 @@ function post(c::Element1D)::Nothing
 end
 
 
+
 """
     propagate(c::Element1D)::Nothing
 
 Function to `propagate` the `Element1D` constraint
 """
 function propagate(c::Element1D)::Nothing
+    ## Get the top & bottom pointers
+    # l = value(c.topPointer)
+    # u = value(c.bottomPointer)
+
+    # ## Get the maximum & minimum value of z
+    # zMin = minimum(c.z)
+    # zMax = maximum(c.z)
+
+    # ## Prune the space
+    # ## Based on the topPointer position
+    # while c.yz[l].second < zMin|| !in(c.yz[l].first, c.y)
+    #     ## Remove the value from y
+    #     Variables.remove(c.y, c.yz[l].first)
+    #     l += 1
+
+    #     if l > u throw(DomainError("l > u")) end
+    # end
+
+    # ## Based on the bottomPointer position
+    # while c.yz[u].second > zMax || !in(c.yz[u].first, c.y)
+    #     Variables.remove(c.y, c.yz[u].first)
+    #     u -= 1;
+    #     if l > u throw(DomainError("l > u")) end
+    # end
+
+    # ## Remove values from the domain of z
+    # Variables.removeBelow(c.z, c.yz[l].second)
+    # Variables.removeAbove(c.z, c.yz[u].second)
+    
+    # ## Update the pointer values
+    # setValue!(c.bottomPointer, u)
+    # setValue!(c.topPointer, l)
+
+    # return nothing
+
     ## Either domain of y or z has changed
     ## Variables in D(y)
     yVars = Vector{Integer}()
@@ -157,6 +209,8 @@ value_var = IntVar()
 element_constraint(Tasks, index_var, value_var)
 
 The value_var will take the value of the task duration at the index specified by index_var.
+
+
 """
 
 
