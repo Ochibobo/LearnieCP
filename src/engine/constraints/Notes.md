@@ -46,4 +46,7 @@ Element2D(T::Integer[][], x::IntVar, y::IntVar, z::IntVar)
 - Uses:
   - Element Constraint
   - Logical Combination of constraints with reification
-- 
+
+### IsLessOrEqual
+- When this or any other value cannot be met by the values of `iv` & `v`, then there is not solution. There's no need to proceed.
+-  
