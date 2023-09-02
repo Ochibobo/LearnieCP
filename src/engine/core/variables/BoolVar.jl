@@ -56,7 +56,7 @@ end
 Function to check if the boolean variable is false
 """
 function isFalse(b::BoolVar)::Bool
-    return minimum(b) == 0
+    return maximum(b) == 0
 end
 
 
@@ -72,12 +72,45 @@ function fix(b::BoolVar, value::Bool)::Nothing
 end
 
 """
+    removeAbove(b::BoolVar, v::Integer)::Nothing
+
+Function to remove all values above a certain value in the variable's domain
+"""
+function removeAbove(b::BoolVar, v::Integer)::Nothing
+    removeAbove(variable(b), v)
+    return nothing
+end
+
+
+"""
+    removeBelow(b::BoolVar, v::Integer)::Nothing
+
+Function to remove all values below a certain value in the variable's domain
+"""
+function removeBelow(b::BoolVar, v::Integer)::Nothing
+    removeBelow(variable(b), v)
+    return nothing
+end
+
+
+"""
     propagateOnFix(b::BoolVar, c::AbstractConstraint)::Nothing
 
 Function used to propagate constraints when the varibale becomes bound
 """
 function propagateOnFix(b::BoolVar, c::AbstractConstraint)::Nothing
     propagateOnFix(variable(b), c)
+    return nothing
+end
+
+
+"""
+    propagateOnBoundsChange(iv::IntVar, c::AbstractConstraint)::Nothing
+
+Function used to propagate constraints when the bounds of the variable changes
+"""
+function propagateOnBoundChange(b::BoolVar, c::AbstractConstraint)::Nothing
+    propagateOnBoundChange(variable(b), c)
     return nothing
 end
 
@@ -93,7 +126,13 @@ function whenFix(b::BoolVar, procedure::Function)::Nothing
     return nothing
 end
 
-## TODO: consider type casting to BoolVar
+"""
+Function to return the values in the `BoolVar`
+"""
+function fillArray(b::BoolVar, v::Vector{T})::Vector{T} where T
+    return fillArray(variable(b), v)
+end
+
 """
     not(b::BoolVar)::AbstractVariable{Integer}
 
