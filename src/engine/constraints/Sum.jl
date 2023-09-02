@@ -74,7 +74,7 @@
     active::State
 
 
-    function Sum{T}(variables::Vector{AbstractVariable{T}}) where T
+    function Sum{T}(variables::Vector{<:AbstractVariable{T}}) where T
         solver = Variables.solver(variables[1])
         sm = stateManager(solver)
         n = length(variables)
@@ -97,7 +97,7 @@
     end
 
     ## Used to create a new Sum constraint where ∑variables = y
-    function Sum{T}(variables::Vector{AbstractVariable{T}}, y::T) where T
+    function Sum{T}(variables::Vector{<:AbstractVariable{T}}, y::T) where T
         solver = Variables.solver(variables[0])
         yVar = Variables.IntVar(solver, -y, -y)
 
@@ -109,7 +109,7 @@
     end
 
     ## Used to create a new Sum constraint where ∑variables = variable y
-    function Sum{T}(variables::Vector{AbstractVariable{Integer}}, y::AbstractVariable{T}) where T
+    function Sum{T}(variables::Vector{<:AbstractVariable{Integer}}, y::AbstractVariable{T}) where T
         vars = Vector{AbstractVariable{T}}()
         push!(vars, variables...)
         push!(vars, -y)
@@ -118,7 +118,7 @@
     end
 
     ## Used to create a Sum constraint using a variable number of arguments
-    # function Sum{T}(variables::Vararg{AbstractVariable{T}}) where T
+    # function Sum{T}(variables::Vararg{<:AbstractVariable{T}}) where T
     #     Sum{T}(collect(variables))
     # end
 end
@@ -205,7 +205,7 @@ end
 
 Helper function for the `Sum` constraint to return a variable
 """
-function summation(x::Vector{AbstractVariable{T}})::AbstractVariable{T} where T <: Integer
+function summation(x::Vector{<:AbstractVariable{T}})::AbstractVariable{T} where T <: Integer
     sumMin = 0
     sumMax = 0
 
@@ -221,4 +221,14 @@ function summation(x::Vector{AbstractVariable{T}})::AbstractVariable{T} where T 
     Solver.post(solver, Sum{T}(x, s))
 
     return s
+end
+
+
+"""
+    summation(x::Vararg{<:AbstractVariable{T}})::AbstractVariable{T} where T
+
+Helper function for the `Sum` constraint that takes in `Vararg` and returns a variable
+"""
+function summation(x::Vararg{<:AbstractVariable{T}})::AbstractVariable{T} where T
+    return summation(collect(x))
 end
