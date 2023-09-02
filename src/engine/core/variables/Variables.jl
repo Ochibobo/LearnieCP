@@ -35,7 +35,7 @@ export onBindConstraints
 include("BoolVar.jl")
 export BoolVar
 export isTrue
-export IsFalse
+export isFalse
 export not
 
 include("IntVarArray.jl")
