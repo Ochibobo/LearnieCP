@@ -95,7 +95,8 @@ A sample representation of the _copier state manager_.
 
 ![Copier State Manager](assets/CopierStateManagerRepresentation.png)
 
-
+#### A Book on JuliaCP
+- [ ] The Book Repo is [here](https://github.com/Ochibobo/LearnieCPBook)
 
 #### Examples
 - [x] backtracking
@@ -121,6 +122,7 @@ Some of these examples are accompanied by plots, especially the ones that have a
 ![QAP Objective Value Progress](assets/ObjectiveValueProgressPlot.png)
 
 ---
+
 ### RoadMap
 - [ ] Constraints 
   - [ ] Global Constraints
