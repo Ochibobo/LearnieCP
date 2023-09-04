@@ -70,6 +70,13 @@ Here's an overview of the domain representaion:
 - [x] Global Constraints
   - [x] Sum
   - [x] Element2D
+  - [x] Element1D
+  - [x] Element1DVar
+
+#### Branching Scheme
+- [x] SelectMin
+- [x] FirstFail
+- [x] And
 
 #### State
 - [x] BackUp representation
@@ -119,12 +126,9 @@ Some of these examples are accompanied by plots, especially the ones that have a
   - [ ] Global Constraints
     - [ ] Table Constraint
     - [ ] AllDifferent Constraint
-    - [ ] Element1D
-    - [ ] Element Constraint on Variable Arrays
     - [ ] Circuit Constraint
   - [ ] More localized constraints
 - [ ] Branching Schema
-  - [ ] Deterministically
   - [ ] Using _ML_
 - [ ] SearchStatistics
 - [ ] Search Heuristics
