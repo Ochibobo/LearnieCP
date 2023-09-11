@@ -93,6 +93,9 @@ search = Engine.DFSearch(Engine.Solver.stateManager(solver), branchingSchema)
 
 objective_update_progress = []
 warehouse_positions = Vector{Integer}(undef, n)
+
+using Plots
+
 ## OnSolution
 Engine.addOnSolution(search, () -> begin
     obj = Engine.objectiveValue(objective)
@@ -124,10 +127,10 @@ using Plots
 ## Plot the progress of the objective value updates
 x = collect(1:length(objective_update_progress))
 
+
 plot(x, objective_update_progress, 
     label ="objective_progress",
     xlabel = "completed solution timestep",
     ylabel = "objective value"
 )
 
-scatter!(x, objective_update_progress, label = "actual objective values")
