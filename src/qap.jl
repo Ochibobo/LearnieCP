@@ -58,43 +58,11 @@ totalCost = Engine.summation(weightedDistances)
 ## Minimize the total cost
 objective = Engine.Minimize{Integer}(totalCost)
 
-## Define the branching schema
-function branchingSchema()
-    idx = nothing
-    for i in eachindex(x)
-        if !Engine.isFixed(x[i])
-            idx = i
-            break
-        end
-    end
-
-    if isnothing(idx)
-        return []
-    end
-
-    ## Get the min value in x's domain
-    x_val = x[idx]
-    x_min = minimum(x_val)
-
-    ## Branch when x = min & when x != min
-    function left()
-        return Engine.Solver.post(solver, Engine.ConstEqual{Integer}(x_val, x_min))
-    end
-
-    function right()
-        return Engine.Solver.post(solver, Engine.ConstNotEqual{Integer}(x_val, x_min))
-    end
-
-    return [left, right]
-end
-
 ## Define the search
-search = Engine.DFSearch(Engine.Solver.stateManager(solver), branchingSchema)
+search = Engine.DFSearch(Engine.Solver.stateManager(solver), Engine.FirstFail(x))
 
 objective_update_progress = []
 warehouse_positions = Vector{Integer}(undef, n)
-
-using Plots
 
 ## OnSolution
 Engine.addOnSolution(search, () -> begin
@@ -122,15 +90,34 @@ objective_update_progress
 warehouse_positions
 
 
-using Plots
+using GLMakie
 
-## Plot the progress of the objective value updates
-x = collect(1:length(objective_update_progress))
+## Figure instance
+fig = Figure();
 
+## Axis Definition
+ax = fig[1, 1] = Axis(fig,
+    ## Title
+    title = "Objective Value Progress (Quadratic Assignment Problem)",
+    titlegap = 12, titlesize = 16,
 
-plot(x, objective_update_progress, 
-    label ="objective_progress",
-    xlabel = "completed solution timestep",
-    ylabel = "objective value"
+    ## x axis definition
+    xgridcolor = :darkgray, xgridwidth = 2,
+    xlabel = "Completed Solution Timestep", xlabelsize = 16,
+    xticklabelsize = 12, xticks = LinearTicks(20),
+
+    ## y axis
+    ygridcolor = :darkgray, ygridwidth = 2,
+    ylabel = "Objective Value", ylabelsize = 18,
+    yticklabelsize = 12, yticks = LinearTicks(20),
 )
 
+
+frames = 1:length(objective_update_progress)
+
+data = convert.(Int64, objective_update_progress)
+
+record(fig, "qap_example_progress.gif", frames; framerate = 6) do i
+    lines!(ax, 1:i, data[1:i], color = :black, linestyle = :dash, linewidth = 2)
+    GLMakie.scatter!(ax, i, data[i], color = :blue, markersize = 18)
+end
