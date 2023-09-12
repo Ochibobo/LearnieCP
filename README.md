@@ -121,6 +121,8 @@ Some of these examples are accompanied by plots, especially the ones that have a
 
 ![QAP Objective Value Progress](assets/ObjectiveValueProgressPlot.png)
 
+Objective value progress for the above problem:
+![QAP Objective Value Interactive Progess](assets/qap_example_progress.gif)
 ---
 
 ### RoadMap
@@ -129,6 +131,7 @@ Some of these examples are accompanied by plots, especially the ones that have a
     - [ ] Table Constraint
     - [ ] AllDifferent Constraint
     - [ ] Circuit Constraint
+    - [ ] Scheduling Problem Constraints
   - [ ] More localized constraints
 - [ ] Branching Schema
   - [ ] Using _ML_
@@ -143,6 +146,10 @@ Some of these examples are accompanied by plots, especially the ones that have a
   - [ ] VRP
 - [ ] A Book on this approach
 - [ ] Comparison with JuMP solvers.
+- [ ] Continuous Variables
+- [ ] Simplex or methods alike
+- [ ] A smoother interface - probably link with `JuMP`
+- [ ] Return the objective value of an optimization problem using `objectiveValue` function
 
 ---
 > Contributions are welcome.
