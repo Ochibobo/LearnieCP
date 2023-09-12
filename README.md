@@ -121,7 +121,7 @@ Some of these examples are accompanied by plots, especially the ones that have a
 
 ![QAP Objective Value Progress](assets/ObjectiveValueProgressPlot.png)
 
-Objective value progress for the above problem:
+#### Objective value progress for the above problem:
 ![QAP Objective Value Interactive Progess](assets/qap_example_progress.gif)
 ---
 
