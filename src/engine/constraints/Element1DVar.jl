@@ -1,4 +1,27 @@
 """
+    @with_kw mutable struct Element1DVar{T} <: AbstractConstraint
+        solver::AbstractSolver
+        array::Vector{AbstractVariable{T}}
+        y::AbstractVariable{Integer}
+        z::AbstractVariable{T}
+
+        active::State
+        scheduled::Bool
+
+        function Element1DVar{T}(array::Vector{<:AbstractVariable{T}}, y::AbstractVariable{Integer}, z::AbstractVariable{T}) where T
+            ## Get the solver instance
+            solver = Variables.solver(y)
+
+            ## Get the state manager
+            sm = stateManager(solver)
+
+            ## Create an active state instance
+            active = makeStateRef(sm, true)
+
+            new{T}(solver, array, y, z, active, false)
+        end
+    end
+
 `Element1DVar` constraint used to index through variable arrays using an integer variable.
 `T` is the Variable array
 `y` is the index variable

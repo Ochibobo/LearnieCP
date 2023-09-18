@@ -34,7 +34,7 @@ This is basically a couple of `NotEquals` that ensure members of an array of var
 
     ## Constraint-wide variables
     active::State
-    isScheduled::Bool
+    scheduled::Bool
 
     function AllDifferentBinary{T}(vars::Vector{<:AbstractVariable}) where T
         isempty(vars) && throw(DomainError("Constraint cannot work on empty vector."))
