@@ -48,4 +48,7 @@ export IsLess
 export IsGreaterOrEqual
 export IsGreater
 
+include("TableCT.jl")
+export TableCT
+
 end
