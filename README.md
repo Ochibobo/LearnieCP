@@ -72,6 +72,8 @@ Here's an overview of the domain representaion:
   - [x] Element2D
   - [x] Element1D
   - [x] Element1DVar
+  - [ ] Table Constraint
+    - [ ] Almost done - appending extensive testing.
 
 #### Branching Scheme
 - [x] SelectMin
@@ -123,12 +125,14 @@ Some of these examples are accompanied by plots, especially the ones that have a
 
 #### Objective value progress for the above problem:
 ![QAP Objective Value Interactive Progess](assets/qap_example_progress.gif)
+
+#### A sample table display of a table present in the TableCT constraint:
+![Sample Table From Table CT Constraint](assets/TableViewForTableCT.png)
 ---
 
 ### RoadMap
 - [ ] Constraints 
   - [ ] Global Constraints
-    - [ ] Table Constraint
     - [ ] AllDifferent Constraint
     - [ ] Circuit Constraint
     - [ ] Scheduling Problem Constraints
