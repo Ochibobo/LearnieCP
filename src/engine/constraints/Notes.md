@@ -49,4 +49,9 @@ Element2D(T::Integer[][], x::IntVar, y::IntVar, z::IntVar)
 
 ### IsLessOrEqual
 - When this or any other value cannot be met by the values of `iv` & `v`, then there is not solution. There's no need to proceed.
+
+
+#### TableCT
+-  We have one bit for each of the bit set for each of the tuple.
+-  Gather all tuples with x = 1, for example and mark all their equivalent bitset values with `true`. Do the same for all the other bitsets x=2, x=3, x=n, y= 1,..., z = n
 -  
