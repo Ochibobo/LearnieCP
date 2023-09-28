@@ -66,7 +66,7 @@ function post(c::AllDifferentBinary{T})::Nothing where T
     solver = c.solver
     for i in eachindex(vars)
         for j in i + 1:length(vars)
-            Solver.post(solver, NotEqual{T}(vars[i], vars[j]))
+            Solver.post(solver, NotEqual{T}(vars[i], vars[j]), enforceFixpoint = false)
         end
     end
 
