@@ -79,7 +79,7 @@ function dfs(s::DFSearch)::Nothing
                     dfs(s)
                 catch e
                     ##println("Failure in search node with error $e")
-                    #$throw(e)
+                    ##throw(e)
                 end
             end)
         end
