@@ -127,7 +127,7 @@ Some of these examples are accompanied by plots, especially the ones that have a
 ![QAP Objective Value Interactive Progess](assets/qap_example_progress.gif)
 
 #### A sample table display of a table present in the TableCT constraint:
-![Sample Table From Table CT Constraint](assets/TableViewForTableCT.png)
+![Sample Table From Table CT Constraint](assets/TableCTTableExample.png)
 ---
 
 ### RoadMap
