@@ -150,7 +150,7 @@ end
 Function to remove an element from the variable's domain
 """
 function remove(iv::IntVarOffsetView, v::Integer)::Nothing
-    remove(variable(iv), v - offset(v))
+    remove(variable(iv), v - offset(iv))
 end
 
 
