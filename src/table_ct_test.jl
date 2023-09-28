@@ -21,6 +21,15 @@ table = [
 
 ## Declare the TableCT constraint
 tableCT = Engine.TableCT{Integer}(vars, table);
+Engine.Solver.post(solver, tableCT);
+
+for e in vars
+    v = Vector{Integer}()
+    println(Engine.Variables.fillArray(e, v))
+end
+
+
+#Engine.propagate(tableCT)
 
 ## Display the contents of the table using a DataFrame
 supports = tableCT.supports
@@ -49,7 +58,7 @@ df_data[:, 1]
 using DataFrames
 
 df_data = Int64.(df_data)
-df = DataFrame(:index => collect(0:11))
+df = DataFrame(:index => collect(1:size(table)[1]))
 
 ### Extend the table
 values_table = table
