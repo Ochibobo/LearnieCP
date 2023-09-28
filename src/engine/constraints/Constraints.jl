@@ -48,6 +48,9 @@ export IsLess
 export IsGreaterOrEqual
 export IsGreater
 
+include("AllDifferentBinary.jl")
+export AllDifferentBinary
+
 include("TableCT.jl")
 export TableCT
 
