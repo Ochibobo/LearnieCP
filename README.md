@@ -128,6 +128,9 @@ Some of these examples are accompanied by plots, especially the ones that have a
 
 #### A sample table display of a table present in the TableCT constraint:
 ![Sample Table From Table CT Constraint](assets/TableCTTableExample.png)
+
+#### A 3x3 Magic Square Problem solution
+![Sample 3x3 MagicSquare Solution](assets/MagicSquare3x3.png)
 ---
 
 ### RoadMap
