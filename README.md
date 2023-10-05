@@ -72,8 +72,7 @@ Here's an overview of the domain representaion:
   - [x] Element2D
   - [x] Element1D
   - [x] Element1DVar
-  - [ ] Table Constraint
-    - [ ] Almost done - appending extensive testing.
+  - [x] Table Constraint
 
 #### Branching Scheme
 - [x] SelectMin
