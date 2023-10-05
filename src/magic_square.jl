@@ -8,7 +8,7 @@ using LinearAlgebra
 solver = Engine.LearnieCP()
 
 ## Variable Definition
-rows = 4
+rows = 3
 n = rows * rows
 
 ## Create a square instance
