@@ -15,7 +15,7 @@ The current implementation includes:
 
 #### The Core
 - [x] Domains
-  - [x] AbstractDOmain functions
+  - [x] AbstractDomain functions
   - [x] Domain Listener implementation
   - [x] StateBitSet
   - [x] StateSparseSet
