@@ -92,6 +92,10 @@ include("search/SearchMethods.jl")
 using .SearchMethods
 export SearchMethods
 
+## Utilities (Globally shared data structures & algorithms)
+include("utils/Utilities.jl")
+using .Utilities
+export Utilities
 
 ## The Constraints
 include("constraints/Constraints.jl")
