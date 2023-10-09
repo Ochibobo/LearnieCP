@@ -7,6 +7,9 @@ import ..InnerCore: AbstractConstraint, AbstractSolver, State, AbstractVariable,
             setValue!, value, fix, isFixed, fillArray, propagateOnBoundChange, propagateOnFix,
             propagateOnDomainChange, whenBoundChange, whenDomainChange, whenFix, solver
 
+## Contains shared structures and algorithms
+using ..Utilities
+
 include("ConstEqual.jl")
 export ConstEqual
 export solver
@@ -53,5 +56,8 @@ export AllDifferentBinary
 
 include("TableCT.jl")
 export TableCT
+
+include("AllDifferentDC.jl")
+export AllDifferentDC
 
 end
