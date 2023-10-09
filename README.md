@@ -73,6 +73,8 @@ Here's an overview of the domain representaion:
   - [x] Element1D
   - [x] Element1DVar
   - [x] Table Constraint
+  - [x] AllDifferentDC constraint
+    - [ ] Tested
 
 #### Branching Scheme
 - [x] SelectMin
@@ -135,7 +137,6 @@ Some of these examples are accompanied by plots, especially the ones that have a
 ### RoadMap
 - [ ] Constraints 
   - [ ] Global Constraints
-    - [ ] AllDifferent Constraint
     - [ ] Circuit Constraint
     - [ ] Scheduling Problem Constraints
   - [ ] More localized constraints
