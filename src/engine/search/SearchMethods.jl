@@ -25,5 +25,6 @@ export notifySolution
 export solve
 export dfs
 export optimize
+export optimizeSubjectTo
 
 end
