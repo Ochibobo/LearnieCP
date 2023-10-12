@@ -94,7 +94,7 @@ function compute(g::MaximalMatching, results::Vector{Integer})::Integer
         if g.match[i] != NONE
             if !in(g.match[i], g.vars[i])
                 ## Reset the matched edges
-                g.valsMatch[(g.match[i] - min) + 1] = -1
+                g.valMatch[(g.match[i] - g.min) + 1] = -1
                 g.match[i] = NONE
                 ## Reduce the size of the matching
                 g.sizeMatching -= 1
@@ -167,7 +167,7 @@ function findMaximalMatching(g::MaximalMatching)::Integer
                 ## Increase the magic number
                 g.magic += 1
                 if findAlternatingPathFromVariable(g, i)
-                    g.sizeOfMatching += 1
+                    g.sizeMatching += 1
                 end
             end
         end
@@ -191,7 +191,7 @@ function findAlternatingPathFromVariable(g::MaximalMatching, nodeIdx::Integer)::
         xMax = maximum(g.vars[nodeIdx])
         ## Loop through the domain of the variable at nodeIdx
         for v in xMin:xMax
-            if match[nodeIdx] != v 
+            if g.match[nodeIdx] != v 
                 ## Assert that v in in the variable's domain
                 if in(v, g.vars[nodeIdx])
                     ## If the variable isn't matched to the current value in the variable's domain, find an alternating path
@@ -219,7 +219,7 @@ function findAlternatingPathFromValue(g::MaximalMatching, value::Integer)::Bool
     idx = (value - g.min) + 1
     ## Assert that it's a free value
     if g.valSeen[idx] != g.magic
-        g.valSeen = g.magic
+        g.valSeen[idx] = g.magic
         ## Return true if the current value is a free value node
         if g.valMatch[idx] == -1
             return true
