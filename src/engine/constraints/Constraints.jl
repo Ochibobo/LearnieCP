@@ -60,4 +60,7 @@ export TableCT
 include("AllDifferentDC.jl")
 export AllDifferentDC
 
+include("Circuit.jl")
+export Circuit
+
 end
