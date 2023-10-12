@@ -150,8 +150,8 @@ This Ciruit constraint was used here on a _15x15_ grid. However, these results a
   - [ ] More localized constraints
 - [ ] Branching Schema
   - [ ] Using _ML_
-- [ ] Search Heuristics
-  - [ ] Large Neighbourhood search
+- [ ] Large Neighbourhood search
+- [ ] Local Search Heuristics
   - [ ] Simulated Annaeling
   - [ ] Random Search
   - [ ] Tabu Search
