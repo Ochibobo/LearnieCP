@@ -141,6 +141,7 @@ Some of these examples are accompanied by plots, especially the ones that have a
 This Ciruit constraint was used here on a _15x15_ grid. However, these results are from an exact search algorithm.
 
 ![Sample TSP 15x15 distance progress update](assets/tsp_v1.gif)
+
 ---
 
 ### RoadMap
