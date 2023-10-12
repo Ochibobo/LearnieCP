@@ -60,7 +60,8 @@ Here's an overview of the domain representaion:
 
 #### Search
 - [x] DFSearch
-- [ ] SearchStatistics
+- [x] SearchStatistics
+  - [ ] Think through adding more features
 
 #### Constraints
 - [x] ConstNotEqual
@@ -134,6 +135,12 @@ Some of these examples are accompanied by plots, especially the ones that have a
 
 #### A 3x3 Magic Square Problem solution
 ![Sample 3x3 MagicSquare Solution](assets/MagicSquare3by3.png)
+
+### TSP Distance update progress
+
+This Ciruit constraint was used here on a _15x15_ grid. However, these results are from an exact search algorithm.
+
+![Sample TSP 15x15 distance progress update](assets/tsp_v1.gif)
 ---
 
 ### RoadMap
@@ -143,8 +150,8 @@ Some of these examples are accompanied by plots, especially the ones that have a
   - [ ] More localized constraints
 - [ ] Branching Schema
   - [ ] Using _ML_
-- [ ] SearchStatistics
 - [ ] Search Heuristics
+  - [ ] Large Neighbourhood search
   - [ ] Simulated Annaeling
   - [ ] Random Search
   - [ ] Tabu Search
