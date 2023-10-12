@@ -43,7 +43,7 @@ The `Circuit` constraint
         for i in 1:length(vars)
             dest[i] = makeStateInt(sm, i)
             src[i] = makeStateInt(sm, i)
-            lengthToDest[i] = makeStateInt(sm, i)
+            lengthToDest[i] = makeStateInt(sm, 0)
         end
 
         ## Mark the constraint as being active
@@ -71,6 +71,10 @@ function post(c::Circuit{T})::Nothing where T
         Variables.removeBelow(var, 1)
         ## Remove any references to values greater than the number of variables
         Variables.removeAbove(var, c.nVars)
+        ## Run fix if var is already fixed
+        if Variables.isFixed(var)
+            fix(c, i)
+        end
     end
 
     ## Execute a function on-bind
@@ -89,13 +93,7 @@ end
 function fix(c::Circuit, i::Integer)::Nothing
     successor = minimum(c.vars[i]) ## Get the successor variable index
     
-    ## Mark variable i as the origin of it's successor
-    setValue!(c.origin[successor], i)
-
-    ## Update the length to the destination - across all board
-    setValue!(c.lengthToDest[value(c.origin[i])], value(c.lengthToDest[value(c.origin[i])]) + value(c.lengthToDest[successor]) + 1)
-
-    for (idx, var) in c.vars
+    for idx in eachindex(c.vars)
         ## Update the destination of all nodes whose destination was node i
         if value(c.dest[idx]) == i
             ## Update the destination to the successor's destination
@@ -117,23 +115,27 @@ function fix(c::Circuit, i::Integer)::Nothing
     pathLength = value(c.lengthToDest[value(c.origin[i])])
 
     ## Remove variable i from the domain of it's successor to prevent a loop/cycle if the length < nVars
-    if pathLength < c.nVars
+    if pathLength < c.nVars - 1
         Variables.remove(c.vars[successor], i)
     end
 
     ## Throw an error if the length is greater than nVars
-    if pathLength > c.nVars
-        throw(DomainError("Length exceeds number of variables."))
-    end
+    # if pathLength > c.nVars
+    #     @show (pathLength, c.nVars)
+    #     ## throw(DomainError("Length exceeds number of variables."))
+    # end
     
     ## Ensure there is a single SCC if the length = number of variables
-    if pathLength == c.nVars
-        !isCircuitSingleSCC(c.vars, nVars) && throw(DomainError("Multiple SCC's detected"))
+    if isAllFixed(c) ##pathLength == (c.nVars - 1)
+        !isCircuitSingleSCC(c.vars, c.nVars) && throw(DomainError("Multiple SCC's detected"))
     end
 
     return nothing
 end
 
+function isAllFixed(c::Circuit)::Bool
+    return all(v -> Variables.size(v) == 1, c.vars)    
+end
 
 """
     isCircuitSingleSCC(vars::Vector{<:AbstractVariable{T}}, n::Integer)::Bool where T
