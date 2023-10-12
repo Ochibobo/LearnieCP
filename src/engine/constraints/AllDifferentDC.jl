@@ -128,7 +128,6 @@ function updateGraph(c::AllDifferentDC)::Nothing
     ## TODO continue the implementation for representing the residual graph
     ## Get the matchings
     matchings = c.variableMatch
-    @show matchings
     ## Only used matching with a valid value
     for (variableNode, value) in enumerate(matchings)
         if value > 0
