@@ -20,6 +20,8 @@ The `Circuit` constraint
     dest::Vector{StateInt}
     origin::Vector{StateInt}
     lengthToDest::Vector{StateInt}
+    numberOfFixed::StateInt
+    fixed::Vector{Integer}
 
     active::State
     scheduled::Bool
@@ -39,6 +41,11 @@ The `Circuit` constraint
         src = Vector{StateInt}(undef, nVars)
         lengthToDest = Vector{StateInt}(undef, nVars)
 
+        ## Set the number of fixed (index of fixed)
+        numberOfFixed = makeStateInt(sm, 1)
+        ## Set the various variable indices in the fixed variables vector
+        fixed = Vector{Integer}(collect(1:nVars))
+
         ## Fill the destination, source and lengthToDest vectors
         for i in 1:length(vars)
             dest[i] = makeStateInt(sm, i)
@@ -49,7 +56,7 @@ The `Circuit` constraint
         ## Mark the constraint as being active
         active = makeStateRef(sm, true)
 
-        new{T}(solver, vars, nVars, dest, src, lengthToDest, active, false)
+        new{T}(solver, vars, nVars, dest, src, lengthToDest, numberOfFixed, fixed, active, false)
     end
 end
 
@@ -118,24 +125,32 @@ function fix(c::Circuit, i::Integer)::Nothing
     if pathLength < c.nVars - 1
         Variables.remove(c.vars[successor], i)
     end
-
-    ## Throw an error if the length is greater than nVars
-    # if pathLength > c.nVars
-    #     @show (pathLength, c.nVars)
-    #     ## throw(DomainError("Length exceeds number of variables."))
-    # end
     
-    ## Ensure there is a single SCC if the length = number of variables
-    if isAllFixed(c) ##pathLength == (c.nVars - 1)
+    # Update the fixed variables
+    nF = value(c.numberOfFixed) ## The number of fixed so far
+    for k in nF:c.nVars
+        idx = c.fixed[k] 
+        var = c.vars[idx]
+        ## If the variable is fixed, swap
+        if isFixed(var)
+            c.fixed[k] = c.fixed[nF]
+            c.fixed[nF] = idx
+
+            ## Increase nF
+            nF += 1
+        end
+    end
+
+    setValue!(c.numberOfFixed, nF)
+
+    ## Ensure there is a single SCC if the all variables are fixed
+    if value(c.numberOfFixed) == c.nVars
         !isCircuitSingleSCC(c.vars, c.nVars) && throw(DomainError("Multiple SCC's detected"))
     end
 
     return nothing
 end
 
-function isAllFixed(c::Circuit)::Bool
-    return all(v -> Variables.size(v) == 1, c.vars)    
-end
 
 """
     isCircuitSingleSCC(vars::Vector{<:AbstractVariable{T}}, n::Integer)::Bool where T
