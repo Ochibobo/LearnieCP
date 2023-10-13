@@ -3,7 +3,7 @@
 <!-- ![LeanieCP Logo](assets/LearnieCP.png) -->
 
 <p align="center">
-  <img src="assets/LearnieCP.png" alt="LearnieCP Logo"/>
+  <img src="assets/LearnieCP350x350.png" alt="LearnieCP Logo"/>
 </p>
 
 A constraint solver written completely in Julia. It is heavily inspired by [MiniCP](http://minicp.org/). The intent of this project is for pedagogical purposes. However, as development has continued, it seems like in time, it shall be released for use in development & production systems. 
