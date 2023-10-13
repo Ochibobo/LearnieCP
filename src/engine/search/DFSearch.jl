@@ -104,7 +104,7 @@ function dfs(s::DFSearch; searchLimit::Function = () -> false)::Nothing
                 catch e
                     ## Increase the number of failures
                     increaseNumberOfFailures(s.searchStatistics)
-                    ## println("Failure in search node with error $e")
+                    # println("Failure in search node with error $e")
                     ##throw(e)
                 end
             end)
