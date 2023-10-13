@@ -1,4 +1,10 @@
-# JuliaCP
+# LearnieCP
+
+<!-- ![LeanieCP Logo](assets/LearnieCP.png) -->
+
+<p align="center">
+  <img src="assets/LearnieCP.png" alt="LearnieCP Logo"/>
+</p>
 
 A constraint solver written completely in Julia. It is heavily inspired by [MiniCP](http://minicp.org/). The intent of this project is for pedagogical purposes. However, as development has continued, it seems like in time, it shall be released for use in development & production systems. 
 
@@ -115,6 +121,9 @@ A sample representation of the _copier state manager_.
 - [x] Sum Test (testing the sum constraint)
 - [x] NQueens
 - [x] Quadratic Assignment Problem
+- [x] Stable Matching Problem
+- [x] Eternity Puzzle
+- [x] TSP
 
 </br>
 
@@ -158,7 +167,6 @@ This Ciruit constraint was used here on a _15x15_ grid. However, these results a
   - [ ] Tabu Search
 - [ ] Refined Interface
 - [ ] More examples
-  - [ ] TSP
   - [ ] VRP
 - [ ] A Book on this approach
 - [ ] Comparison with JuMP solvers.
