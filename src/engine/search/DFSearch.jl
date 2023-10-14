@@ -137,17 +137,16 @@ function optimizeSubjectTo(objective::AbstractObjective, s::DFSearch;
     searchLimit::Function = () -> false, subjectTo::Function = () -> nothing)::Nothing
     ## Initialize the SearchStatistics
     s.searchStatistics = SearchStatistics()
-    try
-        ## Function to be called
-        subjectTo()
-        ## Call the optimize function
-        optimize(objective, s, searchLimit = searchLimit)
-    catch e
-        if contains(string(e), "NoSuchElement")
-            throw(e)
+    withNewState(stateManager(s), () -> begin
+        try
+            ## Function to be called
+            subjectTo()
+            ## Call the optimize function
+            optimize(objective, s, searchLimit = searchLimit)
+        catch e
+            println("Error when running subjective optimization: $e")
+            ## throw(e)
+            ## Will classify exceptions later
         end
-        println("Error when running subjective optimization: $e")
-        ## throw(e)
-        ## Will classify exceptions later
-    end
+    end)
 end
