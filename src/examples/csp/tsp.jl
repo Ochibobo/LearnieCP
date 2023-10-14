@@ -83,7 +83,34 @@ Engine.addOnSolution(search, () -> begin
 
 end)
 
-Engine.optimize(objective, search)
+# Engine.optimize(objective, search)
+
+
+"""
+Undone!! => THIS IS HOWEVER THE NEXT FOCUS - LARGE NEIGHBOURHOOD SEARCH
+"""
+## Number of restarts
+nRestarts = 1000
+failLimit = 100
+percentage = 75
+
+
+## Find the optimal solution
+for i in 1:nRestarts
+    Engine.optimizeSubjectTo(objective, search,
+        ## The search limit definition
+        searchLimit = () -> Engine.numberOfFailures(search.searchStatistics) > failLimit,
+        ## Large Neighbourhood Search
+        subjectTo = () -> begin
+            ## Assign the fragment percentage% of the variables randomly chosen
+            for j in 1:n
+                if (rand() * 100) <= percentage
+                    Engine.post(solver, Engine.ConstEqual{Integer}(successors[j], xBest[j]))
+                end
+            end
+        end    
+    )
+end
 
 search.searchStatistics.completed
 search.searchStatistics.numberOfFailures
@@ -94,6 +121,10 @@ bestSolutions
 bestDistance
 vscodedisplay(bestDistance)
 
+
+"""
+Plot the results
+"""
 
 using GLMakie
 
@@ -122,45 +153,10 @@ frames = 1:length(bestDistance)
 
 data = convert.(Int64, bestDistance)
 
-record(fig, "tsp_v1.gif", frames; framerate = 6) do i
+record(fig, "tsp_lns_v1.gif", frames; framerate = 6) do i
     lines!(ax, 1:i, data[1:i], color = :blue, linestyle = :dash, linewidth = 2)
     GLMakie.scatter!(ax, i, data[i], color = :gray, markersize = 18)
 end
-
-
-
-
-
-
-
-"""
-Undone!! => THIS IS HOWEVER THE NEXT FOCUS - LARGE NEIGHBOURHOOD SEARCH
-"""
-## Number of restarts
-nRestarts = 1000
-failLimit = 100
-percentage = 5
-
-
-## Find the optimal solution
-for i in 1:nRestarts
-    Engine.optimizeSubjectTo(objective, search,
-        ## The search limit definition
-        searchLimit = () -> Engine.numberOfFailures(search.searchStatistics) > failLimit,
-        ## Large Neighbourhood Search
-        subjectTo = () -> begin
-            ## Assign the fragment percentage% of the variables randomly chosen
-            for j in 1:n
-                if (rand() * 100) <= percentage
-                    @show j
-                    Engine.post(solver, Engine.ConstEqual{Integer}(successors[j], xBest[j]))
-                end
-            end
-        end    
-    )
-end
-
-
 
 # Engine.optimizeSubjectTo
 
