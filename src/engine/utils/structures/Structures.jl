@@ -9,4 +9,10 @@ export clear
 export addNeighbour
 export addNeighbours
 
+include("Profile.jl")
+export Rectangle
+export Profile
+export rectangleIndex
+export rectangles
+
 end
