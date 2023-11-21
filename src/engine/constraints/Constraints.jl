@@ -63,4 +63,7 @@ export AllDifferentDC
 include("Circuit.jl")
 export Circuit
 
+include("LessOrEqual.jl")
+export LessOrEqual
+
 end
