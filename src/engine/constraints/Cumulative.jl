@@ -40,15 +40,15 @@
     startTimes::Vector{<:AbstractVariable{T}}
     duration::Vector{<:T}
     endTimes::Vector{<:AbstractVariable{T}}
-    demand::Vector{Int}
-    capacity::Int
+    demand::Vector{<:T}
+    capacity::T
     postMirror::Bool
 
     ## Constraint-wide variables
     active::State
     scheduled::Bool
 
-    function Cumulative{T}(start::Vector{<:AbstractVariable{T}}, duration::Vector{T}, demand::Vector{Int}, capacity::Int; postMirror = true) where T
+    function Cumulative{T}(start::Vector{<:AbstractVariable{T}}, duration::Vector{<:T}, demand::Vector{<:T}, capacity::T; postMirror = true) where T
         (isempty(start) || isempty(demand) || isempty(duration) || capacity <= 0) && throw(ArgumentError("Invalid argumets passed."))
         ## Get the solver instance
         solver = Variables.solver(start[1])
@@ -57,7 +57,7 @@
 
         ## Create the end variables
         n = length(start)
-        endTimes = Vector{<:AbstractVariable{T}}(undef, n)
+        endTimes = Vector{AbstractVariable{T}}(undef, n)
 
         for i in eachindex(start)
             endTimes[i] = start[i] + duration[i]
@@ -84,7 +84,7 @@ function post(c::Cumulative{T})::Nothing where T
 
     ## If the postMirror is set to true, execute
     if c.postMirror
-        startMirror = Vector{<:AbstractVariable{T}}(undef, length(c.startTimes))
+        startMirror = Vector{AbstractVariable{T}}(undef, length(c.startTimes))
 
         for (i, v) in enumerate(c.endTimes)
             ## Create a mirror of the variable
@@ -92,7 +92,7 @@ function post(c::Cumulative{T})::Nothing where T
         end
 
         ## Post the startMirror to the solver
-        Solver.post(c.solver, Cumulative{T}(startMirror, c.duration, c.demand, c.capacity, postMirror = false), enforceFixPoint = false)
+        Solver.post(c.solver, Cumulative{T}(startMirror, c.duration, c.demand, c.capacity, postMirror = false), enforceFixpoint = false)
     end
 
     ## Initialize propagation
@@ -127,6 +127,8 @@ function propagate(c::Cumulative)::Nothing
         if !Variables.isFixed(startTime)
             ## est is the earliest start time
             est = minimum(startTime)
+            ## j is the index of the profile rectangle overlapping time `t`
+            j = Utilities.rectangleIndex(profile, est)
             """
             // TODO 3: postpone i to a later point in time
             // hint:
@@ -139,10 +141,8 @@ function propagate(c::Cumulative)::Nothing
             """
             demand = c.demand[i]
             for t in est:(est + c.duration[i] - 1)
-                ## j is the index of the profile rectangle overlapping time `t`
-                j = Utilities.rectangleIndex(t)
                 ## Check if t is not in the mandatory part
-                if (!(t >= maximum(startTime) && t < est + c.duration[i]))
+                if (!(t >= maximum(startTime) && t < minimum(startTime) + c.duration[i]))
                     ## Move to a different rectangle if necessary
                     if Utilities.getRectangle(profile, j).endTime <= t
                         j = Utilities.rectangleIndex(profile, t)
@@ -153,7 +153,7 @@ function propagate(c::Cumulative)::Nothing
                     ## remove this minimum value (est) from the startTime's domain
                     if c.capacity < (rect.height + demand)
                         ## Remove est
-                        Variables.remove(startTime, est)
+                        Variables.remove(startTime, minimum(startTime))
                         ## Update the est
                         est = minimum(startTime)
                         ## Exit the loop
@@ -184,7 +184,7 @@ function buildProfile(c::Cumulative)::Utilities.Profile
         ## Get the release time
         release_time = minimum(c.startTimes[i])
 
-        ## Get the earlies completion time
+        ## Get the earliest completion time
         ect = release_time + duration
 
         ## Get the latest start time
