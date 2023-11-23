@@ -65,8 +65,8 @@ end
 Function to `propagate` the `LessOrEqual` constraint
 """
 function propagate(c::LessOrEqual)::Nothing
-    Variables.removeBelow(c.y, maximum(c.x))
-    Variables.removeAbove(c.x, minimum(c.y))
+    Variables.removeBelow(c.y, minimum(c.x))
+    Variables.removeAbove(c.x, maximum(c.y))
 
     if maximum(c.x) <=  minimum(c.y)
         setValue!(c.active, false)
