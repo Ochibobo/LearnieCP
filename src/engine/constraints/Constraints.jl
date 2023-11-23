@@ -63,7 +63,13 @@ export AllDifferentDC
 include("Circuit.jl")
 export Circuit
 
+include("Cumulative.jl")
+export Cumulative
+
 include("LessOrEqual.jl")
 export LessOrEqual
+
+include("Maximum.jl")
+export Maximum
 
 end
