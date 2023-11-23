@@ -14,5 +14,6 @@ export Rectangle
 export Profile
 export rectangleIndex
 export rectangles
+export getRectangle
 
 end
