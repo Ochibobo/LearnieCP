@@ -164,13 +164,13 @@ end
 
 
 ### Testing the implementation above
-activities = [
-    Rectangle(0, 4, 1), Rectangle(1, 3, 2), Rectangle(3, 5, 1), Rectangle(4, 7, 2)
-]
+# activities = [
+#     Rectangle(0, 4, 1), Rectangle(1, 3, 2), Rectangle(3, 5, 1), Rectangle(4, 7, 2)
+# ]
 
-p = Profile(activities)
+# p = Profile(activities)
 
-println(rectangles(p))
+# println(rectangles(p))
 
 
 """
