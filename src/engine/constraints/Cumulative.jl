@@ -57,11 +57,7 @@
 
         ## Create the end variables
         n = length(start)
-        endTimes = Vector{AbstractVariable{T}}(undef, n)
-
-        for i in eachindex(start)
-            endTimes[i] = start[i] + duration[i]
-        end
+        endTimes = map(i -> start[i] + duration[i], 1:n)
 
         active = makeStateRef(sm, true)
 
@@ -84,13 +80,7 @@ function post(c::Cumulative{T})::Nothing where T
 
     ## If the postMirror is set to true, execute
     if c.postMirror
-        startMirror = Vector{AbstractVariable{T}}(undef, length(c.startTimes))
-
-        for (i, v) in enumerate(c.endTimes)
-            ## Create a mirror of the variable
-            startMirror[i] = -v
-        end
-
+        startMirror = map(var -> -(var), c.endTimes)
         ## Post the startMirror to the solver
         Solver.post(c.solver, Cumulative{T}(startMirror, c.duration, c.demand, c.capacity, postMirror = false), enforceFixpoint = false)
     end
@@ -128,7 +118,7 @@ function propagate(c::Cumulative)::Nothing
             ## est is the earliest start time
             est = minimum(startTime)
             ## j is the index of the profile rectangle overlapping time `t`
-            j = Utilities.rectangleIndex(profile, est)
+            j = Utilities.rectangleIndex(profile, minimum(startTime))
             """
             // TODO 3: postpone i to a later point in time
             // hint:
@@ -140,9 +130,9 @@ function propagate(c::Cumulative)::Nothing
             // may have contributed to the profile.
             """
             demand = c.demand[i]
-            for t in est:(est + c.duration[i] - 1)
+            for t in minimum(startTime):(minimum(startTime) + c.duration[i] - 1)
                 ## Check if t is not in the mandatory part
-                if (!(t >= maximum(startTime) && t < minimum(startTime) + c.duration[i]))
+                if (!((minimum(startTime) + c.duration[i]) > t >= maximum(startTime)))
                     ## Move to a different rectangle if necessary
                     if Utilities.getRectangle(profile, j).endTime <= t
                         j = Utilities.rectangleIndex(profile, t)
@@ -155,9 +145,9 @@ function propagate(c::Cumulative)::Nothing
                         ## Remove est
                         Variables.remove(startTime, minimum(startTime))
                         ## Update the est
-                        est = minimum(startTime)
+                        ## est = minimum(startTime)
                         ## Exit the loop
-                        t = est + c.duration[i]
+                        ##t = minimum(startTime) + c.duration[i]
                     end
                 end
             end
