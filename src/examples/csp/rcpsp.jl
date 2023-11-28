@@ -20,8 +20,8 @@ capacities = parse.(Int, split(data[1], " "))
 data = data[2:end]
 
 ## Loop through each activity filling in its duration, successors and demands
-duration = Vector{Int}(undef, nActivities)
-consumption = Matrix{Int}(undef, nResources, nActivities)
+duration = zeros(Int, nActivities)
+consumption = zeros(Int, nResources, nActivities)
 successors = Vector{Vector{Int}}(undef, nActivities)
 horizon = 0
 
@@ -42,7 +42,7 @@ for i in 1:nActivities
     end
 
     ## Fill in the successors of activity i
-    successors[i] = Vector{Int}(undef, line[j])
+    successors[i] = zeros(Int, line[j])
     j += 1
     for k in eachindex(successors[i])
         successors[i][k] = line[j]
@@ -96,7 +96,7 @@ end
 
 ## Minimize the makespan
 ## The span is initially from 0 to the horizon
-makeSpan = Engine.IntVar(solver, 0, horizon) 
+makeSpan = Engine.IntVar(solver, 0, horizon - 1) 
 ## Post the Maximum constraint on the makeSpan
 Engine.post(solver, Engine.Maximum{Integer}(endTimes, makeSpan))
 ## Attempt to minimize the makeSpan as the objective
@@ -104,7 +104,7 @@ objective = Engine.Minimize{Integer}(makeSpan)
 
 ## Execute the search
 search = Engine.DFSearch(Engine.Solver.stateManager(solver),
-                        Engine.FirstFail(endTimes))
+                        Engine.FirstFail(startTimes))
 
 solution = Vector{Int}(undef, nActivities)
 makeSpanTrajectory = Int[]
@@ -123,3 +123,6 @@ end)
 
 ## Optimize the solution
 Engine.optimize(objective, search)
+
+solution
+makeSpanTrajectory
