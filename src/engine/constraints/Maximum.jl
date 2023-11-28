@@ -89,13 +89,7 @@ function propagate(c::Maximum)::Nothing
     supportIdx = 0
 
     for (i, x) in enumerate(c.x)
-        # if minimum(x) < yMin
-        #     Variables.removeBelow(x, yMin)
-        # end
-
-        if maximum(x) > yMax
-            Variables.removeAbove(x, yMax)
-        end
+        Variables.removeAbove(x, yMax)
 
         xMin = max(xMin, minimum(x)) ## Get the greatest minimum
         xMax = max(xMax, maximum(x)) ## Get the greatest maximum
@@ -105,8 +99,6 @@ function propagate(c::Maximum)::Nothing
             supportIdx = i
         end
     end
-
-    
 
     ## Update the min and max values of each y based on the bounds of all x[i]
     Variables.removeBelow(c.y, xMin)
