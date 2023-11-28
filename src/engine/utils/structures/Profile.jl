@@ -143,7 +143,7 @@ function rectangleIndex(p::Profile, t::Int)::Int
     profileRects = p.profileRectangles
 
     for (i, r) in enumerate(profileRects)
-        if r.startTime <= t && r.endTime > t
+        if r.startTime <= t < r.endTime
             return i
         end
     end
@@ -171,6 +171,54 @@ end
 # p = Profile(activities)
 
 # println(rectangles(p))
+
+
+# activities = [
+#     Rectangle(1, 10, 3),
+#     Rectangle(1, 10, 1),
+#     Rectangle(1, 10, 2)
+# ]
+
+
+# function generateRectangle()
+#     startTime = rand(1:100)
+#     endTime  = startTime + 1 + rand(1:30)
+#     height = rand(1:30)
+
+#     return Rectangle(startTime, endTime, height)
+# end
+
+# activities = map(_ -> generateRectangle(), 1:10)
+
+# function discrete_profiles(rects)
+#     minH = minimum(map(r -> r.startTime, filter(r -> r.height > 0, rects)))
+#     maxH = maximum(map(r -> r.endTime, filter(r -> r.height > 0, rects)))
+
+#     heights = zeros(Int, maxH - minH)
+
+#     for r in rects
+#         if(r.height > 0)
+#             println(r)
+#             for i in r.startTime:(r.endTime - 1)
+#                 heights[(i - minH) + 1] += r.height
+#             end
+#         end
+#     end
+
+#     println(heights)
+
+#     return heights
+# end
+
+# p = Profile(activities)
+# rectangles(p)
+# discrete_p = discrete_profiles(rectangles(p))
+# discrete_r = discrete_profiles(activities)
+
+# all(i -> i == 1, discrete_p .== discrete_r)
+
+# size(p) <= length(activities) * 2 + 2
+
 
 
 """
