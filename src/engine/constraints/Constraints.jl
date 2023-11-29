@@ -72,4 +72,7 @@ export LessOrEqual
 include("Maximum.jl")
 export Maximum
 
+include("IsLessOrEqualVar.jl")
+export IsLessOrEqualVar
+
 end
