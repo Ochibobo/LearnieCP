@@ -65,8 +65,8 @@ end
 
 Function to `fix` the value of the `BoolVar` instance
 """
-function fix(b::BoolVar, value::Bool)::Nothing
-    fix(variable(b), value ? 1 : 0)
+function fix(b::BoolVar, value::Integer)::Nothing
+    fix(variable(b), value == 1)
 
     return nothing
 end
