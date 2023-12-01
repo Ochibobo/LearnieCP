@@ -75,4 +75,14 @@ export Maximum
 include("IsLessOrEqualVar.jl")
 export IsLessOrEqualVar
 
+include("DisjunctiveBinary.jl")
+export DisjunctiveBinary
+export slack
+export slackIfBefore
+export slackIfAfter
+export before
+export after
+export isFixed
+export lessOrEqual
+
 end
