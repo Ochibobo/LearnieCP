@@ -54,4 +54,40 @@ Element2D(T::Integer[][], x::IntVar, y::IntVar, z::IntVar)
 #### TableCT
 -  We have one bit for each of the bit set for each of the tuple.
 -  Gather all tuples with x = 1, for example and mark all their equivalent bitset values with `true`. Do the same for all the other bitsets x=2, x=3, x=n, y= 1,..., z = n
--  
+
+
+### Disjunctive
+- Also called Unary resource - specific case of cumulative; capacity = 1, demand = 1.
+- Reduce the makespan
+- Fix the starting time
+- Binary Decomposition is at least as strong as Cumulative constraint
+2 alternatives in search:
+- Fix the start times
+- Fix the ordering on each machine then eventually start
+  - Branch on the precedence
+  - Branch on the `reified` constraints to achieve this.
+    - bij = si + di <= sj
+    - bji = sj + dj <= si
+    - bji != bij
+- Take the earliest completion time into consideration
+  - With time windows, this is NP-hard
+  - Relax the problem; relax the lct constraint
+  - Compute the ect lower bound
+    - Sort activities by est first
+    - At each step, get the maximum between the est_i + p_i & ect + p_i
+    - Take into account the lst of the activities, which is exactly the `dual` problem 
+- Earliest completion time of nested sets of activities
+  - Nested set means the next set = previous set + 1 activity
+  - 
+- Perform overload checking
+  - Use an activity's left cut
+  - An inefficient approach involves using the `Theta-tree` n times with a complexity of `n^2*log(n)`
+- Consider a nested LCut by sorting activities by the latest completion time
+  - Complexity is now `O(n(log n))`
+- If the earliest completion time of the `Theta-Tree` exceeds the `Latest completion time` of activity `j`, throw an exception
+- Detectable Precedences
+  - DPrec(T, i) = {j | j in T \ {i} & est_i + p_i > lst_j - p_j } - i cannot be included in this set
+  - Hence the est_i >= max(est_i, ect(DPrec(T, i)))
+- Not-Last Rule
+  - An activity cannot be placed as the last one in a set; you'll go beyond the deadline.
+  - 
