@@ -16,4 +16,16 @@ export rectangleIndex
 export rectangles
 export getRectangle
 
+include("ThetaTree.jl")
+export Node
+export ect
+export sumP
+export ThetaTree
+export father
+export left
+export right
+export insert!
+export reCompute
+export reComputeAux
+
 end
