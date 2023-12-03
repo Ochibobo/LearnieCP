@@ -80,14 +80,40 @@ Element2D(T::Integer[][], x::IntVar, y::IntVar, z::IntVar)
   - Nested set means the next set = previous set + 1 activity
   - 
 - Perform overload checking
+  - This is a feasibitlity check
+  - If the `earliest start time` + `processing time` > `latest completion time` of the `omega`, throw an error
   - Use an activity's left cut
+    - This is the set of activities `i` whose `lct_i` <= `lct_j`
+    - Thus can be reformulated as:
+      - For all activity `j`, if the `ect(LCut_j)` > `lct(LCut_j)` then __fail__.
+      - `lct(LCut_j)` = `lct_j`
+    - Sort to make the left cuts nested
   - An inefficient approach involves using the `Theta-tree` n times with a complexity of `n^2*log(n)`
 - Consider a nested LCut by sorting activities by the latest completion time
   - Complexity is now `O(n(log n))`
 - If the earliest completion time of the `Theta-Tree` exceeds the `Latest completion time` of activity `j`, throw an exception
 - Detectable Precedences
   - DPrec(T, i) = {j | j in T \ {i} & est_i + p_i > lst_j - p_j } - i cannot be included in this set
-  - Hence the est_i >= max(est_i, ect(DPrec(T, i)))
+  - lst_j - p_j is the latest start time of activity j
+  - Tese are all the activities that must be scheduled befor i
+  - Hence the est_i >= max(est_i, ect(DPrec(T, i))); meaning the earliest start time of activity `i` cannot be earlier than the earliest completion time
+of the precidinf activities.
+  - The above can be done for all the activities `i`
+  - Consider the earliest completion time & the latest starting times
+    - Sort activites based on the earliest completion time
+      - This forms a nesting
+      - Get the detectable precedence of `i`
+      - Update `i`'s start time to max(est_i, ect_prec_i); `ect_prec_i` does not contain `i`
 - Not-Last Rule
   - An activity cannot be placed as the last one in a set; you'll go beyond the deadline.
-  - 
+  - Update an activity's latest completion time to:
+    - min(lct_i, max(lst_j, lst_k)); same as est_omega + p_omega > lct_j - p_j
+    - We take the maximum of the last 2 as we don't want to remove any feasible solution
+  - Maintain a `NLSet` - a NotLastSet
+  - The `NLSet(T, i)` is comprised of activity `j` such that:
+    - lct_j - p_j < lct_i
+    - Consider sorting in 2 ways:
+      - By `lct` increasing
+      - By `lct - p` increasing (basically `lst`)
+        - The 2 above will produce nesting relations for the `NLSet`
+    - 
