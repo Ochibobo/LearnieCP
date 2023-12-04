@@ -116,4 +116,8 @@ of the precidinf activities.
       - By `lct` increasing
       - By `lct - p` increasing (basically `lst`)
         - The 2 above will produce nesting relations for the `NLSet`
+    - Use the last activity in the `NLSet` to update the `lct` of activity `i` to `lct_last - p_last`; which is also `lst_last`
+      - The `last` one induces the least filtering
+    - `i` is always in `NLSet'(T, i)`
+    - If you sort the activities according to the `lst` then you have a nested `NLSet` relation
     - 
