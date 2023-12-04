@@ -165,7 +165,7 @@ function propagate(c::Disjuctive{T})::Nothing where T
         ## Perform the detectable precedence
         changed = detectablePrecedence(c)
         ## NotLast filtering
-        
+        changed = changed || notLast(c)
     end
 
     return nothing
@@ -237,23 +237,25 @@ function detectablePrecedence(c::Disjuctive)::Bool
 
     j_idx = 1
     j = lst_sorted[j_idx] ## Candidate precedence of i
-    j_idx += 1
     
     ## Initialize the theta-tree
     reset(c.thetaTree)
 
     ## Boolean to indicate whether any variable has changed
-    hasChanged = false
+    changed = false
 
     ## Loop through activities based on the sorted earliest completion time
     for i in 1:c.nVars
         ## Retrieve the most recent activity
         activity = ect_sorted[i]
+        ## Detect is I has been seen before
+        activity_seen = false
         
         ## Insert values into the thetaTree as long as ect_i + p_i > lst_j
         while minimum(c.endTimes[activity]) > maximum(c.startTimes[j])
+            activity_seen = (j == activity)
             ## Insert activity `j` into the thetaTree
-            insert!(c.thetaTree, j, minimum(c.endTimes[j]), c.durations[j])
+            insert!(c.thetaTree, c.rankEst[j], minimum(c.endTimes[j]), c.durations[j])
             j_idx += 1
 
             if j_idx > c.nVars
@@ -265,17 +267,22 @@ function detectablePrecedence(c::Disjuctive)::Bool
         end
 
         ## Start by removing activity from the ThetaTree
-        delete!(c.thetaTree, activity)
+        if activity_seen delete!(c.thetaTree, activity) end
         ## Update the earliest start time of activity
         if Utilities.ect(c.thetaTree) > minimum(c.startTimes[activity])
             ## Remove all values below the ThetTree's ect from this activity's start
             Variables.removeBelow(c.startTimes[activity], Utilities.ect(c.thetaTree))
             ## Indicate that there has been a variable change
-            hasChanged = true
+            changed = true
+        end
+
+        ## Return the activity if it was seen during this operation
+        if activity_seen
+            insert!(c.thetaTree, c.rank[activity], minimum(c.endTimes[activity]), c.durations[activity])
         end
     end
 
-    return hasChanged
+    return changed
 end
 
 
@@ -283,8 +290,64 @@ end
 """
 function notLast(c::Disjuctive)::Bool
     ## Sort activities according to the latest start time
+    lst_sorted = sortperm(c.startTimes, by = v -> maximum(v))
     ## Sort activities according to the latest completion time
+    lct_sorted = sortperm(c.endTimes, by = v -> maximum(v))
+
+    ## Get a referenct to the element with the smallest lst
+    idx = 1
+    k = lst_sorted[idx]
+    ## This leeps a reference to the last element to be processed from the lct_sorted list
+    j = 0
 
     ## For each activity i, the ThetaTree will contains the NLSet(T, i)
-    
+    reset(c.thetaTree)
+
+    ## Boolean to indicate if any variable changed
+    changed = false
+
+    ## Loop through the activities in the lct sorted order
+    for i in 1:nVars
+        ## Get the activity in reference
+        activity = lct_sorted[i]
+        ## Check if this activity is added to the ThetaTree in this loop
+        activity_seen = false
+
+        ## Insert the elements into the thetatree to make it equal to the NLSet(T, i)
+        while maximum(c.endTimes[activity]) > maximum(c.startTimes[k])
+            activity_seen = (k == activity)
+            ## Insert activity k into the ThetaTree
+            insert!(c.thetaTree, c.rank[k], minimum(c.endTimes[k]), c.durations[k])
+            ## j captures the reference to the last element to be inserted into the ThetaTree
+            j = k
+            ## Increase the idx
+            idx += 1
+
+            ## Check bounds
+            if idx > c.nVars
+                break
+            else
+                k = lst_sorted[idx]
+            end
+        end
+
+        ## If the activity was part of the Theta tree, remove it first
+        if activity_seen delete!(c.thetaTree, activity) end
+
+        ## Check if the ect of the NLSet(T, i) exceeds the lst of activity
+        if Utilities.ect(c.thetaTree) > maximum(c.startTimes[activity])
+            ## Update the activity's lct based on the last activity, j, in its NLSet
+            Variables.removeAbove(c.endTimes[i], maximum(c.startTimes[j]))
+            ## Update the changed variable
+            changed = true
+        end
+
+        ## Re-insert the activity if it had been removed
+        if activity_seen
+            insert!(c.thetaTree, c.rank[activity], minimum(c.endTimes[activity]), c.durations[activity])
+        end
+    end
+
+
+    return changed
 end
