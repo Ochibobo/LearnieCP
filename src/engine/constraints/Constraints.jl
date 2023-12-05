@@ -85,4 +85,7 @@ export after
 export isFixed
 export lessOrEqual
 
+include("Disjunctive.jl")
+export Disjunctive
+
 end
