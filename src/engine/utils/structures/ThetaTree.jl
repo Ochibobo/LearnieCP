@@ -211,7 +211,7 @@ function father(pos::Int)::Int
 
     if pos == 1 return 1 end
     
-    ## To get the father/parent index you divide the current index by 1
+    ## To get the father/parent index you divide the current index by 2
     return pos ÷ 2
 end
 
@@ -278,7 +278,7 @@ function delete!(t::ThetaTree, pos::Int)::Nothing
     ## Get the current pos
     totalPos = t.isize + pos
     ## Assert that the positions are valid
-    (pos < 1 || totalPos > t.size) && throw(DomainError("Specified position $pos is out of bounds"))
+    (pos < 1 || totalPos > t.size) && throw(DomainError("Specified position $totalPos is out of bounds"))
 
     ## Retrieve the node at pos
     node = t.nodes[totalPos]
