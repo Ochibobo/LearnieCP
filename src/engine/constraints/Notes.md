@@ -57,7 +57,7 @@ Element2D(T::Integer[][], x::IntVar, y::IntVar, z::IntVar)
 
 ### Cumulative
 - When an activity contributes to the profile it cannot be pushed beyond a mandatory part
-  - Fixed a `+1` error
+  - Fixed a `+1` error in removeBelow(startTime, est + 1)
 
 ### Disjunctive
 - Also called Unary resource - specific case of cumulative; capacity = 1, demand = 1.
