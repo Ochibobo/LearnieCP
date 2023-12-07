@@ -1,7 +1,7 @@
 ## Resource Constrained Project Scheduling Project
 
 ## Read the rcpsp file
-path = "./data/rcpsp/j30_1_1.rcp"
+path = "./data/rcpsp/j60_1_3.rcp"
 file = open(path)
 
 ## Read all lines
@@ -101,6 +101,7 @@ makeSpan = Engine.IntVar(solver, 0, horizon - 1)
 Engine.post(solver, Engine.Maximum{Integer}(endTimes, makeSpan))
 ## Attempt to minimize the makeSpan as the objective
 objective = Engine.Minimize{Integer}(makeSpan)
+
 
 ## Execute the search
 search = Engine.DFSearch(Engine.Solver.stateManager(solver),
