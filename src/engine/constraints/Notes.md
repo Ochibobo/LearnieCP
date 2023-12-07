@@ -55,6 +55,9 @@ Element2D(T::Integer[][], x::IntVar, y::IntVar, z::IntVar)
 -  We have one bit for each of the bit set for each of the tuple.
 -  Gather all tuples with x = 1, for example and mark all their equivalent bitset values with `true`. Do the same for all the other bitsets x=2, x=3, x=n, y= 1,..., z = n
 
+### Cumulative
+- When an activity contributes to the profile it cannot be pushed beyond a mandatory part
+  - Fixed a `+1` error
 
 ### Disjunctive
 - Also called Unary resource - specific case of cumulative; capacity = 1, demand = 1.
