@@ -1,7 +1,7 @@
 ## Resource Constrained Project Scheduling Project
 
 ## Read the rcpsp file
-path = "./data/rcpsp/j60_1_3.rcp"
+path = "./data/rcpsp/j30_1_1.rcp"
 file = open(path)
 
 ## Read all lines
