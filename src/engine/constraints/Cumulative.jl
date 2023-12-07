@@ -107,6 +107,7 @@ function propagate(c::Cumulative)::Nothing
         ## We are now dealing with profile rectangles, not individual activity rectangles
         rect = Utilities.getRectangle(profile, i)
         if rect.height > c.capacity
+            #println("Profile rectangle has height $(rect.height) which is greater than capacity: $(c.capacity)")
             throw(DomainError("Profile rectangle has height $(rect.height) which is greater than capacity: $(c.capacity)"))
         end
     end
@@ -114,43 +115,62 @@ function propagate(c::Cumulative)::Nothing
     ## TimeTable filtering: Check the consistency of the current time of an activity
     for (i, startTime) in enumerate(c.startTimes)
         ## If the current variable is not fixed
-        if !Variables.isFixed(startTime)
-            ## est is the earliest start time
+        if !Variables.isFixed(c.startTimes[i])
+            # ## est is the earliest start time
+            # est = minimum(c.startTimes[i])
+            # ## j is the index of the profile rectangle overlapping time `t`
+            # j = Utilities.rectangleIndex(profile, minimum(c.startTimes[i]))
+            # """
+            # // TODO 3: postpone i to a later point in time
+            # // hint:
+            # // Check that at every point in the interval
+            # // [start[i].getMin() ... start[i].getMin()+duration[i]-1]
+            # // there is enough remaining capacity.
+            # // You may also have to check the following profile rectangle(s).
+            # // Note that the activity you are currently postponing
+            # // may have contributed to the profile.
+            # """
+            # demand = c.demand[i]
+            # m = minimum(c.startTimes[i])
+            # n = minimum(c.startTimes[i]) + c.duration[i] - 1
+            # for t in minimum(c.startTimes[i]):(minimum(c.startTimes[i]) + c.duration[i] - 1)
+            #     ## Check if t is not in the mandatory part minimum(startTime) + c.duration[i]
+            #     if (!(t >= maximum(c.startTimes[i]) && t < (minimum(c.startTimes[i]) + c.duration[i])))
+            #         ## Move to a different rectangle if necessary
+            #         if Utilities.getRectangle(profile, j).endTime <= t
+            #             j = Utilities.rectangleIndex(profile, t)
+            #         end
+            #         ## Get the profile rectangle
+            #         rect = Utilities.getRectangle(profile, j)
+            #         ## If any violation is met (remaining capacity is not enough),
+            #         ## remove this minimum value (est) from the startTime's domain
+            #         if c.capacity < (rect.height + c.demand[i])
+            #             ## Remove est
+            #             Variables.remove(c.startTimes[i], minimum(c.startTimes[i]))
+            #             ## Update the est
+            #             ## est = minimum(startTime)
+            #             ## Exit the loop
+            #             t = minimum(c.startTimes[i]) + c.duration[i]
+            #         end
+            #     end
+            # end
+            
             est = minimum(startTime)
-            ## j is the index of the profile rectangle overlapping time `t`
-            j = Utilities.rectangleIndex(profile, minimum(startTime))
-            """
-            // TODO 3: postpone i to a later point in time
-            // hint:
-            // Check that at every point in the interval
-            // [start[i].getMin() ... start[i].getMin()+duration[i]-1]
-            // there is enough remaining capacity.
-            // You may also have to check the following profile rectangle(s).
-            // Note that the activity you are currently postponing
-            // may have contributed to the profile.
-            """
-            demand = c.demand[i]
-            for t in minimum(startTime):(minimum(startTime) + c.duration[i] - 1)
-                ## Check if t is not in the mandatory part
-                if (!((minimum(startTime) + c.duration[i]) > t >= maximum(startTime)))
-                    ## Move to a different rectangle if necessary
-                    if Utilities.getRectangle(profile, j).endTime <= t
-                        j = Utilities.rectangleIndex(profile, t)
-                    end
-                    ## Get the profile rectangle
-                    rect = Utilities.getRectangle(profile, j)
-                    ## If any violation is met (remaining capacity is not enough),
-                    ## remove this minimum value (est) from the startTime's domain
-                    if c.capacity < (rect.height + demand)
-                        ## Remove est
-                        Variables.remove(startTime, minimum(startTime))
-                        ## Update the est
-                        ## est = minimum(startTime)
-                        ## Exit the loop
-                        ##t = minimum(startTime) + c.duration[i]
-                    end
+            j = Utilities.rectangleIndex(profile, est)
+            while j <= size(profile) && Utilities.getRectangle(profile, j).startTime < min(est + c.duration[i], maximum(startTime))
+                ## Get the rectangle instance
+                rect = Utilities.getRectangle(profile, j)
+                ## Check if capacity is violated
+                if c.capacity < (rect.height + c.demand[i])
+                    ## Update the est
+                    est = min(Utilities.getRectangle(profile, j).endTime, maximum(startTime))
                 end
+                ## Increase j
+                j += 1
             end
+
+            ## Remove all times below the est
+            Variables.removeBelow(startTime, est)
         end
     end
 
@@ -168,14 +188,8 @@ function buildProfile(c::Cumulative)::Utilities.Profile
 
     for i in eachindex(c.startTimes)
         ## Get the mandatory part of this activity
-        ## Retieve the duration
-        duration = c.duration[i]
-
-        ## Get the release time
-        release_time = minimum(c.startTimes[i])
-
         ## Get the earliest completion time
-        ect = release_time + duration
+        ect = minimum(c.endTimes[i])
 
         ## Get the latest start time
         lst = maximum(c.startTimes[i])
