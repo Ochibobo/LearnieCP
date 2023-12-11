@@ -63,6 +63,8 @@ Here's an overview of the domain representaion:
 
 - Exceptions are still experimental. The aim is to put them in distinct categories & sub-categories that will be handled in precise ways by the solver while also providing exact messages, where necessary, to the user.
 
+#### Reification
+- [x] Refined Constraints
 
 #### Search
 - [x] DFSearch
@@ -84,6 +86,11 @@ Here's an overview of the domain representaion:
     - [ ] Tested
   - [x] Circuit Constraint
     - [ ] Tested
+  - [x] Scheduling constraint
+    - [x] Cumulative Constraint
+      - [x] Tested
+    - [x] Disjunctive Constraint
+      - [x] Tested  
 
 #### Branching Scheme
 - [x] SelectMin
@@ -155,8 +162,6 @@ This Ciruit constraint was used here on a _15x15_ grid. However, these results a
 
 ### RoadMap
 - [ ] Constraints 
-  - [ ] Global Constraints
-    - [ ] Scheduling Problem Constraints
   - [ ] More localized constraints
 - [ ] Branching Schema
   - [ ] Using _ML_
@@ -165,7 +170,6 @@ This Ciruit constraint was used here on a _15x15_ grid. However, these results a
   - [ ] Simulated Annaeling
   - [ ] Random Search
   - [ ] Tabu Search
-- [ ] Refined Interface
 - [ ] More examples
   - [ ] VRP
 - [ ] A Book on this approach
