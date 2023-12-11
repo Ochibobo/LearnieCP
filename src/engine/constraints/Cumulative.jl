@@ -115,11 +115,11 @@ function propagate(c::Cumulative)::Nothing
     ## TimeTable filtering: Check the consistency of the current time of an activity
     for (i, startTime) in enumerate(c.startTimes)
         ## If the current variable is not fixed
-        if !Variables.isFixed(c.startTimes[i])
+        if !Variables.isFixed(startTime)
             # ## est is the earliest start time
-            est = minimum(c.startTimes[i])
+            est = minimum(startTime)
             ## j is the index of the profile rectangle overlapping time `t`
-            j = Utilities.rectangleIndex(profile, minimum(c.startTimes[i]))
+            j = Utilities.rectangleIndex(profile, minimum(est))
             """
             // TODO 3: postpone i to a later point in time
             // hint:
@@ -131,9 +131,7 @@ function propagate(c::Cumulative)::Nothing
             // may have contributed to the profile.
             """
             demand = c.demand[i]
-            m = minimum(c.startTimes[i])
-            n = minimum(c.startTimes[i]) + c.duration[i] - 1
-            for t in minimum(c.startTimes[i]):(minimum(c.startTimes[i]) + c.duration[i] - 1)
+            for t in minimum(startTime):(minimum(c.endTimes[i]) - 1)
                 ## Check if t is not in the mandatory part minimum(startTime) + c.duration[i]
                 if (!(maximum(c.startTimes[i]) <= t < (minimum(c.startTimes[i]) + c.duration[i])))
                     ## Move to a different rectangle if necessary
@@ -144,7 +142,7 @@ function propagate(c::Cumulative)::Nothing
                     rect = Utilities.getRectangle(profile, j)
                     ## If any violation is met (remaining capacity is not enough),
                     ## remove this minimum value (est) from the startTime's domain
-                    if c.capacity < (rect.height + c.demand[i])
+                    if c.capacity < (rect.height + demand)
                         ## Remove below est + 1
                         Variables.removeBelow(c.startTimes[i], minimum(c.startTimes[i]) + 1)
                         ## Update the est
