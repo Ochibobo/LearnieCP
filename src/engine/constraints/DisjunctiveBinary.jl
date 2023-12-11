@@ -12,15 +12,11 @@
         active::State
         scheduled::Bool
 
-        function DisjunctiveBinary{T}(start1::AbstractVariable{T}, duration1::T, start2::AbstractVariable{T}, duration2::T) where T
+        function DisjunctiveBinary{T}(start1::AbstractVariable{T}, end1::AbstractVariable{T}, start2::AbstractVariable{T}, end2::AbstractVariable{T}) where T
             ## Get the solver instance
             solver = Variables.solver(start1)
             ## Get the stateManager instance
             sm = stateManager(solver)
-
-            ## End variables
-            end1 = start1 + duration1
-            end2 = start2 + duration2
 
             active = makeStateRef(sm, true)
 
