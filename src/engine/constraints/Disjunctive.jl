@@ -34,8 +34,8 @@
 
             startMin = zeros(T, nVars)
             endMax = zeros(T, nVars)
-            permEst = zeros(T, nVars)
-            permLct = zeros(T, nVars)
+            permEst = map(i -> i, 1:nVars)
+            permLct = map(i -> i, 1:nVars)
             rankEst = zeros(T, nVars)
 
             ## Create an instance of the ThetaTree
@@ -134,25 +134,30 @@ function post(c::Disjunctive{T})::Nothing where T
         propagateOnBoundChange(var, c)
     end
 
+    # demands = fill(1, c.nVars)
+
+    # Solver.post(c.solver, Cumulative{T}(c.startTimes, c.durations, demands, 1))
+    
+    ## Post the DisjunctiveBinary constraint
+    for i in 1:c.nVars
+        for j in (i + 1):c.nVars
+            Solver.post(c.solver, 
+                DisjunctiveBinary{T}(c.startTimes[i], c.endTimes[i],
+                                    c.startTimes[j], c.endTimes[j]))
+            
+        end
+    end
+    
+
     ## Post mirror
     if c.postMirror
-         ## Post the DisjunctiveBinary constraint
-        for i in 1:c.nVars
-            for j in (i + 1):c.nVars
-                Solver.post(c.solver, 
-                    DisjunctiveBinary{T}(c.startTimes[i], c.durations[i], 
-                                        c.startTimes[j], c.durations[j]))
-               
-            end
-        end
-
         startMirror = map(var -> -var, c.endTimes)
 
         Solver.post(c.solver, Disjunctive{T}(startMirror, c.durations, postMirror = false), enforceFixpoint = false)
-        
-        ## Perform the initial propagation
-        propagate(c)
     end
+
+    ## Perform the initial propagation
+    propagate(c)
 
     return nothing
 end
@@ -212,7 +217,7 @@ function overloadCheck(c::Disjunctive)::Nothing
 
     ## Get the index permutation of the sorted lct - this nesting improves the feasibility check
     c.permLct = sortperm(c.endTimes, by = v -> maximum(v))
-    println(c.permLct)
+
     ## Reset the ThetaTree
     reset(c.thetaTree)
 
@@ -257,11 +262,11 @@ function detectablePrecedence(c::Disjunctive)::Bool
     activity_seen = falses(c.nVars)
 
     ## Loop through activities based on the sorted earliest completion time
-    for i in 1:c.nVars
+    for i in eachindex(ect_sorted)
         ## Retrieve the most recent activity
         activity = ect_sorted[i]
         
-        ## Insert values into the thetaTree as long as ect_i + p_i > lst_j
+        ## Insert values into the thetaTree as long as est_i + p_i > lst_j
         while j_idx <= c.nVars && minimum(c.endTimes[activity]) > maximum(c.startTimes[lst_sorted[j_idx]])
             j = lst_sorted[j_idx]
             ## Mark an activity as being seen
@@ -274,13 +279,14 @@ function detectablePrecedence(c::Disjunctive)::Bool
         ## Start by removing activity from the ThetaTree
         if activity_seen[activity] 
             delete!(c.thetaTree, c.rankEst[activity])
-            ## Update the earliest start time of activity
-            c.startMin[activity] = max(Utilities.ect(c.thetaTree), c.startMin[activity])
-            ## Return the activity if it was seen during this operation
+        end
+
+        ## Update the earliest start time of activity
+        c.startMin[activity] = max(Utilities.ect(c.thetaTree), c.startMin[activity])
+
+          ## Re-insert the activity if it was seen during this operation
+        if activity_seen[activity]
             insert!(c.thetaTree, c.rankEst[activity], minimum(c.endTimes[activity]), c.durations[activity])
-        else
-            ## Update the earliest start time of activity
-            c.startMin[activity] = max(Utilities.ect(c.thetaTree), c.startMin[activity])
         end
     end
 
@@ -324,7 +330,7 @@ function notLast(c::Disjunctive)::Bool
     activity_seen = falses(c.nVars)
 
     ## Loop through the activities in the lct sorted order
-    for i in 1:c.nVars
+    for i in eachindex(lct_sorted)
         ## Get the activity in reference
         activity = lct_sorted[i]
 
@@ -343,19 +349,17 @@ function notLast(c::Disjunctive)::Bool
         ## If the activity was part of the Theta tree, remove it first
         if activity_seen[activity]
             delete!(c.thetaTree, c.rankEst[activity]) 
-            ## Check if the ect of the NLSet(T, i) exceeds the lst of activity
-            if Utilities.ect(c.thetaTree) > maximum(c.startTimes[activity])
-                ## Update the activity's lct based on the last activity, j, in its NLSet
-                c.endMax[activity] = maximum(c.startTimes[k])
-            end
-            ## Re-insert the activity if it had been removed yet it had already been seen
+        end
+
+        ## Check if the ect of the NLSet(T, i) exceeds the lst of activity
+        if Utilities.ect(c.thetaTree) > maximum(c.startTimes[activity])
+            ## Update the activity's lct based on the last activity, j, in its NLSet
+            c.endMax[activity] = maximum(c.startTimes[j])
+        end
+
+        ## Re-insert the activity if it had been removed yet it had already been seen
+        if activity_seen[activity]
             insert!(c.thetaTree, c.rankEst[activity], minimum(c.endTimes[activity]), c.durations[activity])
-        else
-            ## Check if the ect of the NLSet(T, i) exceeds the lst of activity
-            if Utilities.ect(c.thetaTree) > maximum(c.startTimes[activity])
-                ## Update the activity's lct based on the last activity, j, in its NLSet
-                c.endMax[activity] = maximum(c.startTimes[k])
-            end
         end
     end
 
