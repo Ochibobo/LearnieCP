@@ -71,6 +71,20 @@ function fix(b::BoolVar, value::Integer)::Nothing
     return nothing
 end
 
+
+"""
+    remove(iv::BoolVar, v::Integer)::Nothing
+
+Function to remove an element from the variable's domain
+"""
+function remove(b::BoolVar, v::Integer)::Nothing
+    (v < 0 || v > 1) && throw(DomainError("Value $v is out of the range of boolean values. Accepted range is [0, 1]"))
+    remove(variable(b), v)
+
+    return nothing
+end
+
+
 """
     removeAbove(b::BoolVar, v::Integer)::Nothing
 
