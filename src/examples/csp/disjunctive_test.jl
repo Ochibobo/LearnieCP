@@ -12,7 +12,7 @@ Engine.post(solver, disjunctive);
 
 search = Engine.DFSearch(Engine.Solver.stateManager(solver), Engine.FirstFail(x));
 Engine.addOnSolution(search, () -> begin
-   println("\n\n\n")
+   println("Solution found.\n\n\n")
 end)
 Engine.solve(search);
 
