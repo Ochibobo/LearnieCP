@@ -50,26 +50,20 @@
     active::State
     scheduled::Bool
 
-    function DisjunctiveBinary{T}(start1::AbstractVariable{T}, duration1::T, start2::AbstractVariable{T}, duration2::T) where T
+    function DisjunctiveBinary{T}(start1::AbstractVariable{T}, end1::AbstractVariable{T}, start2::AbstractVariable{T}, end2::AbstractVariable{T}) where T
         ## Get the solver instance
         solver = Variables.solver(start1)
         ## Get the stateManager instance
         sm = stateManager(solver)
 
-        ## End variables
-        end1 = start1 + duration1
-        end2 = start2 + duration2
-
         active = makeStateRef(sm, true)
 
         before = BoolVar(solver)
-        after = !before
+        after = BoolVar(solver)
 
         new{T}(solver, start1, start2, end1, end2, before, after, active, false)
     end
 end
-
-as_abs(b::BoolVar)::AbstractVariable{Integer} = b
 
 """
     post(c::DisjunctiveBinary{T})::Nothing
@@ -80,6 +74,9 @@ function post(c::DisjunctiveBinary{T})::Nothing where T
     ## One of the 2 activities must proceed the other
     Solver.post(c.solver, IsLessOrEqualVar{T}(c.before, c.end1, c.start2))
     Solver.post(c.solver, IsLessOrEqualVar{T}(c.after, c.end2, c.start1))
+    ## Solver.post(c.solver, NotEqual{T}(c.before, c.after), enforceFixpoint = false)
+    ## Ensure that `after` is the opposite of `before` - this is just 
+    c.after = !c.before
 
     return nothing
 end
