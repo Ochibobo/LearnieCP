@@ -65,11 +65,11 @@ end
 Function to solve the CSP
 """
 function solve(s::DFSearch; searchLimit::Function = () -> false)::Nothing
-    # withNewState(stateManager(s), () -> begin this was a replication of storage, don't know how impactful it was
-    dfs(s, searchLimit = searchLimit)
-    ## Mark the search as being completed
-    markAsCompleted(s.searchStatistics)
-    # end)
+    withNewState(stateManager(s), () -> begin ## this was a replication of storage, don't know how impactful it was
+        dfs(s, searchLimit = searchLimit)
+        ## Mark the search as being completed
+        markAsCompleted(s.searchStatistics)
+    end)
 end
 
 
@@ -104,7 +104,7 @@ function dfs(s::DFSearch; searchLimit::Function = () -> false)::Nothing
                 catch e
                     ## Increase the number of failures
                     increaseNumberOfFailures(s.searchStatistics)
-                    # println("Failure in search node with error $e")
+                    ## println("Failure in search node with error $e")
                     ##throw(e)
                 end
             end)
