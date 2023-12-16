@@ -70,9 +70,9 @@ function post(c::DisjunctiveBinary{T})::Nothing where T
     ## One of the 2 activities must proceed the other
     Solver.post(c.solver, IsLessOrEqualVar{T}(c.before, c.end1, c.start2))
     Solver.post(c.solver, IsLessOrEqualVar{T}(c.after, c.end2, c.start1))
-    ## Solver.post(c.solver, NotEqual{T}(c.before, c.after), enforceFixpoint = false)
+    Solver.post(c.solver, NotEqual{T}(c.before, c.after))
     ## Ensure that `after` is the opposite of `before` - this is just 
-    c.after = !c.before
+    # c.after = !c.before
 
     return nothing
 end
@@ -165,7 +165,7 @@ end
     active::State
     scheduled::Bool
 
-    function lessOrEqual(x::AbstractVariable{T}, v::T) where T
+    function lessOrEqual{T}(x::AbstractVariable{T}, v::T) where T
         solver = Variables.solver(x)
         sm = stateManager(solver)
 
