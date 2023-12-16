@@ -1,0 +1,13 @@
+course_number,course_title,slug,block,primary_lang,lab_days
+511,Programming for Data Science,py-prog,1,python,WTh
+521,Computing Platforms for Data Science,platforms-dsci,1,none,MT
+551,Descriptive Statistics and Probability for Data Science,stat-prob-dsci,1,R,MT
+523,Programming for Data Manipulation,r-prog,1,R,WTh
+512,Algorithms and Data Structures,alg-data-struct,2,python,TTh
+531,Data Visualization I,viz-1,2,both,MW
+552,Statistical Inference and Computation I,stat-inf-1,2,R,MT
+571,Supervised Learning I,sup-learn-1,2,python,WTh
+513,Databases and Data Retrieval,database-data-retr,3,none,WTh
+522,Data Science Workflows,dsci-workflows,3,both,WTh
+561,Regression I,regr-1,3,R,MT
+573,Feature and Model Selection,feat-model-select,3,python,MT
