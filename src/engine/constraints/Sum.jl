@@ -98,7 +98,7 @@
 
     ## Used to create a new Sum constraint where ∑variables = y
     function Sum{T}(variables::Vector{<:AbstractVariable{T}}, y::T) where T
-        solver = Variables.solver(variables[0])
+        solver = Variables.solver(variables[1])
         yVar = Variables.IntVar(solver, -y, -y)
 
         vars = Vector{AbstractVariable{T}}()
