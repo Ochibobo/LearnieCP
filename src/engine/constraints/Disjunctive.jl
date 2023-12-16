@@ -138,6 +138,7 @@ function post(c::Disjunctive{T})::Nothing where T
 
     # Solver.post(c.solver, Cumulative{T}(c.startTimes, c.durations, demands, 1))
     
+    ## Post the DisjunctiveBinary constraint
     for i in 1:c.nVars
         for j in (i + 1):c.nVars
             Solver.post(c.solver, 
@@ -146,8 +147,7 @@ function post(c::Disjunctive{T})::Nothing where T
             
         end
     end
-    
-    ## Post the DisjunctiveBinary constraint
+        
     ## Post mirror
     if c.postMirror
         startMirror = map(var -> -var, c.endTimes)
