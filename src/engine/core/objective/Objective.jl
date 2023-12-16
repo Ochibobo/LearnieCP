@@ -47,7 +47,8 @@ end
 Function to `tighten` to upper bound of the variable to be minimized
 """
 function tighten(m::Minimize)::Nothing
-    if(!Variables.isFixed(m.value)) 
+    if(!Variables.isFixed(m.value))
+        println("Variable not fixed for minimization with size: $(size(m.value))") 
         throw(ErrorException("Variable not fixed for minimization"))
     end
     ## Reduce the bound by 1
