@@ -178,6 +178,8 @@ This Ciruit constraint was used here on a _15x15_ grid. However, these results a
 - [ ] Simplex or methods alike
 - [ ] A smoother interface - probably link with `JuMP`
 - [ ] Return the objective value of an optimization problem using `objectiveValue` function
+- [ ] Solver state of constraints, variables and the objective
+  - [ ] Printing of solver state to show the model.
 
 ---
 > Contributions are welcome.
