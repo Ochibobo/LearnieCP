@@ -126,8 +126,10 @@ export not
 
 ## Import the Objective definition
 include("objective/Objective.jl")
+using .Objective
 export Minimize
 export tighten
 export objectiveValue
+export Maximize
 
 end
