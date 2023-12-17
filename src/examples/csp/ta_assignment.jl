@@ -101,29 +101,37 @@ for row in eachrow(courses_df)
     course_block_dict[row[:block]] = list
 end
 
+course_block_dict
+courses
 # courses
 ## A TA can only cover 1 course at a time in a given block
 for (i, tA) in enumerate(TAs)
-    vars = Vector{Engine.AbstractVariable{Integer}}()
+    #vars = Vector{Engine.AbstractVariable{Integer}}()
+    ta_courses = tas_df[i, :can_teach]
+    push!(ta_courses, tas_df[i, :enthusiastic]...)
+    ta_courses = parse.(Int, ta_courses)
     for block in blocks
         ## Collect all courses in the block
         courses_in_block = course_block_dict[block]
         ## Get the indices
-        course_indices = indexin(courses, courses_in_block)
+        course_indices = indexin(courses_in_block, courses)
         ## Use the indices to collect the variables
         vars = Vector{Engine.AbstractVariable{Integer}}()
         for j in course_indices
-            if !isnothing(j)
+            if !isnothing(j) && in(courses[j], ta_courses)
                 push!(vars, x[i, j])
             end
         end
+
+        ## Only post a constraint if the TA has a course in the current block
+        if !isempty(vars)
+            ## Enforce a summation
+            block_sum = Engine.summation(vars)
+
+            ## Ensure the sum is <= 1
+            Engine.post(solver, Engine.lessOrEqual{Integer}(block_sum, 1))
+        end
     end
-
-    ## Enforce a summation
-    block_sum = Engine.summation(vars)
-
-    ## Ensure the sum is <= 1
-    Engine.post(solver, Engine.lessOrEqual{Integer}(block_sum, 1))
 end
 
 
@@ -169,10 +177,14 @@ end
 objective_value = Engine.summation(objective_terms)
 
 ## Maximize the objective value
-objective = Engine.Minimize{Integer}(-objective_value)
+objective = Engine.Maximize{Integer}(objective_value)
 
 ## Define the search
 search = Engine.DFSearch(Engine.Solver.stateManager(solver), Engine.FirstFail(x...))
+
+## Store the solution dataframe and the objective value
+solution_df = Ref{DataFrame}()
+score = Ref{Int}(0)
 
 Engine.addOnSolution(search, () -> begin
     println("Found solution...")
@@ -193,15 +205,155 @@ Engine.addOnSolution(search, () -> begin
     println(answer_df)
 
     println("----------------------------------------")
+
+    solution_df[] = answer_df
+    score[] = minimum(objective_value)
 end)
 
 ## Optimize the solution
 Engine.optimize(objective, search)
 
 search.searchStatistics
+score = score[]
+solution_df = solution_df[]
+vscodedisplay(solution_df)
+
 
 
 ## Work on assertions
-## Compare with UBC answers
-## Get the objective value
+"""
+Constraints:
+    - Each course should be assigned to exactly 2 TAs
+    - A TA can cover only 1 course at a time in a given block
+    - A TA can only be assigned to a course they have listed as "can teach" or "enthusiastic to teach"
+    - To cover a course, a TA must be available for one of the 2 lab days
+"""
 
+## Assert that each course should be assigned to exactly 2 TAs
+for col in eachcol(solution_df[:, 2:end])
+    if sum(col) != 2
+        println("Constraint violated")
+    end
+end
+
+## A TA can cover only 1 course at a time in a given block
+blocks
+course_block_dict
+
+## Invert the course_block_dict
+course_to_block_dict = Dict{Int, Int}()
+
+for block in keys(course_block_dict)
+    _courses = course_block_dict[block]
+
+    for c in _courses
+        course_to_block_dict[c] = block
+    end
+end
+
+course_to_block_dict
+
+solution_df
+for i in eachindex(TAs)
+    block = Set{Int}()
+    for course in courses
+        if solution_df[i, string(course)] == 1
+            block_number = course_to_block_dict[course]
+            if in(block_number, block)
+                println("Constraint voilated..")
+            end
+            push!(block, block_number)
+        end
+    end
+end
+
+
+### A TA can only be assigned to a course they have listed as "can teach" or "enthusiastic to teach"
+for i in eachindex(TAs)
+    for course in courses
+        if solution_df[i, string(course)] == 1
+            if ta_with_courses_df[i, string(course)] == 0
+                println("Constraint violated...")
+            end
+        end
+    end
+end
+
+
+### To cover a course, a TA must be available for one of the 2 lab days
+for i in eachindex(TAs)
+    for (j, c) in enumerate(courses)
+        course = string(c)
+        ## Only pick assigned courses
+        if solution_df[i, course] == 1
+            ## Assert availability
+            days_available = tas_df[i, :availability]
+
+            ## Get the course's lab days
+            days = courses_df[j, :lab_days]
+            day_1 = days[1]
+            day_2 = days[2]
+
+            availability = contains(days_available, day_1) + contains(days_available, day_2)
+
+            if availability == 0
+                println("Constraint violated...")
+            end
+        end
+    end
+end
+
+### All constraints have been verified and they've all been matched
+"""
+DataFrames containing results
+"""
+solution_df
+## TAs courses based on blocks
+tas_courses_by_blocks_df = stack(solution_df, 2:ncol(solution_df))
+
+## Remove the 0 columns
+tas_courses_by_blocks_df = filter(row -> row.value == 1, tas_courses_by_blocks_df)
+
+## Append the blocks
+course_block = Int[]
+
+for row in eachrow(tas_courses_by_blocks_df)
+    course = parse(Int, row[2])
+    push!(course_block, course_to_block_dict[course])
+end
+
+## Add this as a column to the df
+insertcols!(tas_courses_by_blocks_df, 4, :block => course_block)
+
+## Unstack based on the block number
+## Remove value column first
+select!(tas_courses_by_blocks_df, Not([:value]))
+
+tas_courses_by_blocks_df = unstack(tas_courses_by_blocks_df, :name, :block, :variable)
+df = coalesce.(tas_courses_by_blocks_df, "")
+vscodedisplay(df)
+
+
+## Show the courses' TAs
+course_tas = [String[] for _ in 1:nCourses]
+
+for (i, course) in enumerate(courses)
+    entries = solution_df[:, i + 1]
+    for t in eachindex(entries)
+        if entries[t] == 1
+            push!(course_tas[i], solution_df[t, :name])
+        end
+    end
+end
+
+course_tas
+ta1 = map(r -> r[1], course_tas)
+ta2 = map(r -> r[2], course_tas)
+
+## Create the DataFrame
+courses_with_tas = DataFrame(course = courses, TA1 = ta1, TA2 = ta2)
+
+vscodedisplay(courses_with_tas)
+
+
+##############################################################################################################################################################
