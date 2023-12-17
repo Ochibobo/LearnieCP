@@ -158,6 +158,21 @@ This Ciruit constraint was used here on a _15x15_ grid. However, these results a
 
 ![Sample TSP 15x15 distance progress update](assets/tsp_v1.gif)
 
+
+### TAs with Courses assignment (Example from UBC lecture)
+![Entire Assignment DataFrame](assets/EntireAssignmentDataFrame.png)
+
+TAs with course and block details dataframe:
+</br>
+
+![TA with Course And Block DataFrame](assets/TACourseBlockDataFram.png)
+
+
+Courses with respective TAs dataframe:
+</br>
+
+![Course with TAs DataFrame](assets/CourseTADataFrame.png)
+
 ---
 
 ### RoadMap
