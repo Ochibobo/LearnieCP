@@ -88,4 +88,7 @@ export lessOrEqual
 include("Disjunctive.jl")
 export Disjunctive
 
+include("IsEqual.jl")
+export IsEqual
+
 end
