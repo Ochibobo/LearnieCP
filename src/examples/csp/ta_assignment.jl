@@ -80,11 +80,11 @@ nTAs = length(TAs)
 TAS_PER_COURSE = 2
 
 ## The variables are Boolean variables at the point of intersection between TAs and courses
-x = Matrix{Engine.IntVar}(undef, nTAs, nCourses)
+x = Matrix{Engine.AbstractVariable{Integer}}(undef, nTAs, nCourses)
 
 for i in 1:nTAs
     for j in 1:nCourses
-        x[i, j] = Engine.IntVar(solver, 0, 1)
+        x[i, j] = Engine.BoolVar(solver)
     end
 end
 
@@ -184,7 +184,7 @@ search = Engine.DFSearch(Engine.Solver.stateManager(solver), Engine.FirstFail(x.
 
 ## Store the solution dataframe and the objective value
 solution_df = Ref{DataFrame}()
-score = Ref{Int}(0)
+scores = Vector{Int}()
 
 Engine.addOnSolution(search, () -> begin
     println("Found solution...")
@@ -207,17 +207,20 @@ Engine.addOnSolution(search, () -> begin
     println("----------------------------------------")
 
     solution_df[] = answer_df
-    score[] = minimum(objective_value)
+    push!(scores, minimum(objective_value))
 end)
 
 ## Optimize the solution
 Engine.optimize(objective, search)
 
 search.searchStatistics
-score = score[]
 solution_df = solution_df[]
+scores
 vscodedisplay(solution_df)
 
+## Plot the score plot to ensure it is increasing
+using Plots
+plot(scores)
 
 
 ## Work on assertions
