@@ -24,7 +24,7 @@
 variable as accordingly. However, if the boolean variable is set prior, then it has an effect on the value of the abstract
 variable depending on whether the boolean variable is fixed to `true` or `false`.
 """
-@with_kw struct IsEqual{T} <: AbstractConstraint
+@with_kw mutable struct IsEqual{T} <: AbstractConstraint
     solver::AbstractSolver
     var::AbstractVariable{T}
     val::T
