@@ -1,5 +1,40 @@
 """
-`IsOr` constraint structure.
+    @with_kw mutable struct IsOr <: AbstractConstraint
+        solver::AbstractSolver
+        b::BoolVar
+        bVars::Vector{BoolVar}
+
+        ## The Or constraint
+        or::Or
+
+        ## Variables to keep track of fixed & unfixed variables
+        nUf::StateInt
+        unFixed::Vector{Int}
+
+        ## Constraint-wide variables
+        active::State
+        scheduled::Bool
+
+        function IsOr(b::BoolVar, bVars::Vector{BoolVar})
+            isempty(bVars) && throw(ArgumentError("bVars cannot be an empty vector"))
+
+            ## Get the solver instance
+            solver = Variables.solver(bVars[1])
+
+            sm = stateManager(solver)
+
+            or = Or(bVars)
+
+            nUf = makeStateRef(sm, length(bVars))
+            unFixed = collect(1:length(bVars))
+        
+            active = makeStateRef(sm, true)
+
+            new(solver, b, bVars, or, nUf, unFixed, active, false)
+        end
+    end
+
+`IsOr` constraint structure using a reified `BoolVar`.
 """
 @with_kw mutable struct IsOr <: AbstractConstraint
     solver::AbstractSolver
