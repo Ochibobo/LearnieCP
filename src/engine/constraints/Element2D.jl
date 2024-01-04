@@ -16,9 +16,81 @@
 end
 
 
+"""
+    @with_kw mutable struct Element2D{T} <: AbstractConstraint
+        solver::AbstractSolver
+        matrix::AbstractArray{T}
+        x::AbstractVariable{T}
+        y::AbstractVariable{T}
+        z::AbstractVariable{T}
+        zxy::Vector{Tripple{T}}
+        nRows::Integer
+        nCols::Integer
+        topPointer::StateInt
+        bottomPointer::StateInt
+
+        ## Row & Column counters reflecting the domain size of the variables left by row & column
+        nColSup::Vector{StateInt}
+        nRowSup::Vector{StateInt}
+
+        ## Active and schedule variables related to all constraints
+        active::State
+        scheduled::Bool
+
+        function Element2D{T}(matrix::AbstractArray{T}, x::AbstractVariable{T}, y::AbstractVariable{T}, z::AbstractVariable{T}) where T
+            ## Get the solver instance
+            solver = Variables.solver(x)
+            ## Get the state manager
+            sm = stateManager(solver)
+            
+            ## Get the number of rows & columns the matrix has (columns are most likely just 2)
+            nRows = size(matrix, 1)
+            nCols = size(matrix, 2)
+
+            ## Fill the zxy vector with appropriate Tripple values
+            zxy = Vector{Tripple{T}}(undef, nRows * nCols)
+            idx = 1
+            for (ii, v) in enumerate(eachrow(matrix))
+                for jj in eachindex(v)
+                    zxy[idx] = Tripple{T}(x = ii, y = jj, z = matrix[ii, jj])
+                    idx =  idx + 1
+                end
+            end
+
+            ## Sort the zxy vector
+            sort!(zxy, by = t -> t.z)
+
+            ## Initialize the top and bottom pointers
+            topPointer = makeStateInt(sm, 1)
+            bottomPointer = makeStateInt(sm, length(zxy))
+
+            ## Initialize the nColSup & nRowSup
+            ## nRowSup has each entry comprising of a StateInt with a domain size = nCols, with 
+            nRowsSup = Vector{StateInt}(undef, nRows)
+            for i in 1:nRows
+                nRowsSup[i] = makeStateInt(sm, nCols)
+            end
+
+            ## nColSup has each entry comprising of a StateInt with a domain size = nRows
+            nColSup = Vector{StateInt}(undef, nCols)
+            for i in 1:nCols
+                nColSup[i] = makeStateInt(sm, nRows)
+            end
+
+            ## Active state
+            active = makeStateRef(sm, true)
+
+            ## Return a new instance of the Element2D vector
+            new{T}(solver, matrix, x, y, z, zxy, nRows, nCols, 
+                    bottomPointer, topPointer, nColSup, nRowsSup, active, false)
+        end
+    end
+
+`Element2D` constraint structure.
+"""
 @with_kw mutable struct Element2D{T} <: AbstractConstraint
     solver::AbstractSolver
-    matrix::Matrix{T}
+    matrix::AbstractArray{T}
     x::AbstractVariable{T}
     y::AbstractVariable{T}
     z::AbstractVariable{T}
@@ -36,7 +108,7 @@ end
     active::State
     scheduled::Bool
 
-    function Element2D{T}(matrix::Matrix{T}, x::AbstractVariable{T}, y::AbstractVariable{T}, z::AbstractVariable{T}) where T
+    function Element2D{T}(matrix::AbstractArray{T}, x::AbstractVariable{T}, y::AbstractVariable{T}, z::AbstractVariable{T}) where T
         ## Get the solver instance
         solver = Variables.solver(x)
         ## Get the state manager
@@ -181,11 +253,11 @@ end
 
 
 """
-    element2D(matrix::Matrix{T}, x::AbstractVariable{T}, y::AbstractVariable{T})::AbstractVariable{T} where T
+    element2D(matrix::AbstractArray{T}, x::AbstractVariable{T}, y::AbstractVariable{T})::AbstractVariable{T} where T
 
 Helper function for the `Element2D` constraint. It returns the variable `z`
 """
-function element2D(matrix::Matrix{T}, x::AbstractVariable{T}, y::AbstractVariable{T})::AbstractVariable{T} where T
+function element2D(matrix::AbstractArray{T}, x::AbstractVariable{T}, y::AbstractVariable{T})::AbstractVariable{T} where T
     ## Get the minimum & maximum matrix values
     min = minimum(matrix)
     max = maximum(matrix)
