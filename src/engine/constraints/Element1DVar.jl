@@ -29,7 +29,7 @@
 """
 @with_kw mutable struct Element1DVar{T} <: AbstractConstraint
     solver::AbstractSolver
-    array::Vector{AbstractVariable{T}}
+    array::AbstractVector{AbstractVariable{T}}
     y::AbstractVariable{Integer}
     z::AbstractVariable{T}
 
@@ -168,11 +168,11 @@ end
 
 
 """
-    element1DVar(array::Vector{AbstractVariable{T}}, y::AbstractVariable{T}) where T
+    element1DVar(array::AbstractVector{AbstractVariable{T}}, y::AbstractVariable{T}) where T
 
 Helper function for the `Element1DVar` constraint. It returns an `AbstractVariable{T}` that has the value of the variable indexed at `y`
 """
-function element1DVar(array::Vector{AbstractVariable{T}}, y::AbstractVariable{T}) where T
+function element1DVar(array::AbstractVector{AbstractVariable{T}}, y::AbstractVariable{T}) where T
     ## Get the solver instance
     solver = Variables.solver(y)
 
