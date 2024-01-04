@@ -30,7 +30,7 @@ In other words: `T[y] = z`
 """
 @with_kw mutable struct Element1D{T} <: AbstractConstraint
     solver::AbstractSolver
-    array::Vector{T}
+    array::AbstractVector{T}
     y::AbstractVariable{T}
     z::AbstractVariable{T}
     numberOfEntries::Integer
@@ -42,7 +42,7 @@ In other words: `T[y] = z`
     active::State
     scheduled::Bool
     
-    function Element1D{T}(array::Vector{<:T}, y::AbstractVariable{T}, z::AbstractVariable{T}) where T
+    function Element1D{T}(array::AbstractVector{<:T}, y::AbstractVariable{T}, z::AbstractVariable{T}) where T
         ## The solver instance
         solver = Variables.solver(y)
         ## State Manager
@@ -166,9 +166,11 @@ function propagate(c::Element1D)::Nothing
 end
 
 """
+    element1D(array::AbstractVector{T}, y::AbstractVariable{T})::AbstractVariable{T} where T
+
 Helper function for the `Element1D` constraint
 """
-function element1D(array::Vector{T}, y::AbstractVariable{T})::AbstractVariable{T} where T
+function element1D(array::AbstractVector{T}, y::AbstractVariable{T})::AbstractVariable{T} where T
     ## Get a mapping ov the values in the array
     freqMap = Dict{Integer, Integer}()
 
