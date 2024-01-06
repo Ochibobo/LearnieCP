@@ -1,4 +1,5 @@
 ### Steel Mill Problem
+using OffsetArrays
 
 ## Read the bench file
 path = "./data/steel/bench_19_10"
@@ -37,20 +38,20 @@ maxCapacity = maximum(capacities)
 maxNumberOfColorsPerSlab = 2
 
 ## Store the minimum loss per load level
-loss = zeros(Int, maxCapacity + 1)
+base_loss_vector = zeros(Int, maxCapacity + 1)
+loss = OffsetVector(base_loss_vector, 0:maxCapacity)
 capaIdx = 1
 
 ## Update the minimum loss per load level
-for i in 1:maxCapacity
-    loss[i + 1] = capacities[capaIdx] - i
-    if loss[i + 1] == 0
+for i in 0:maxCapacity
+    loss[i] = capacities[capaIdx] - i
+    if loss[i] == 0
         capaIdx += 1
     end
 end
 
 ## Update the first loss entry
-loss[1] = 0
-
+loss[0] = 0
 
 
 ### Model Definition
@@ -128,7 +129,7 @@ Engine.post(solver, Engine.Sum{Integer}(l, sum(capacities)))
 slabLosses = Vector{AbstractVariable{Integer}}(undef, numberOfSlabs)
 
 for j in 1:numberOfSlabs
-    slabLosses[j] = Engine.element1D(loss, totalWeightInSlab[j])  ## Food for thought - indexing
+    slabLosses[j] = Engine.element1D(loss, totalWeightInSlab[j])  ## Food for thought - indexing - solved by an offset vector
 end
 
 ### Objective function - minimize the total loss
@@ -136,11 +137,78 @@ totalLoss = Engine.summation(slabLosses)
 objective = Engine.Minimize{Integer}(totalLoss)
 
 ### Add static symmetry breaking constraint
-
-### Implement a dynamic symmetry constraint
+### A lexographical constraint (LessOrEqual) to make sure the loads of the slabs are increasing.
+for i in 1:(numberOfSlabs - 1)
+    Engine.post(solver, Engine.LessOrEqual{Integer}(l[i], l[i + 1]))
+end
 
 ### Define the search
+search = Engine.DFSearch(Engine.Solver.stateManager(solver), () -> begin
+    idx = nothing
+    for i in 1:numberOfOrders
+        ## Find an unfixed order variable
+        if !Engine.isFixed(x[i])
+            idx = i
+            break
+        end
+    end
+
+    ## If all variables are fixed, return an empty branch
+    if isnothing(idx)
+        return []
+    end
+
+    ### Implement a dynamic symmetry constraint used in branching and search definition
+    maxFilledSlabIdx = max(filter(v -> Engine.isFixed(v), x))
+    ## Storage of branch functions
+    branches = Vector{Function}()
+    ### Try at most upto one empty Bin
+    for j in 1:min(maxFilledSlabIdx + 1, numberOfSlabs)
+        if in(j, x[idx])
+            ## Create a branch by fixing x[idx] to j
+            branchFn = function ()
+                return Engine.post(solver, Engine.ConstEqual{Integer}(x[idx], j))
+            end
+            ## Append the branch to the vector of branches
+            push!(branches, branchFn)
+        end
+    end
+
+    return branches
+end)
+
+### Monitor the total loss progress
+lossProgress = Vector{Int}()
+## Store in what slab orders are placed
+orders = Vector{Int}(undef, numberOfOrders)
+## Store the load in the particular slab
+loads = zeros(Int, numberOfSlabs)
+## Store the colors per slab
+slabColors = [Set{Int}() for _ in 1:numberOfSlabs]
 
 ### Define the solution listener
+Engine.addOnSolution(search, () -> begin
+    for i in 1:numberOfOrders
+        ## Get the assigned slab
+        slab = minimum(x[i])
+        ## Store the slab in which order `i` is placed in
+        orders[i] = slab
+        ## Store the load of the slab
+        loads[slab] = minimum(l[slab])
+        ## Add the color of the order to the slabColors
+        push!(slabColors[slab], colors[i])
+    end
+    
+    push!(lossProgress, minimum(totalLoss))
+end)
 
 ### Optiimize
+Engine.optimize(objective, search)
+
+
+## Plot Loss progress
+## Assert the assigned colors <= 2
+## Assert weight is not exceeded
+## Assert the total load == sum(capacities)
+## Check the number of nodes traversed
+## Histogram plot for the slabs with orders assigned to them
