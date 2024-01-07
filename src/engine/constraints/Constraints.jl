@@ -91,4 +91,10 @@ export Disjunctive
 include("IsEqual.jl")
 export IsEqual
 
+include("Or.jl")
+export Or
+
+include("IsOr.jl")
+export IsOr
+
 end
