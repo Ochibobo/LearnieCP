@@ -119,13 +119,37 @@ end
 
 
 """
-    propagateOnBoundsChange(iv::IntVar, c::AbstractConstraint)::Nothing
+    propagateOnBoundsChange(b::BoolVar, c::AbstractConstraint)::Nothing
 
 Function used to propagate constraints when the bounds of the variable changes
 """
 function propagateOnBoundChange(b::BoolVar, c::AbstractConstraint)::Nothing
     propagateOnBoundChange(variable(b), c)
     return nothing
+end
+
+
+"""
+    propagateOnDomainChange(b::BoolVar, c::AbstractConstraint)::Nothing
+
+Function used to propagate constraints when the domain of the variable changes
+"""
+function propagateOnDomainChange(b::BoolVar, c::AbstractConstraint)::Nothing
+    propagateOnDomainChange(variable(b), c)
+
+    return nothing
+end
+
+
+"""
+    constraintClosure(b::BoolVar, fn::Function)::AbstractConstraint
+
+An instance of `ConstraintClosure` used to create anonymous constraints
+"""
+function constraintClosure(b::BoolVar, fn::Function)::AbstractConstraint
+    c = constraintClosure(variable(b), fn)
+
+    return c
 end
 
 
@@ -139,6 +163,31 @@ function whenFix(b::BoolVar, procedure::Function)::Nothing
 
     return nothing
 end
+
+
+"""
+    whenBoundChange(b::BoolVar, procedure::Function)::Nothing where T
+
+`Callback` executed when the domain's bounds (min and max) are changed
+"""
+function whenBoundChange(b::BoolVar, procedure::Function)::Nothing
+    whenBoundChange(variable(b), procedure)
+
+    return nothing
+end
+
+
+"""
+    whenDomainChange(b::BoolVar, procedure::Function)::Nothing where T
+
+`Callback` executed when the domain is changed
+"""
+function whenDomainChange(b::BoolVar, procedure::Function)::Nothing
+    whenDomainChange(variable(b), procedure)
+
+    return nothing
+end
+
 
 """
 Function to return the values in the `BoolVar`
