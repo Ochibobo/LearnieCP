@@ -30,7 +30,7 @@ In other words: `T[y] = z`
 """
 @with_kw mutable struct Element1D{T} <: AbstractConstraint
     solver::AbstractSolver
-    array::AbstractVector{T}
+    array::AbstractVector{<:T}
     y::AbstractVariable{T}
     z::AbstractVariable{T}
     numberOfEntries::Integer
@@ -170,7 +170,7 @@ end
 
 Helper function for the `Element1D` constraint
 """
-function element1D(array::AbstractVector{T}, y::AbstractVariable{T})::AbstractVariable{T} where T
+function element1D(array::AbstractVector{<:T}, y::AbstractVariable{T})::AbstractVariable{T} where T
     ## Get a mapping ov the values in the array
     freqMap = Dict{Integer, Integer}()
 
