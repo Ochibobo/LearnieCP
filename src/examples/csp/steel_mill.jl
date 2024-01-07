@@ -39,19 +39,20 @@ maxNumberOfColorsPerSlab = 2
 
 ## Store the minimum loss per load level
 base_loss_vector = zeros(Int, maxCapacity + 1)
-loss = OffsetVector(base_loss_vector, 0:maxCapacity)
+# loss = OffsetVector(base_loss_vector, 0:maxCapacity)
+loss = base_loss_vector
 capaIdx = 1
 
 ## Update the minimum loss per load level
-for i in 0:maxCapacity
-    loss[i] = capacities[capaIdx] - i
-    if loss[i] == 0
+for i in 1:maxCapacity
+    loss[i + 1] = capacities[capaIdx] - i
+    if loss[i + 1] == 0
         capaIdx += 1
     end
 end
 
 ## Update the first loss entry
-loss[0] = 0
+loss[1] = 0
 
 
 ### Model Definition
@@ -102,22 +103,22 @@ end
 
 
 ## The total weight stored per slab
-totalWeightInSlab = Vector{Engine.AbstractVariable{Integer}}(undef, numberOfSlabs)
+# totalWeightInSlab = Vector{Engine.AbstractVariable{Integer}}(undef, numberOfSlabs)
 ## The Bin-Packing constraint
 ## Ensure the total weight of the orders placed in the slab does
 ## not exceed the capacity of the slab
 for j in 1:numberOfSlabs
     ## Array of all orders potentially placed in slab j
-    ordersInSlabJ = Vector{AbstractVariable{Integer}}(undef, numberOfOrders)
+    ordersInSlabJ = Vector{Engine.AbstractVariable{Integer}}(undef, numberOfOrders)
     for i in 1:numberOfOrders
-        ordersInSlabJ[i] = w[i] * inSlab[j, i]
+        ordersInSlabJ[i] = weights[i] * inSlab[j, i]
     end
 
     push!(ordersInSlabJ, -l[j])
     ## Capacity-limit constraint
-    weightInThisSlab = Engine.summation(ordersInSlabJ)
-    # Engine.post(solver, Engine.Sum{Integer}(ordersInSlabJ, l[j]))
-    totalWeightInSlab[j] = weightInThisSlab
+    # weightInThisSlab = Engine.summation(ordersInSlabJ)
+    Engine.post(solver, Engine.Sum{Integer}(ordersInSlabJ, l[j]))
+    # totalWeightInSlab[j] = weightInThisSlab
 end
 
 
@@ -126,10 +127,10 @@ end
 Engine.post(solver, Engine.Sum{Integer}(l, sum(capacities)))
 
 ## Get the loss per slab
-slabLosses = Vector{AbstractVariable{Integer}}(undef, numberOfSlabs)
+slabLosses = Vector{Engine.AbstractVariable{Integer}}(undef, numberOfSlabs)
 
 for j in 1:numberOfSlabs
-    slabLosses[j] = Engine.element1D(loss, totalWeightInSlab[j])  ## Food for thought - indexing - solved by an offset vector
+    slabLosses[j] = Engine.element1D(loss, l[j] + 1)  ## Food for thought - indexing - solved by an offset vector
 end
 
 ### Objective function - minimize the total loss
@@ -138,9 +139,9 @@ objective = Engine.Minimize{Integer}(totalLoss)
 
 ### Add static symmetry breaking constraint
 ### A lexographical constraint (LessOrEqual) to make sure the loads of the slabs are increasing.
-for i in 1:(numberOfSlabs - 1)
-    Engine.post(solver, Engine.LessOrEqual{Integer}(l[i], l[i + 1]))
-end
+# for i in 1:(numberOfSlabs - 1)
+#     Engine.post(solver, Engine.LessOrEqual{Integer}(l[i], l[i + 1]))
+# end
 
 ### Define the search
 search = Engine.DFSearch(Engine.Solver.stateManager(solver), () -> begin
@@ -159,7 +160,13 @@ search = Engine.DFSearch(Engine.Solver.stateManager(solver), () -> begin
     end
 
     ### Implement a dynamic symmetry constraint used in branching and search definition
-    maxFilledSlabIdx = max(filter(v -> Engine.isFixed(v), x))
+    maxFilledSlabIdx = 0
+    fixed = filter(v -> Engine.isFixed(v), x)
+    ## Update the maxFilledSlabIdx index
+    if !isempty(fixed)
+        maxFilledSlabIdx = maximum(maximum.(fixed))
+    end
+    
     ## Storage of branch functions
     branches = Vector{Function}()
     ### Try at most upto one empty Bin
