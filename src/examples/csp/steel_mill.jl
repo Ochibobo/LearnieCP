@@ -2,7 +2,7 @@
 using OffsetArrays
 
 ## Read the bench file
-path = "./data/steel/bench_19_10"
+path = "./data/steel/bench_20_01"
 file = open(path)
 
 ## Read the data
@@ -51,9 +51,7 @@ for i in 1:maxCapacity
     end
 end
 
-## Update the first loss entry
-loss[1] = 0
-
+# vscodedisplay(loss)
 
 ### Model Definition
 include("../../JuliaCP.jl")
@@ -63,7 +61,7 @@ using .JuliaCP
 solver = Engine.LearnieCP()
 
 ## Variables Definition
-x = Engine.makeIntVarArray(solver, numberOfOrders, 0, numberOfSlabs - 1) ## Orders variable
+x = Engine.makeIntVarArray(solver, numberOfOrders, 1, numberOfSlabs) ## Orders variable
 l = Engine.makeIntVarArray(solver, numberOfSlabs, 0, maxCapacity) ## Load in slab j
 inSlab = Matrix{Engine.BoolVar}(undef, numberOfSlabs, numberOfOrders) ## inSlab[i, j] = 1 iff order j is placed in slab i
 
@@ -72,7 +70,6 @@ for j in 1:numberOfSlabs
         inSlab[j, i] = Engine.IsEqual(x[i], j)
     end
 end
-
 
 for j in 1:numberOfSlabs ## Loop through all the slabs
     ## Check the presence of each color in each slab
@@ -102,8 +99,6 @@ for j in 1:numberOfSlabs ## Loop through all the slabs
 end
 
 
-## The total weight stored per slab
-# totalWeightInSlab = Vector{Engine.AbstractVariable{Integer}}(undef, numberOfSlabs)
 ## The Bin-Packing constraint
 ## Ensure the total weight of the orders placed in the slab does
 ## not exceed the capacity of the slab
@@ -114,17 +109,14 @@ for j in 1:numberOfSlabs
         ordersInSlabJ[i] = weights[i] * inSlab[j, i]
     end
 
-    push!(ordersInSlabJ, -l[j])
     ## Capacity-limit constraint
-    # weightInThisSlab = Engine.summation(ordersInSlabJ)
     Engine.post(solver, Engine.Sum{Integer}(ordersInSlabJ, l[j]))
-    # totalWeightInSlab[j] = weightInThisSlab
 end
 
 
 ### A redundant constraint
 ### The sum of the loads is equal to the sum of the items
-Engine.post(solver, Engine.Sum{Integer}(l, sum(capacities)))
+Engine.post(solver, Engine.Sum{Integer}(l, sum(weights)))
 
 ## Get the loss per slab
 slabLosses = Vector{Engine.AbstractVariable{Integer}}(undef, numberOfSlabs)
@@ -213,6 +205,10 @@ end)
 Engine.optimize(objective, search)
 
 
+lossProgress
+loads
+
+orders
 ## Plot Loss progress
 ## Assert the assigned colors <= 2
 ## Assert weight is not exceeded
