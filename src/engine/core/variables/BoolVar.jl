@@ -216,5 +216,5 @@ Base.:!(b::BoolVar) = not(b)
 
 
 ## Forward functions from IntVar to BoolVar
-@forward BoolVar.binaryVar solver, domain, minimum, maximum, size, isFixed, in, onBindConstraints
+@forward BoolVar.binaryVar solver, domain, minimum, maximum, size, isFixed, in, onBindConstraints, onBoundsChangeConstraints, onDomainChangeConstraints
 
