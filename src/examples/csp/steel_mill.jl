@@ -2,7 +2,7 @@
 using OffsetArrays
 
 ## Read the bench file
-path = "./data/steel/bench_20_01"
+path = "./data/steel/bench_20_02"
 file = open(path)
 
 ## Read the data
@@ -199,6 +199,8 @@ Engine.addOnSolution(search, () -> begin
     end
     
     push!(lossProgress, minimum(totalLoss))
+
+    @show minimum(totalLoss)
 end)
 
 ### Optiimize
