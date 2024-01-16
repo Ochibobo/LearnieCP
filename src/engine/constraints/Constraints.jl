@@ -97,4 +97,10 @@ export Or
 include("IsOr.jl")
 export IsOr
 
+include("ConstGreaterOrEqual.jl")
+export ConstGreaterOrEqual
+
+include("ConstLessOrEqual.jl")
+export ConstLessOrEqual
+
 end
