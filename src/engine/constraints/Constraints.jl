@@ -69,6 +69,9 @@ export Cumulative
 include("LessOrEqual.jl")
 export LessOrEqual
 
+include("GreaterOrEqual.jl")
+export GreaterOrEqual
+
 include("Maximum.jl")
 export Maximum
 
