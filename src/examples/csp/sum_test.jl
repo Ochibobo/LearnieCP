@@ -6,92 +6,92 @@ using .JuliaCP
 solver = Engine.LearnieCP()
 
 ## Variable declaration
-A = Engine.IntVar(solver, 0, 9)
-B = Engine.IntVar(solver, 0, 9)
-C = Engine.IntVar(solver, 0, 9)
-D = Engine.IntVar(solver, 0, 9)
-C₁ = Engine.IntVar(solver, 0, 1)
+# A = Engine.IntVar(solver, 0, 9)
+# B = Engine.IntVar(solver, 0, 9)
+# C = Engine.IntVar(solver, 0, 9)
+# D = Engine.IntVar(solver, 0, 9)
+# C₁ = Engine.IntVar(solver, 0, 1)
 
-## Constraints
-vars = [A, B, C, D]
+# ## Constraints
+# vars = [A, B, C, D]
 
-for i in eachindex(vars)
-    for j in eachindex(vars)
-        if i == j
-            continue
-        end
+# for i in eachindex(vars)
+#     for j in eachindex(vars)
+#         if i == j
+#             continue
+#         end
 
-        Engine.Solver.post(solver, Engine.NotEqual{Integer}(vars[i], vars[j]))
-    end
-end
+#         Engine.Solver.post(solver, Engine.NotEqual{Integer}(vars[i], vars[j]))
+#     end
+# end
 
-## Equality
-Engine.Solver.post(solver, Engine.Equal{Integer}(C₁, C))
+# ## Equality
+# Engine.Solver.post(solver, Engine.Equal{Integer}(C₁, C))
 
-## C cannot be 0
-Engine.Solver.post(solver, Engine.ConstNotEqual{Integer}(C, 0))
+# ## C cannot be 0
+# Engine.Solver.post(solver, Engine.ConstNotEqual{Integer}(C, 0))
 
-## Sum constraint
-Engine.Solver.post(solver, Engine.Sum{Integer}(A, B, -D, -10C₁))
+# ## Sum constraint
+# Engine.Solver.post(solver, Engine.Sum{Integer}(A, B, -D, -10C₁))
 
-push!(vars, C₁)
-## Branching strategy
-function branchingSchema()
-    idx = nothing
-    for i in eachindex(vars)
-      if(!Engine.isFixed(vars[i]))
-        idx = i
-        break
-      end
-    end
+# push!(vars, C₁)
+# ## Branching strategy
+# function branchingSchema()
+#     idx = nothing
+#     for i in eachindex(vars)
+#       if(!Engine.isFixed(vars[i]))
+#         idx = i
+#         break
+#       end
+#     end
 
-    if isnothing(idx)
-      return []
-    end
+#     if isnothing(idx)
+#       return []
+#     end
 
-    ## Get the target variable
-    var = vars[idx]
-    ## Get the minimum value
-    var_min = Engine.minimum(var)
+#     ## Get the target variable
+#     var = vars[idx]
+#     ## Get the minimum value
+#     var_min = Engine.minimum(var)
     
-    ## Branch when var = min
-    function left()
-      return Engine.Solver.post(solver, Engine.ConstEqual{Integer}(var, var_min))
-    end
+#     ## Branch when var = min
+#     function left()
+#       return Engine.Solver.post(solver, Engine.ConstEqual{Integer}(var, var_min))
+#     end
 
-    ## Branch when var != min
-    function right()
-      return Engine.Solver.post(solver, Engine.ConstNotEqual{Integer}(var, var_min))
-    end
+#     ## Branch when var != min
+#     function right()
+#       return Engine.Solver.post(solver, Engine.ConstNotEqual{Integer}(var, var_min))
+#     end
 
-    return [left, right]
-end
+#     return [left, right]
+# end
 
 
-search = Engine.DFSearch(Engine.Solver.stateManager(solver), branchingSchema)
+# search = Engine.DFSearch(Engine.Solver.stateManager(solver), branchingSchema)
 
-solutions = []
-## Print out the solution once found
-Engine.addOnSolution(search, () -> begin
-    push!(solutions, [Engine.minimum(A), Engine.minimum(B), Engine.minimum(C), Engine.minimum(D)]);
-    return nothing
-  end
-)
+# solutions = []
+# ## Print out the solution once found
+# Engine.addOnSolution(search, () -> begin
+#     push!(solutions, [Engine.minimum(A), Engine.minimum(B), Engine.minimum(C), Engine.minimum(D)]);
+#     return nothing
+#   end
+# )
 
-Engine.solve(search)
+# Engine.solve(search)
 
-for vals in solutions
-  A = vals[1]
-  B = vals[2]
-  C = vals[3]
-  D = vals[4]
+# for vals in solutions
+#   A = vals[1]
+#   B = vals[2]
+#   C = vals[3]
+#   D = vals[4]
   
-  print("$(A) + $(B) = ")
-  println("$(C)$(D)")
-  println()
-end
+#   print("$(A) + $(B) = ")
+#   println("$(C)$(D)")
+#   println()
+# end
 
-length(solutions)
+# length(solutions)
 
 
 
@@ -105,3 +105,170 @@ length(solutions)
 
 
 
+### Test 1
+y = Engine.IntVar(solver, -100, 100)
+x = [
+  Engine.IntVar(solver, 0, 5),
+  Engine.IntVar(solver, 1, 5),
+  Engine.IntVar(solver, 0, 5)
+]
+
+Engine.post(solver, Engine.Sum{Integer}(x, y))
+
+minimum(y)
+maximum(y)
+
+### Test 2
+x = [
+  Engine.IntVar(solver, -5, 5),
+  Engine.IntVar(solver, 1, 2),
+  Engine.IntVar(solver, 0, 1)
+]
+
+y = Engine.IntVar(solver, 0, 100)
+
+Engine.post(solver, Engine.Sum{Integer}(x, y))
+
+minimum(x[1])
+minimum(y)
+maximum(y)
+
+
+### Test 3
+solver = Engine.LearnieCP()
+
+x = [
+  Engine.IntVar(solver, -5, 5),
+  Engine.IntVar(solver, 1, 2),
+  Engine.IntVar(solver, 0, 1)
+]
+
+y = Engine.IntVar(solver, 5, 5)
+
+Engine.post(solver, Engine.Sum{Integer}(x, y))
+
+## 1-5 + 1-2 + 0-1 = 5
+Engine.Variables.removeBelow(x[1], 1)
+
+## 1-5 + 1 + 0-1 - 5
+Engine.Variables.fix(x[2], 1)
+
+Engine.Solver.fixPoint(solver)
+
+minimum(x[1])
+maximum(x[1])
+
+minimum(x[3])
+maximum(x[3])
+
+
+### Test 4
+x = [
+  Engine.IntVar(solver, 0, 5),
+  Engine.IntVar(solver, 0, 2),
+  Engine.IntVar(solver, 0, 1)
+]
+
+Engine.post(solver, Engine.Sum{Integer}(x, 0))
+
+[maximum(var) for var in x]
+
+
+### Test 5
+x = [
+  Engine.IntVar(solver, -5, 0),
+  Engine.IntVar(solver, -5, 0),
+  Engine.IntVar(solver, -3, 0)
+]
+
+Engine.post(solver, Engine.Sum{Integer}(x, 0))
+
+[maximum(var) for var in x]
+
+
+### Test 6
+x = [
+  Engine.IntVar(solver, -5, 0),
+  Engine.IntVar(solver, -5, 0),
+  Engine.IntVar(solver, -3, 3)
+]
+
+Engine.post(solver, Engine.Sum{Integer}(x, 0))
+
+minimum(x[1])
+minimum(x[2])
+
+Engine.Variables.removeAbove(x[3], 0)
+
+Engine.Solver.fixPoint(solver)
+
+[minimum(var) for var in x]
+
+
+### Test 7
+x = [
+  Engine.IntVar(solver, -5, 0),
+  Engine.IntVar(solver, -5, 0),
+  Engine.IntVar(solver, -3, 3)
+]
+
+Engine.post(solver, Engine.Sum{Integer}(x, 0))
+
+minimum(x[1])
+minimum(x[2])
+
+Engine.Variables.remove(x[3], 1)
+Engine.Variables.remove(x[3], 2)
+Engine.Variables.remove(x[3], 3)
+Engine.Variables.remove(x[3], 4)
+Engine.Variables.remove(x[3], 5)
+
+Engine.Solver.fixPoint(solver)
+
+[minimum(var) for var in x]
+
+
+### Test 8
+x = [
+  Engine.IntVar(solver, -3, 3),
+  Engine.IntVar(solver, -3, 3),
+  Engine.IntVar(solver, -3, 3)
+]
+
+Engine.post(solver, Engine.Sum{Integer}(x, 0))
+
+search = Engine.DFSearch(Engine.Solver.stateManager(solver), Engine.FirstFail(x))
+Engine.solve(search)
+
+stats = search.searchStatistics
+stats.numberOfSolutions
+
+### Test 9
+x = [Engine.IntVar(solver, -9, -9)]
+failed = false
+
+try
+  Engine.post(solver, Engine.Sum{Integer}(x, 0))
+catch ex
+  _ = ex
+  failed = true
+end
+
+failed
+
+
+### Test 10
+x = Engine.IntVar(solver, -9, -4)
+failed = false
+
+try
+  Engine.post(solver, Engine.Sum{Integer}(x, 0))
+catch ex
+  _ = ex
+  failed = true
+end
+
+failed
+
+
+### Test 11
