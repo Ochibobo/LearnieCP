@@ -271,4 +271,44 @@ end
 failed
 
 
+
+include("../../JuliaCP.jl")
+using .JuliaCP
+
+## A test on the Sum constraint
+solver = Engine.LearnieCP()
+
 ### Test 11
+x = [
+  Engine.IntVar(solver, -4, 3) * 5,
+  Engine.IntVar(solver, -4, 3) * 5,
+  Engine.IntVar(solver, -4, 3) * 5
+]
+
+x1 = x[1]
+v = zeros(Integer, size(x1))
+
+Engine.Variables.fillArray(x1, v)
+Engine.Variables.removeBelow(x1, -11)
+Engine.Variables.fillArray(x1, v)   
+
+
+
+
+
+
+
+
+
+
+Engine.post(solver, Engine.Sum{Integer}(x, 0))
+search = Engine.DFSearch(Engine.Solver.stateManager(solver), Engine.FirstFail(x))
+
+try
+  Engine.solve(search)
+catch ex
+  _ = ex
+end
+
+stats = search.searchStatistics
+stats.numberOfSolutions
