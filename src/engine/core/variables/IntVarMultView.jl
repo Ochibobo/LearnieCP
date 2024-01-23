@@ -99,7 +99,7 @@ domainListener(iv::IntVarMultView)::DomainListener = domainListener(variable(iv)
 
 Get a list of constraints triggered when the domain of this variable changes
 """
-onDomainChangeConstraints(iv::IntVarMultView)::StateStack{AbstractConstraint} = onDomainChangeConstraints(variable(iv)).onDomainChangeConstraints
+onDomainChangeConstraints(iv::IntVarMultView)::StateStack{AbstractConstraint} = domainListener(variable(iv)).onDomainChangeConstraints
 
 
 
@@ -132,7 +132,7 @@ end
 
 
 """
-    Base.maximum(iv::IntVarOffsetView)::Integer
+    Base.maximum(iv::IntVarMultView)::Integer
 
 Get the `maximum` value of this variable's domain
 """
@@ -179,7 +179,7 @@ Function to remove an element from the variable's domain
 """
 function remove(iv::IntVarMultView, v::Integer)::Nothing
     if v % coefficient(iv) == 0
-        remove(variable(iv), v - coefficient(iv))
+        remove(variable(iv), v ÷ coefficient(iv))
     end
 end
 
@@ -212,7 +212,13 @@ function removeAbove(iv::IntVarMultView, v::Integer)::Nothing
 
     ## Handle -ve v
     if v < 0
-        removeAbove(variable(iv), v ÷ coefficient(iv))
+        bound_value = v ÷ coefficient(iv)
+
+        if v % coefficient(iv) != 0
+            bound_value -= 1
+        end
+
+        removeAbove(variable(iv), bound_value)
         return nothing
     end
 
