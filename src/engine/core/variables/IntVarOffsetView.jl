@@ -75,7 +75,7 @@ domainListener(iv::IntVarOffsetView)::DomainListener = domainListener(variable(i
 
 Get a list of constraints triggered when the domain of this variable changes
 """
-onDomainChangeConstraints(iv::IntVarOffsetView)::StateStack{AbstractConstraint} = onDomainChangeConstraints(variable(iv)).onDomainChangeConstraints
+onDomainChangeConstraints(iv::IntVarOffsetView)::StateStack{AbstractConstraint} = domainListener(variable(iv)).onDomainChangeConstraints
 
 
 """
