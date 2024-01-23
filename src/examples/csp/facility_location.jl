@@ -45,29 +45,29 @@ for c in 1:NUMBER_OF_CLIENTS
     end
 end
 
-vscodedisplay(distances)
+# vscodedisplay(distances)
 
-## Plot the data
-## The clients by location
-scatter(
-    x_client,
-    y_client,
-    label= "Clients",
-    markershape = :circle,
-    markercolor = :blue
-)
+# ## Plot the data
+# ## The clients by location
+# scatter(
+#     x_client,
+#     y_client,
+#     label= "Clients",
+#     markershape = :circle,
+#     markercolor = :blue
+# )
 
-## The facilities by location
-scatter!(
-    x_facility,
-    y_facility,
-    label = "Facility",
-    markershape = :square,
-    markercolor = :white,
-    markersize = 6,
-    markerstrokecolor = :red,
-    markerstrokewidth = 2,
-)
+# ## The facilities by location
+# scatter!(
+#     x_facility,
+#     y_facility,
+#     label = "Facility",
+#     markershape = :square,
+#     markercolor = :white,
+#     markersize = 6,
+#     markerstrokecolor = :red,
+#     markerstrokewidth = 2,
+# )
 
 ## Model definition
 solver = Engine.LearnieCP()
@@ -95,7 +95,7 @@ end
 
 ## Cost of opening a facility
 facility_cost = [y[f] * facilities_opening_cost[f] for f in 1:NUMBER_OF_FACILITIES]
-facility_cost = Engine.summation(facility_cost)
+# facility_cost = Engine.summation(facility_cost)
 
 ## Compute the cost of assigning a client to facility (this is the cost to be minimized)
 client_cost = Vector{Engine.AbstractVariable{Integer}}()
@@ -110,44 +110,13 @@ end
 client_cost = Engine.summation(client_cost)
 
 ## Append the facility cost to the client cost
-# append!(client_cost, facility_cost)
+append!(client_cost, facility_cost)
 
 ## Minimize the cost above
-total_cost = Engine.summation([client_cost, facility_cost])
+total_cost = Engine.summation(client_cost)
 objective = Engine.Minimize{Integer}(total_cost)
 
-function branchingSchema()
-    idx = nothing
-    for i in eachindex(x)
-      if (!Engine.isFixed(x[i]))
-        idx = i
-        break
-      end
-    end
-
-    if isnothing(idx)
-      return []
-    end
-
-    ## Get the target variable
-    var = x[idx]
-    ## Get the minimum value
-    var_min = Engine.minimum(var)
-    
-    ## Branch when var = min
-    function left()
-      return Engine.Solver.post(solver, Engine.ConstEqual{Integer}(var, var_min))
-    end
-
-    ## Branch when var != min
-    function right()
-      return Engine.Solver.post(solver, Engine.ConstNotEqual{Integer}(var, var_min))
-    end
-
-    return [left, right]
-end
-
-search = Engine.DFSearch(Engine.Solver.stateManager(solver), branchingSchema)
+search = Engine.DFSearch(Engine.Solver.stateManager(solver), Engine.FirstFail(x...))
 
 ## Solution holders
 cost_progress = Int[]
@@ -168,7 +137,6 @@ Engine.addOnSolution(search, () -> begin
                 assigned_facility = f
             end
         end
-
         client_facility_association[c] = assigned_facility
     end
 
@@ -184,6 +152,8 @@ Engine.addOnSolution(search, () -> begin
     println("Solution found")
     println(repeat('*', 30))
     println()
+
+    sleep(1)
 end)
 
 ## Optimize the model
