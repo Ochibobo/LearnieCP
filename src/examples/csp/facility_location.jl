@@ -17,15 +17,15 @@ using .JuliaCP
 Random.seed!(1234)
 
 ## Number of clients
-nClients = 12
+nClients = 10
 
 ## Number of facilities
-nFacilities = 5
+nFacilities = 3
 
 ## Upper bound used for the random number integer generation for facility & client locations
 LOCATION_UPPER_BOUND = 100
-NUMBER_OF_CLIENTS = 20
-NUMBER_OF_FACILITIES = 6
+NUMBER_OF_CLIENTS = 7
+NUMBER_OF_FACILITIES = 3
 MAX_NUMBER_OF_FACILITIES_ASSIGNED = 1
 
 ## Generate the client locations
@@ -45,45 +45,43 @@ for c in 1:NUMBER_OF_CLIENTS
     end
 end
 
-# vscodedisplay(distances)
-
 # ## Plot the data
 # ## The clients by location
-# scatter(
-#     x_client,
-#     y_client,
-#     label= "Clients",
-#     markershape = :circle,
-#     markercolor = :blue
-# )
+scatter(
+    x_client,
+    y_client,
+    label= "Clients",
+    markershape = :circle,
+    markercolor = :blue
+)
 
-# ## The facilities by location
-# scatter!(
-#     x_facility,
-#     y_facility,
-#     label = "Facility",
-#     markershape = :square,
-#     markercolor = :white,
-#     markersize = 6,
-#     markerstrokecolor = :red,
-#     markerstrokewidth = 2,
-# )
+## The facilities by location
+scatter!(
+    x_facility,
+    y_facility,
+    label = "Facility",
+    markershape = :square,
+    markercolor = :white,
+    markersize = 6,
+    markerstrokecolor = :red,
+    markerstrokewidth = 2,
+)
+
 
 ## Model definition
 solver = Engine.LearnieCP()
 
 ## Variable definition
-
 ## Shows whether a facility is open or closed
-y = [Engine.IntVar(solver, 0, 1) for _ in 1:NUMBER_OF_FACILITIES]
+y = [Engine.BoolVar(solver) for _ in 1:NUMBER_OF_FACILITIES]
 
 ## Holds the assignment of a client to a facility
-x = Matrix{Engine.IntVar}(undef, NUMBER_OF_CLIENTS, NUMBER_OF_FACILITIES)
+x = Matrix{Engine.BoolVar}(undef, NUMBER_OF_CLIENTS, NUMBER_OF_FACILITIES)
 
 for c in 1:NUMBER_OF_CLIENTS
     for f in 1:NUMBER_OF_FACILITIES
         ## Whether client c is assigned to facility f
-        x[c, f] = Engine.IntVar(solver, 0, 1)
+        x[c, f] = Engine.BoolVar(solver)
 
         ## A client can only be assigned to a facility if it's open
         Engine.post(solver, Engine.LessOrEqual{Integer}(x[c, f], y[f]))
@@ -95,7 +93,6 @@ end
 
 ## Cost of opening a facility
 facility_cost = [y[f] * facilities_opening_cost[f] for f in 1:NUMBER_OF_FACILITIES]
-# facility_cost = Engine.summation(facility_cost)
 
 ## Compute the cost of assigning a client to facility (this is the cost to be minimized)
 client_cost = Vector{Engine.AbstractVariable{Integer}}()
@@ -107,16 +104,15 @@ for c in 1:NUMBER_OF_CLIENTS
     end
 end
 
-client_cost = Engine.summation(client_cost)
-
 ## Append the facility cost to the client cost
 append!(client_cost, facility_cost)
 
-## Minimize the cost above
+# ## Minimize the cost above
 total_cost = Engine.summation(client_cost)
 objective = Engine.Minimize{Integer}(total_cost)
 
-search = Engine.DFSearch(Engine.Solver.stateManager(solver), Engine.FirstFail(x...))
+## Search definition
+search = Engine.DFSearch(Engine.Solver.stateManager(solver), Engine.And(Engine.FirstFail([x..., y...]...)))
 
 ## Solution holders
 cost_progress = Int[]
@@ -152,16 +148,22 @@ Engine.addOnSolution(search, () -> begin
     println("Solution found")
     println(repeat('*', 30))
     println()
-
-    sleep(1)
 end)
 
 ## Optimize the model
 Engine.optimize(objective, search)
-# Engine.solve(search)
 
-## Plot the assignment
+## Model results analysis
+search.searchStatistics
+
+vscodedisplay(client_facility_association)
+vscodedisplay(facility_open)
+vscodedisplay(cost_progress)
 
 
-
-
+### Add necessary plots
+## Cost progress - line plot + scatter plot
+plot(cost_progress)
+## Assignment of clients to facilities - Scatter-plot + line-plot
+## Facility-client distribution - Histogram
+## What happens if the cost of the facility with the most assignments increases by a factor of 10
