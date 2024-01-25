@@ -292,15 +292,6 @@ Engine.Variables.fillArray(x1, v)
 Engine.Variables.removeBelow(x1, -11)
 Engine.Variables.fillArray(x1, v)   
 
-
-
-
-
-
-
-
-
-
 Engine.post(solver, Engine.Sum{Integer}(x, 0))
 search = Engine.DFSearch(Engine.Solver.stateManager(solver), Engine.FirstFail(x))
 
@@ -312,3 +303,80 @@ end
 
 stats = search.searchStatistics
 stats.numberOfSolutions
+
+
+### Test 12
+include("../../JuliaCP.jl")
+using .JuliaCP
+
+solver = Engine.LearnieCP()
+N = 11
+y = [Engine.BoolVar(solver) for _ in 1:N]
+cost = ones(Integer, N)
+
+k = [cost[i] * y[i] for i in 1:N]
+
+Engine.post(solver, Engine.Sum{Integer}(k, 1))
+
+search = Engine.DFSearch(Engine.Solver.stateManager(solver), Engine.FirstFail(y))
+
+try
+  Engine.solve(search)
+catch ex
+  _ = ex
+end
+
+stats = search.searchStatistics
+stats.numberOfSolutions
+
+
+### Test 13
+include("../../JuliaCP.jl")
+using .JuliaCP
+
+solver = Engine.LearnieCP()
+x = [Engine.BoolVar(solver) for _ in 1:10]
+
+Engine.post(solver, Engine.Sum{Integer}(x, 1))
+
+search = Engine.DFSearch(Engine.Solver.stateManager(solver), Engine.FirstFail(x))
+
+try
+  Engine.solve(search)
+catch ex
+  _ = ex
+end
+
+search.searchStatistics
+
+
+### Test 14
+include("../../JuliaCP.jl")
+using .JuliaCP
+
+solver = Engine.LearnieCP()
+N = 3
+M = 10
+MAX = 1
+x = Matrix{Engine.BoolVar}(undef, M, N)
+
+for i in 1:M
+  for j in 1:N
+    x[i, j] = Engine.BoolVar(solver)
+  end
+
+  Engine.post(solver, Engine.Sum{Integer}(x[i, :], MAX))
+end
+
+facility_cost = Engine.summation(x...)
+objective = Engine.Minimize{Integer}(facility_cost)
+
+search = Engine.DFSearch(Engine.Solver.stateManager(solver), Engine.FirstFail(x...))
+
+try
+  Engine.optimize(objective, search)
+catch ex
+  _ = ex
+end
+
+search.searchStatistics
