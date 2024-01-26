@@ -17,15 +17,15 @@ using .JuliaCP
 Random.seed!(1234)
 
 ## Number of clients
-nClients = 10
+nClients = 12
 
 ## Number of facilities
-nFacilities = 3
+nFacilities = 5
 
 ## Upper bound used for the random number integer generation for facility & client locations
 LOCATION_UPPER_BOUND = 100
-NUMBER_OF_CLIENTS = 7
-NUMBER_OF_FACILITIES = 3
+NUMBER_OF_CLIENTS = 12
+NUMBER_OF_FACILITIES = 5
 MAX_NUMBER_OF_FACILITIES_ASSIGNED = 1
 
 ## Generate the client locations
@@ -47,25 +47,25 @@ end
 
 # ## Plot the data
 # ## The clients by location
-scatter(
-    x_client,
-    y_client,
-    label= "Clients",
-    markershape = :circle,
-    markercolor = :blue
-)
+# scatter(
+#     x_client,
+#     y_client,
+#     label= "Clients",
+#     markershape = :circle,
+#     markercolor = :blue
+# )
 
-## The facilities by location
-scatter!(
-    x_facility,
-    y_facility,
-    label = "Facility",
-    markershape = :square,
-    markercolor = :white,
-    markersize = 6,
-    markerstrokecolor = :red,
-    markerstrokewidth = 2,
-)
+# ## The facilities by location
+# scatter!(
+#     x_facility,
+#     y_facility,
+#     label = "Facility",
+#     markershape = :square,
+#     markercolor = :white,
+#     markersize = 6,
+#     markerstrokecolor = :red,
+#     markerstrokewidth = 2,
+# )
 
 
 ## Model definition
@@ -156,14 +156,50 @@ Engine.optimize(objective, search)
 ## Model results analysis
 search.searchStatistics
 
-vscodedisplay(client_facility_association)
-vscodedisplay(facility_open)
-vscodedisplay(cost_progress)
+# vscodedisplay(client_facility_association)
+# vscodedisplay(facility_open)
+# vscodedisplay(cost_progress)
 
 
 ### Add necessary plots
 ## Cost progress - line plot + scatter plot
 plot(cost_progress)
+
 ## Assignment of clients to facilities - Scatter-plot + line-plot
+
+## Plot client positions
+p = scatter(
+    x_client,
+    y_client,
+    label= nothing,
+    markershape = :circle,
+    markercolor = :blue
+)
+
+
+## Plot the facilities based on whether they were opened or not
+scatter!(
+    x_facility,
+    y_facility,
+    markershape = :square,
+    markercolor = [(facility_open[j] ? :red : :white) for j in 1:NUMBER_OF_FACILITIES],
+    markersize = 6,
+    markerstrokecolor = :red,
+    markerstrokewidth = 2,
+    label = nothing,
+)
+
+## Plot connecting lines
+for i in 1:NUMBER_OF_CLIENTS
+    assigned_facility = client_facility_association[i]
+    plot!(
+        [x_client[i], x_facility[assigned_facility]],
+        [y_client[i], y_facility[assigned_facility]];
+        color = :black,
+        label = nothing,
+    )
+end
+
+p
 ## Facility-client distribution - Histogram
 ## What happens if the cost of the facility with the most assignments increases by a factor of 10
