@@ -173,6 +173,10 @@ Courses with respective TAs dataframe:
 
 ![Course with TAs DataFrame](assets/CourseTADataFrame.png)
 
+
+### Capacitated Facility Assignment progress plot
+![Capacitated Facility Assignment Plot](assets/capacitated_facility_assignment_plot.gif)
+
 ---
 
 ### RoadMap
